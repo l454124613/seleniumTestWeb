@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+    <meta charset="UTF-8">
+    <title>WELCOME</title>
+    <!--<link href="css/tether.min.css" rel="stylesheet">-->
+    <!--<link href="css/bootstrap.min.css" rel="stylesheet">-->
+    <link href="css/semantic.min.css" rel="stylesheet">
+    <link href="css/login.css" rel="stylesheet">
+</head>
+<body >
+<div></div>
+<h2 class="ui center aligned icon header"><i class="circular users icon"></i> 自动化测试管理平台</h2>
+
+<div class="ui form">
+    <div class="field">
+        <label>邮箱</label>
+        <input type="email" name="Email" id="email" class="input" placeholder="Email"  >
+
+    </div>
+    <div class="field">
+        <label>密码</label>
+        <input type="password" name="Password" id="password" class="input" placeholder="Password" data-content="You can use me to enter data2">
+    </div>
+    <div class="field">
+        <div class="ui checkbox">
+            <input type="checkbox" tabindex="0" id="rem" class="">
+            <label>记住我（保存30天）</label>
+        </div>
+    </div>
+    <button class="ui button" type="submit" id="submit">登录</button>
+</div>
+
+<script src="js/jquery-3.2.1.min.js" ></script>
+<script src="js/semantic.min.js" ></script>
+<script src="js/js.cookie.js" ></script>
+<script  >
+    function compileStr(code){ //对字符串进行加密
+        var c=String.fromCharCode(code.charCodeAt(0)+code.length);
+
+        for(var i=1;i<code.length;i++)
+        {
+            c+=String.fromCharCode(code.charCodeAt(i)+code.charCodeAt(i-1));
+        }
+        return encodeURI(c);   }
+
+    //字符串进行解密
+    function uncompileStr(code){
+        code=decodeURI(code);
+
+        var c=String.fromCharCode(code.charCodeAt(0)-code.length);
+
+
+        for(var i=1;i<code.length;i++)
+        {
+            c+=String.fromCharCode(code.charCodeAt(i)-c.charCodeAt(i-1));
+
+        }
+        return c;   }
+</script>
+
+
+<!--<script src="js/tether.min.js" ></script>-->
+<!--<script src="js/bootstrap.min.js" ></script>-->
+<script>
+
+$(document).ready(function () {
+  // console.log(ass);
+$.get('/com',function (data,status) {
+
+  var o=$.parseJSON(data);
+
+        if(o.isok==0){
+
+            location.href=o.to;
+        }
+
+    
+});
+
+
+        var c= Cookies.get('user');
+    if(typeof(c)==="undefined"){
+
+
+
+    }else {
+        var c3=uncompileStr(c);
+      //  alert(c);
+        var c2= c3.split('???');
+        $("#email").val(c2[0]);
+        $("#password").val(c2[1]);
+
+        if($("#email").val().length>0&&$("#password").val().length>0){
+            $("#rem").attr("checked","true");
+        }
+
+    }
+
+
+
+}
+
+);
+
+//var ass=$("#email").popup(
+//    {
+//        on:'change',
+//        position : 'right center',
+//       // inline: true,
+//       // popup: '#password',
+//        title    : 'My favorite dog',
+//        content  : 'My favorite dog would like other dogs as much as themselves'
+//    }
+//);
+
+
+   $("#submit").click(function () {
+       var em=$.trim($("#email").val());
+       var pa=$.trim($("#password").val());
+       if(em.length>0&&pa.length>0){
+           $.post("login",
+               {
+                   user:compileStr(em+"!!!"+pa)
+               },
+               function(data,status){
+
+                   var o=$.parseJSON(data);
+                    switch(o.isok){
+                        case 0:{
+                           var uu=uncompileStr(o.user).split('???');
+                           var name='';
+                           if(uu[0].length>1){
+                               name=uu[0];
+                           }else {
+                               name=uu[1];
+                           }
+                            Cookies.set('user1', compileStr(name));
+                           if(uu[2]=="1"){
+                               Cookies.set('user2', compileStr("我是管理员"));
+                           }else {
+                               Cookies.set('user2', compileStr("我不是管理员"));
+
+                           }
+
+                            location.href=o.to;break;}
+
+
+                        case 1:alert('登录失败');break;
+                        case 2:alert('账号密码为空');break;
+                    }
+
+               });
+       }else{
+           alert('请输入内容');
+       }
+
+   });
+$("#rem").click(function () {
+    if(this.checked){
+
+        Cookies.set('user', compileStr($("#email").val()+"???"+$("#password").val()), { expires: 30 });
+
+    }else{
+        Cookies.remove('user');
+    }
+
+});
+
+//    function  su() {
+//        var aa=$("#inputPassword").val();
+//        $("#inputPassword").val(aa+'asdad');
+//       alert(aa+'asdad');
+//    }
+
+
+</script>
+</body>
+</html>
