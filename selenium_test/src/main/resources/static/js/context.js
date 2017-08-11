@@ -2493,8 +2493,8 @@ $('#mtest').click(
               "  <div class=\"ui segment\">\n"+
               "    <div class=\"ui positive check button\">全选</div><div class=\"ui negative uncheck button\">全部取消</div><div class=\"ui toggle button\">反转</div>"+
               "<div class=\"ui  right floated selection dropdown\">\n"+
-              "  <input type=\"hidden\" name=\"casehome\">\n"+
-              "  <i class=\"dropdown icon\"></i>\n"+
+              "  <input type=\"hidden\" name=\"casehome\" onchange='changecasehome(this)'>\n"+
+              "  <i class=\"dropdown icon\" ></i>\n"+
               "  <div class=\"default text\">选择用例库...</div>\n"+
               "  <div class=\"menu\" id='casehomemenu'>\n"+
 
@@ -2507,7 +2507,7 @@ $('#mtest').click(
               "    <div class=\"ui test checkbox\"> <input type=\"checkbox\" id='impc1' onchange='checkimp(this)'> <label>高&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> </div><div class=\"ui test checkbox\"> <input type=\"checkbox\"  id='impc2' onchange='checkimp(this)'> <label>中&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> </div><div class=\"ui test checkbox\"> <input type=\"checkbox\" id='impc3' onchange='checkimp(this)'> <label>低</label> </div>"+
               " <div class=\"ui right floated small primary labeled icon button\" onclick='addcids()' ><i class=\"radio icon\"></i>选择完毕</div>"+
               "  </div>\n"+
-              "</div>";
+              "</div><div id='casehomeid2'></div>";
 
           $('#context').html(re1);
           $('.ui.dropdown').dropdown();
@@ -2515,8 +2515,9 @@ $('#mtest').click(
               re="";
               var o=$.parseJSON(data);
               var cc=o.casehomes;
-              for(var i=0;i<cc.length;o++){
-                  re+="    <div class=\"item\" data-value=\""+o.casehomes[i].id+"\">"+o.casehomes[i].name+"</div>";
+              console.log(cc);
+              for(var i=0;i<cc.length;i++){
+                  re+="    <div class=\"item\" data-value=\""+cc[i].id+"\">"+cc[i].name+"</div>";
 
               }
               re+="<div class=\"item\" data-value=\"-1\">总库</div>";
@@ -2527,6 +2528,17 @@ $('#mtest').click(
       }
   }  
 );
+
+function changecasehome(a) {
+    $('#casehomeid2').html(base( "                        <th style=\"width: 40px\">#</th>\n" +
+        "                        <th  style=\"width: 25%\">用例名称</th>\n" +
+        "                        <th  style=\"min-width: 30em;\" >用例描述</th>\n" +
+        "                        <th style=\"width: 80px\">重要等级</th>\n",4,'addcids()','选择完毕','testcaseid','2a2'));
+    //shuacasehome($(a).val());
+    shuatestcase($(a).val());
+
+
+}
 $('#mlook').click(
     function () {
         if(tid<1){
@@ -2637,7 +2649,7 @@ function checkimp(a) {
 
 }
 function shuatestcase(type,a) {
-    if(type=-1){
+    if(type==-1){
         $.get('/getcase/'+tid,function (data) {
             var o=$.parseJSON(data);
             if(o.isok!=0){
