@@ -6,6 +6,7 @@ package com.ciic.test.bean;
 public class tmp {
     private String value;
 
+
     public String getValue() {
         return value;
     }

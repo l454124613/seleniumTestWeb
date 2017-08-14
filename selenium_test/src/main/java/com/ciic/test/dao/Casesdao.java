@@ -46,9 +46,10 @@ return list;
     public List<CaseInfo> getcase(String tid) {
         if (tid.charAt(0)=='t'){
             String id=tid.replace("t","");
-qnwodqnwi
-           List<tmp> lt= jdbcTemplate.query("select cids value from casehome where id=?",new Object[]{id},new BeanPropertyRowMapper<tmp>(tmp.class));
-            System.out.println(lt);
+
+            String aac="select cids value  from casehome where id=?";
+           List<tmp> lt= jdbcTemplate.query(aac,new Object[]{id},new BeanPropertyRowMapper<tmp>(tmp.class));
+
            if(lt.size()>0){
 
                return  jdbcTemplate.query("select * from caselist where id in ("+lt.get(0).getValue()+")" ,new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));

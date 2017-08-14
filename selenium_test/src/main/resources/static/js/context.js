@@ -28,6 +28,7 @@ var homeid=0;
 
 
 
+
 $(document).ready(function () {
 
         $.get('/com',function (data,status) {
@@ -2376,14 +2377,14 @@ function shuacasehome() {
                 var re="";
 
                 for(var i=0;i<ccs.length;i++){
-
+var cid2="\'"+ccs[i].cids+"\',"+ccs[i].id;
                     var aac=ccs[i].id+",'"+ccs[i].name+"','"+ccs[i].des+"'";
                     re+= "                    <tr>\n" +
                         "                        <td  >"+(i+1)+"</td>\n" +
                         "                        <td  >"+ccs[i].name+"</td>\n" +
                         "                        <td  >"+ccs[i].des+"</td>\n" +
 
-                        "                        <td  ><button class=\"ui  circular basic icon button\" onclick='choosecase("+ccs[i].id+")' title=\"查看操作步骤\"><i class=\"indent icon\"></i></button></td>\n" +
+                        "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"choosecase("+cid2+")\" title=\"查看操作步骤\"><i class=\"indent icon\"></i></button></td>\n" +
 
                         "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"updatecasehome("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button>\n" +
                         "                            <button class=\"ui circular basic icon button \" onclick='removecasehome("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
@@ -2455,34 +2456,55 @@ $('#mpage').click(
     }
 );
 
-function choosecase(a) {
+function choosecase(a,b) {
     ueswidth();
     var re1="<div class=\"ui horizontal compact segments\">\n"+
         "  <div class=\"ui segment\">\n"+
         "    <div class=\"ui positive check button\">全选</div><div class=\"ui negative uncheck button\">全部取消</div><div class=\"ui toggle button\">反转</div>"+
-        "  </div>\n"+
+        " <div class=\"ui right floated small primary labeled icon button\" onclick='returncasehome()' ><i class=\"reply icon\"></i>返回</div> </div>\n"+
 
         "  <div class=\"ui segment\"  style=\" font-size: larger;\">\n"+
         "<label>重要等级：</label>"+
         "    <div class=\"ui test checkbox\"> <input type=\"checkbox\" id='impc1' onchange='checkimp(this)'> <label>高&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> </div><div class=\"ui test checkbox\"> <input type=\"checkbox\"  id='impc2' onchange='checkimp(this)'> <label>中&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> </div><div class=\"ui test checkbox\"> <input type=\"checkbox\" id='impc3' onchange='checkimp(this)'> <label>低</label> </div>"+
-        " <div class=\"ui right floated small primary labeled icon button\" onclick='addcids()' ><i class=\"radio icon\"></i>选择完毕</div>"+
+        " <div class=\"ui right floated small primary labeled icon button\" onclick='addcids("+b+")' ><i class=\"radio icon\"></i>选择完毕</div>"+
         "  </div>\n"+
         "</div>";
 
     var re=base( "                        <th style=\"width: 40px\">#</th>\n" +
         "                        <th  style=\"width: 25%\">用例名称</th>\n" +
         "                        <th  style=\"min-width: 30em;\" >用例描述</th>\n" +
-        "                        <th style=\"width: 80px\">重要等级</th>\n",4,'addcids()','选择完毕','testcaseid','2a2');
+        "                        <th style=\"width: 80px\">重要等级</th>\n",4,'addcids('+b+')','选择完毕','testcaseid','2a2');
 
     $('#context').html(re1+re);
 
 
     shuatestcase(-1,a);
 }
+function returncasehome(){$('#mcasehome').click()}
+function addcids(b) {
+    var lengt=  $('.imp.checked');
+    var aa=[];
+    for(var i=0;i<lengt.length;i++){
+        aa.push(lengt.get(i).id);
 
-function addcids() {
-    $('#mcasehome').click();
+    }
+    if(aa.length==0){
+        alertf("请勾选用例！")
+    }else {
+        var dda=new Date();
+        $.post('/updatecids',{
+
+            cids:aa.join(","),
+            id:b
+
+        },function (data) {
+            var o=$.parseJSON(data);
+            alertf(o.msg);
+        })
+    }
 }
+
+
 $('#mtest').click(
   function () {
       if(tid<1){
@@ -2505,7 +2527,7 @@ $('#mtest').click(
               "  <div class=\"ui segment\"  style=\" font-size: larger;\">\n"+
               "<label>重要等级：</label>"+
               "    <div class=\"ui test checkbox\"> <input type=\"checkbox\" id='impc1' onchange='checkimp(this)'> <label>高&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> </div><div class=\"ui test checkbox\"> <input type=\"checkbox\"  id='impc2' onchange='checkimp(this)'> <label>中&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> </div><div class=\"ui test checkbox\"> <input type=\"checkbox\" id='impc3' onchange='checkimp(this)'> <label>低</label> </div>"+
-              " <div class=\"ui right floated small primary labeled icon button\" onclick='addcids()' ><i class=\"radio icon\"></i>选择完毕</div>"+
+              " <div class=\"ui right floated small primary labeled icon button\" onclick='addtestcase()' ><i class=\"radio icon\"></i>选择完毕</div>"+
               "  </div>\n"+
               "</div><div id='casehomeid2'></div>";
 
@@ -2515,7 +2537,7 @@ $('#mtest').click(
               re="";
               var o=$.parseJSON(data);
               var cc=o.casehomes;
-              console.log(cc);
+            //  console.log(cc);
               for(var i=0;i<cc.length;i++){
                   re+="    <div class=\"item\" data-value=\""+cc[i].id+"\">"+cc[i].name+"</div>";
 
@@ -2533,7 +2555,7 @@ function changecasehome(a) {
     $('#casehomeid2').html(base( "                        <th style=\"width: 40px\">#</th>\n" +
         "                        <th  style=\"width: 25%\">用例名称</th>\n" +
         "                        <th  style=\"min-width: 30em;\" >用例描述</th>\n" +
-        "                        <th style=\"width: 80px\">重要等级</th>\n",4,'addcids()','选择完毕','testcaseid','2a2'));
+        "                        <th style=\"width: 80px\">重要等级</th>\n",4,'addtestcase()','选择完毕','testcaseid','2a2'));
     //shuacasehome($(a).val());
     shuatestcase($(a).val());
 
@@ -2688,6 +2710,12 @@ function shuatestcase(type,a) {
                     $('.test.checkbox').checkbox('attach events', '.toggle.button');
                     $('.test.checkbox').checkbox('attach events', '.check.button', 'check');
                     $('.test.checkbox').checkbox('attach events', '.uncheck.button', 'uncheck');
+                   // console.log(a);
+                    var cid1=a.split(",");
+                    for(var i=0;i<cid1.length;i++){
+                        $('#'+cid1[i]).checkbox('check');
+                    }
+
                 }else{
                     $('#testcaseid').html('');
                 }
