@@ -4,7 +4,7 @@ package com.ciic.test.bean;
  * Created by lixuecheng on 2017/7/11.
  */
 public class Element {
-    private String id;
+
 
     public String getId() {
         return id;
@@ -13,7 +13,7 @@ public class Element {
     public void setId(String id) {
         this.id = id;
     }
-
+    private String id;
     private String type;
     private String locationMethod;
     private String value;
@@ -23,6 +23,15 @@ public class Element {
     private String waitid;
     private String waitvalue;
     private String pid;
+    private  String pagename;
+
+    public String getPagename() {
+        return pagename;
+    }
+
+    public void setPagename(String pagename) {
+        this.pagename = pagename;
+    }
 
     public String getPid() {
         return pid;
@@ -51,6 +60,10 @@ public class Element {
                 .append(toframe).append('\"');
         sb.append(",\"waitid\":\"")
                 .append(waitid).append('\"');
+        sb.append(",\"pagename\":\"")
+                .append(pagename).append('\"');
+        sb.append(",\"pid\":\"")
+                .append(pid).append('\"');
         sb.append(",\"waitvalue\":\"")
                 .append(waitvalue).append('\"');
         sb.append('}');

@@ -21,6 +21,7 @@ var alertftype=0;
 var exptmp={a:-1,b:-1,c:-1,d:-1,e:-1,type:0};
 var pretmp={a:-1,b:-1,c:-1,type:4};
 var homeid=0;
+var mele=0;
 
 
 
@@ -1541,7 +1542,47 @@ function  shuaele() {
     });
     
 }
+function topage() {
+    $('#mpage').click();
+}
 
+function  shuaeleall() {
+    $.get('/gele/'+'-1'+'/'+tid,function (data) {
+        var o=$.parseJSON(data);
+        if(o.isok!=0){
+            alertf(o.msg);
+        }else{
+            var re1=o.elements;
+            elements1=re1;
+            var re2="";
+            if(re1.length>0){
+                for(var i=0;i<re1.length;i++){
+
+                    re2+= "                    <tr>\n" +
+                        "\n" +
+                        "                        <td  >"+(i+1)+"</td>\n" +
+                        "                        <td  >"+re1[i].pagename+"</td>\n" +
+                        "                        <td  >"+re1[i].name+"</td>\n" +
+                        "                        <td  >"+in2st4type(re1[i].type)+"</td>\n" +
+                        "                        <td  >"+in2st4lo(re1[i].locationMethod)+"</td>\n" +
+                        "                        <td  >"+re1[i].value+"</td>\n" +
+                        "                        <td  >"+(re1[i].topage!="-1")+"</td>\n" +
+                        "                        <td  ><button class=\"ui  circular basic icon button\" onclick='pid="+re1[i].pid+";updateele("+re1[i].id+")' title=\"修改元素\"><i class=\"paint brush icon\"></i></button>\n" +
+                        "                            <button class=\"ui circular basic icon button\" onclick='pid="+re1[i].pid+";removeele("+re1[i].id+")' title=\"删除元素\"><i class=\"remove circle icon red\"></i></button></td>\n" +
+
+                        "                    </tr>\n";
+
+                }
+                $('#eleid').html(re2);
+                $('table').tablesort();
+
+            }else{
+                $('#eleid').html('');
+            }
+        }
+    });
+
+}
 function  shuaitem() {
     if(isshuaitem){
         $.get('/gitema',function (data) {
@@ -2083,6 +2124,10 @@ $('#addpageone2').click(function () {
         },function (data) {
             var o=$.parseJSON(data);
             $('#closemodal2').click();
+            if(mele===1){
+               shuaeleall();
+
+            }else
             shuaele();
             alertf(o.msg);
 
@@ -2438,7 +2483,8 @@ $('#mpage').click(
         if(tid<1){
             alertf("请先选择项目~")
         }else {
-            ueswidth()
+            ueswidth();
+            mele=0;
             var re=base( "                        <th style=\"width: 80px\">#</th>\n" +
                 "                        <th  style=\"width: 25%\">页面名称</th>\n" +
                 "                        <th  style=\"min-width: 30em;\" >页面标题</th>\n" +
@@ -2797,6 +2843,34 @@ function addtestcase() {
   }
 
 }
+
+$('#melement').click(function () {
+    if(tid<1){
+        alertf("请先选择项目~")
+    }else{
+        ueswidth();
+        mele=1;
+        var re =base( "<th style=\"width: 40px\">#</th>\n" +
+            "                        <th style=\"width: 15%\">页面名称</th>" +
+            "                        <th style=\"width: 15%\">元素名称</th>" +
+            "                        <th style=\"width: 80px\">类型</th>" +
+            "                        <th style=\"width: 80px\">定位方式</th>" +
+            "                        <th style=\"min-width: 30em;\">定位值</th>" +
+            "                        <th style=\"width: 80px\">关联页面</th>" +
+
+            "                        <th style=\"width: 80px\">操作</th>" ,8,'topage()','跳转至页面','eleid');
+
+        $('#context').html(re);
+        shuaeleall();
+
+
+
+
+
+    }
+
+});
+
 function lookstep(a) {
 cid=a;
 var re=base("                        <th style=\"width: 60px\">步骤</th>\n" +

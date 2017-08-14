@@ -280,7 +280,14 @@ private ConfigService configService;
     String getEle(@PathVariable String page,@PathVariable String item,HttpSession session){
         if(itemService.isOwnItem(session.getAttributeNames().nextElement(),item)&&getPageService.isOwnPage(page,item)){
            // List<Page> lp=itemService.getPage(page);
-            List<Element> le=  getPageService.get(page);
+            List<Element> le=null;
+            if(page.equals("-1")){
+                le=getPageService.getall(item);
+
+            }else {
+                le=  getPageService.get(page);
+            }
+
             return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"elements\":"+le+"}";
 
         }else {

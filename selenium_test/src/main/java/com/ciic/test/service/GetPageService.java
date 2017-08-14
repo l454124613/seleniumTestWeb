@@ -15,6 +15,8 @@ public interface GetPageService {
 
 
     List<Element> get(String page);
+    List<Element> getall(String tid);
+
  GetPageService control();
      Map<String,ButtonService>   getbuttonmap();
      Map<String,CheckboxService> getcheckboxmap();

@@ -71,6 +71,11 @@ private Map<String, SwitchToService> mapsw;
     }
 
     @Override
+    public List<Element> getall(String tid) {
+        return jdbcTemplate.query("SELECT element.id,pid,type,locationMethod,value,name,lastupdatetime,updater,topage,toframe,waitid,waitvalue,page.pagename from element join page on element.pid=page.id where element.isused=1 and page.isused=1 and tid=?",new Object[]{tid},new BeanPropertyRowMapper<>(Element.class));
+    }
+
+    @Override
     public GetPageService control() {
         Map<String, WebElement> map=     getElementService.getElements(list);
         mapb=new HashMap<>();
@@ -162,7 +167,7 @@ private Map<String, SwitchToService> mapsw;
     @Override
     public boolean isOwnPage(String pid, String tid) {
         List<tmp> lt=  jdbcTemplate.query("SELECT 1 from page where tid=? and id=?",mycode.prase(new Object[]{tid,pid}),new BeanPropertyRowMapper<tmp>(tmp.class));
-        if(lt.size()==1){
+        if(lt.size()==1||pid.equals("-1")){
             return  true;
         }else
             return false;
