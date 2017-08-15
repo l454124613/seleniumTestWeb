@@ -320,8 +320,8 @@ return "0";
 
     @Override
     public void startrun(String tid) {
-        isNowKeep(tid);
-        if(!isRuning(tid)){
+        isNowKeep(tid); //查看是否有等待运行
+        if(!isRuning(tid)&&iskeep){
             addCase4Run(tid);
 
 
@@ -355,17 +355,34 @@ return "0";
         return jdbcTemplate.update("UPDATE \"casehome\" SET  \"name\"=?, \"des\"=?   WHERE (\"id\" = ?)",mycode.prase(new Object[]{name,des,id}));
     }
 
+    private void updateSeriesStime(String seriesid){
+        jdbcTemplate.update("update series set sttime='"+LocalDate.now()+" "+LocalTime.now()+"'  where id="+seriesid );
+    }
+    private void updateSeriesEtime(String seriesid){
+        jdbcTemplate.update("update series set etime='"+LocalDate.now()+" "+LocalTime.now()+"'  where id="+seriesid );
+    }
+
     void addCase4Run(String tid){
+        //获得等待的系列
         List<Series> ls=   jdbcTemplate.query("SELECT * from series where isused=1 and status=1  and tid =? order by ordertime",new Object[]{tid},new BeanPropertyRowMapper<Series>(Series.class));
+          //获得第一个
             Series series= ls.get(0);
+            //获得用例
             String[] cids=series.getCids().split(",");
         for (int i = 0; i <cids.length ; i++) {
           // int a= jdbcTemplate.update("INSERT INTO \"runtimecase\" ( \"cid\", \"tid\") VALUES ("+cids[i]+", "+tid+") ");
-
+            //添加用例指caseres和casereslist表
               addCase2res(cids[i],series.getId());
+              //修改当前系列开始运行
               updateOneseriesStatus("2","",series.getId());
-                seleniumService.run(tid);
+              updateSeriesStime(series.getId());
+
+              //运行脚本
+
+                seleniumService.run(tid,series.getId());
+                //修改当前系列运行结束
               updateOneseriesStatus("3","",series.getId());
+              updateSeriesEtime(series.getId());
 
 
 
@@ -377,9 +394,9 @@ return "0";
 void addCase2res(String cid,String seriesid){
        int a= jdbcTemplate.update("INSERT INTO \"casereslist\" ( \"cid\", \"res\", \"runnum\", \"allnum\", \"cname\", \"cdes\", \"seriesid\", \"status\") SELECT caselist.id cid,-1 res,0 runnum,count(step.id) allnum,name cname,des cdes, "+seriesid+" seriesid,0 from caselist join step on step.cid=caselist.id  where  step.isused=1 and  caselist.isused=1 and caselist.id="+cid);
       if(a>0){
-         List<tmp> lt= jdbcTemplate.query("select id value from casereslist where cid="+cid+" and seriesid = "+seriesid ,new BeanPropertyRowMapper<tmp>(tmp.class));
+         List<tmp> lt= jdbcTemplate.query("select id value from casereslist where cid="+cid+" and seriesid = "+seriesid +" order by id desc",new BeanPropertyRowMapper<tmp>(tmp.class));
         //  System.out.println(lt);
-          jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\")  SELECT cid,step.id sid,'' pic,ename||cat.name||value word,'-1' res ,'-1' restext ,'' time ,"+lt.get(0).getValue()+" listid from step join cat on cat.id=step.catid where cid="+cid+" ORDER BY step");
+          jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\")  SELECT cid,step.id sid,'' pic,''''||ename||''''||cat.name||value word,'-1' res ,'-1' restext ,'' time ,"+lt.get(0).getValue()+" listid from step join cat on cat.id=step.catid where cid="+cid+" ORDER BY step");
 
       }
 

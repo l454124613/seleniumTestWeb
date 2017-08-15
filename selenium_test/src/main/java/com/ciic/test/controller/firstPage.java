@@ -212,7 +212,7 @@ private ConfigService configService;
 
     @RequestMapping("/test" )
     String test(){
-
+caseService.startrun("9");
 
         return "ok";
     }

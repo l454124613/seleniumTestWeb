@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class SeleniumDao implements SeleniumService {
-    private String series;
+
     private  List<tmp> lt=null;//所有用例
     private  List<tmp> ls=null;//所有step
 @Autowired
@@ -40,8 +40,10 @@ public class SeleniumDao implements SeleniumService {
 private String driverPath;
 
     @Override
-    public void run(String tid) {
-        init();
+    public void run(String tid,String seriesid) {
+        //获得用例列表
+        init(seriesid);
+        //循环运行
         for (int i = 0; i < lt.size(); i++) {
            String caseListId= lt.get(i).getValue();
            String caseid=lt.get(i).getValue2();
@@ -52,12 +54,13 @@ private String driverPath;
 //TODO
            }
             updateCaseListStatus("2",caseListId);//正式运行
+            String nowCaseresid="0";
             try {
                 getres(caseListId);
                 for (int j = 0; j <ls.size() ; j++) {
-                String caseresid=    ls.get(j).getValue();
+                    nowCaseresid=    ls.get(j).getValue();
                 String sid=ls.get(j).getValue2();
-                updateCaseresTime(caseresid);
+                updateCaseresTime(nowCaseresid);
                 Step step=getStep(sid);
                     Element element=getElement(step.getEid());
                     WebElement webElement=  element2Web(element,driver);
@@ -69,11 +72,12 @@ private String driverPath;
                         toWindow(getTitle(element.getTopage()),driver);
 
                     }
-                    if(!step.getExpid().equals("-1")){
+                    if(!step.getExpid().equals("0")){
                         System.out.println("exp");
                     }
                     updateCaseListRunnum((j+1)+"",caseListId);
 
+                    updateCaseresRes("1","ok",nowCaseresid);
 
 
 
@@ -81,11 +85,18 @@ private String driverPath;
 
                 }
                 updateCaseListStatus("3",caseListId);
-                closeDriver(driver);
+
             } catch (NoSuchElementException e) {
                 System.out.println("fail");
+                updateCaseresRes("1",e.getLocalizedMessage(),nowCaseresid);
             }catch (Exception e1){
                 System.out.println("warn");
+                e1.printStackTrace();
+                updateCaseresRes("2",e1.getLocalizedMessage(),nowCaseresid);
+            }finally {
+
+                    closeDriver(driver);
+
             }
 
 
@@ -93,17 +104,17 @@ private String driverPath;
 
     }
 
-    @Override
-    public void setSeries(String series) {
-        this.series=series;
-    }
 
-    private void init(){
-   lt= jdbcTemplate.query("select id value ,cid value2 from casereslist where status =0 order by id",new BeanPropertyRowMapper<>(tmp.class));
+
+    private void init(String seriesid){
+   lt= jdbcTemplate.query("select id value ,cid value2 from casereslist where status =0 and seriesid= "+seriesid+" order by id",new BeanPropertyRowMapper<>(tmp.class));
 
 
     }
 
+    private void updateCaseresRes(String res,String text,String id){
+        jdbcTemplate.update("UPDATE caseres set res=? , restext=? where id =?",new Object[]{res,text,id});
+    }
     private String getTitle(String pid){
      return    jdbcTemplate.query("select pagetitle value from page where id="+pid,new BeanPropertyRowMapper<>(tmp.class)).get(0).getValue();
     }
@@ -134,7 +145,7 @@ if(ly.size()==0){
     }
 
     private void updateCaseresTime( String id){
-        jdbcTemplate.update("update caseres set time="+ LocalDate.now()+" "+ LocalTime.now()+" where id="+id);
+        jdbcTemplate.update("update caseres set time='"+ LocalDate.now()+" "+ LocalTime.now()+"' where id="+id);
     }
     private void updateCaseresPic(String pic ,String id){
         jdbcTemplate.update("update caseres set pic="+ pic+" where id="+id);
@@ -205,14 +216,14 @@ throw new NoSuchElementException();
         if(element.getWaitid().equals("-1")){
             return;
         }else {
-            if(element.getWaitid().equals(1)){
+            if(element.getWaitid().equals("1")){
                 try {
                     Thread.sleep(Integer.parseInt(element.getWaitvalue()));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }else {
-                if(element.getWaitid().equals(2)){
+                if(element.getWaitid().equals("2")){
                     waitElementExist(webElement);
 
                 }
@@ -268,6 +279,10 @@ private boolean exist(WebElement webElement){
     }
 
     private void closeDriver(WebDriver driver){
-driver.quit();
+        try {
+            driver.quit();
+        } catch (Exception e) {
+
+        }
     }
 }
