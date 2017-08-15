@@ -22,6 +22,7 @@ var exptmp={a:-1,b:-1,c:-1,d:-1,e:-1,type:0};
 var pretmp={a:-1,b:-1,c:-1,type:4};
 var homeid=0;
 var mele=0;
+var int;
 
 
 
@@ -505,10 +506,21 @@ function getyan3() {
 
 
 
+
+function forfirstfun(a) {
+    ueswidth();
+    if(a===1){
+
+    }else {
+        int=window.clearInterval(int);
+    }
+
+}
+
 $('#manage').click(function () {
 var cc=Cookies.get('user2');
 if(uncompileStr(cc)=="我是管理员"){
-    ueswidth();
+    forfirstfun();
 
     var user1=base("                        <th style=\"width: 40px\">#</th>\n" +
         "                        <th >用户名称</th>\n" +
@@ -2357,7 +2369,7 @@ $('#mcase').click(
       if(tid<1){
           alertf("请先选择项目~")
       }else{
-          ueswidth();
+          forfirstfun();
           pid=0;
           var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
               "                        <th  style=\"width: 25%\">用例名称</th>\n" +
@@ -2387,7 +2399,7 @@ $('#mcasehome').click(
             alertf("请先选择项目~")
 
     }else {
-            ueswidth();
+            forfirstfun();
 
             var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
                 "                        <th  style=\"width: 25%\">小库名称</th>\n" +
@@ -2452,7 +2464,7 @@ $('#mdatasource').click(
         if(tid<1){
             alertf("请先选择项目~")
         }else{
-            ueswidth();
+            forfirstfun();
             var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
                 "                        <th  style=\"width: 25%\">数据库名称</th>\n" +
                 "                        <th   style='min-width: 40px'>备注信息</th>\n" +
@@ -2484,7 +2496,7 @@ $('#mpage').click(
         if(tid<1){
             alertf("请先选择项目~")
         }else {
-            ueswidth();
+            forfirstfun();
             mele=0;
             var re=base( "                        <th style=\"width: 80px\">#</th>\n" +
                 "                        <th  style=\"width: 25%\">页面名称</th>\n" +
@@ -2504,7 +2516,7 @@ $('#mpage').click(
 );
 
 function choosecase(a,b) {
-    ueswidth();
+    forfirstfun();
     var re1="<div class=\"ui horizontal compact segments\">\n"+
         "  <div class=\"ui segment\">\n"+
         "    <div class=\"ui positive check button\">全选</div><div class=\"ui negative uncheck button\">全部取消</div><div class=\"ui toggle button\">反转</div>"+
@@ -2547,6 +2559,7 @@ function addcids(b) {
         },function (data) {
             var o=$.parseJSON(data);
             alertf(o.msg);
+            $('#mcasehome').click();
         })
     }
 }
@@ -2557,7 +2570,7 @@ $('#mtest').click(
       if(tid<1){
           alertf("请先选择项目~")
       }else {
-          ueswidth();
+          forfirstfun();
           var re1="<div class=\"ui horizontal compact segments\">\n"+
               "  <div class=\"ui segment\">\n"+
               "    <div class=\"ui positive check button\">全选</div><div class=\"ui negative uncheck button\">全部取消</div><div class=\"ui toggle button\">反转</div>"+
@@ -2613,7 +2626,7 @@ $('#mlook').click(
         if(tid<1){
             alertf("请先选择项目~")
         }else {
-            ueswidth();
+            forfirstfun(1);
 var re="<div class=\"ui top attached tabular   menu\">\n"+
     "  <a class=\"item active\" data-tab=\"first\" id='uone'>尚未运行</a>\n"+
     "  <a class=\"item\" data-tab=\"second\" id='utwo'>等待运行</a>\n"+
@@ -2631,6 +2644,7 @@ var re="<div class=\"ui top attached tabular   menu\">\n"+
 
 
 shuaseries();
+             int=setInterval("shuaseries()",10000);
 
 
 
@@ -2667,6 +2681,7 @@ function shuaseries() {
 
                 $('#lookone').html(s2.one+"</div>");
             }else {
+                $('#uone').html("尚未运行");
                 $('#lookone').html("没有用例需要运行");
             }
 
@@ -2675,6 +2690,7 @@ function shuaseries() {
                 $('#utwo').html("<div class=\"floating ui red label\">"+l1+"</div>等待运行");
                 $('#looktwo').html(s2.two+"</div>");
             }else {
+                $('#utwo').html("等待运行");
                 $('#looktwo').html("没有用例等待运行");
             }
             l1=s1.three;
@@ -2690,6 +2706,7 @@ function shuaseries() {
                 $('#ufour').html("<div class=\"floating ui teal  label\">"+l1+"</div>运行完成");
                 $('#lookfour').html(s2.four+"</div>");
             }else {
+                $('#ufour').html("运行完成");
                 $('#lookfour').html("没有用例运行完成");
             }
 
@@ -2849,7 +2866,7 @@ $('#melement').click(function () {
     if(tid<1){
         alertf("请先选择项目~")
     }else{
-        ueswidth();
+        forfirstfun();
         mele=1;
         var re =base( "<th style=\"width: 40px\">#</th>\n" +
             "                        <th style=\"width: 15%\">页面名称</th>" +

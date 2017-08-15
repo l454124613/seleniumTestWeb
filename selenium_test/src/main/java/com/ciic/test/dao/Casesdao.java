@@ -383,6 +383,8 @@ return "0";
                 //修改当前系列运行结束
               updateOneseriesStatus("3","",series.getId());
               updateSeriesEtime(series.getId());
+              //检查是否还存在要运行的系列
+            startrun(tid);
 
 
 
