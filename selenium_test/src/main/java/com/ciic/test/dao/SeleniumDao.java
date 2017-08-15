@@ -17,11 +17,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
+import org.openqa.selenium.NoSuchElementException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.NoSuchElementException;
+
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -50,9 +50,15 @@ private String driverPath;
             updateCaseListStatus("1",caseListId);//准备
            String pre=getpre(caseid);
             WebDriver driver=startDriver(tid );
-           if(!pre.equals("0")){
-//TODO
-           }
+            try {
+                if(!pre.equals("0")){
+     //TODO
+                }
+            } catch (Exception e) {
+                updateCaseListRes("3lolo"+"预置条件出错，用例停止运行。出错原因："+e.getLocalizedMessage(),caseListId);
+                continue;
+
+            }
             updateCaseListStatus("2",caseListId);//正式运行
             String nowCaseresid="0";
             try {
@@ -72,10 +78,11 @@ private String driverPath;
                         toWindow(getTitle(element.getTopage()),driver);
 
                     }
+                    updateCaseListRunnum((j+1)+"",caseListId);
                     if(!step.getExpid().equals("0")){
                         System.out.println("exp");
                     }
-                    updateCaseListRunnum((j+1)+"",caseListId);
+
 
                     updateCaseresRes("1","ok",nowCaseresid);
 
@@ -84,20 +91,23 @@ private String driverPath;
 
 
                 }
-                updateCaseListStatus("3",caseListId);
+updateCaseListRes("1",caseListId);
 
             } catch (NoSuchElementException e) {
                 System.out.println("fail");
-                updateCaseresRes("1",e.getLocalizedMessage(),nowCaseresid);
+                updateCaseresRes("2",e.getLocalizedMessage(),nowCaseresid);
+                updateCaseListRes("2",caseListId);
             }catch (Exception e1){
                 System.out.println("warn");
                 e1.printStackTrace();
-                updateCaseresRes("2",e1.getLocalizedMessage(),nowCaseresid);
+                updateCaseListRes("3",caseListId);
+                updateCaseresRes("3",e1.getLocalizedMessage(),nowCaseresid);
             }finally {
+                updateCaseListStatus("3",caseListId);
 
-                    closeDriver(driver);
 
             }
+            closeDriver(driver);
 
 
         }
@@ -140,6 +150,9 @@ if(ly.size()==0){
     private void updateCaseListStatus(String status,String id){
         jdbcTemplate.update("update casereslist set status=  "+status+"  where id="+id );
     }
+    private void updateCaseListRes(String res,String id){
+        jdbcTemplate.update("update casereslist set res=  "+res+"  where id="+id );
+    }
     private void updateCaseListRunnum(String runnum,String id){
         jdbcTemplate.update("update casereslist set runnum=  "+runnum+"  where id="+id );
     }
@@ -181,7 +194,7 @@ if(ly.size()==0){
             }
 
         }
-throw new NoSuchElementException();
+throw new NoSuchElementException("元素等不到");
     }
 
     private Element getElement(String eid){
@@ -207,7 +220,20 @@ throw new NoSuchElementException();
         if (webElement!=null){
             return webElement;
         }else {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("no such element: Unable to locate element: {\"method\":\""+getActionName(element.getLocationMethod())+"\",\"selector\":\""+element.getValue()+"\"}");
+        }
+
+    }
+    private String getActionName(String id){
+        switch (id){
+            case "1":return "id";
+            case "2":return "name";
+            case "3":return "tagName";
+            case "4":return "Linktext";
+            case "5":return "calssName";
+            case "6":return "xpath";
+            case "7":return "css";
+            default:return "unknow";
         }
 
     }
@@ -237,7 +263,7 @@ throw new NoSuchElementException();
                 case "1": click(driver,webElement);return 0;
                 case "2": return webElement.isEnabled();
                 case "3": webElement.clear();return 0;
-                case "4": ;return webElement.isSelected();
+                case "4": return webElement.isSelected();
                 case "5": return webElement.getText();
                 case "6": driver.switchTo().alert().accept();return 0;
                 case "7": driver.switchTo().alert().dismiss();return 0;
@@ -249,6 +275,7 @@ throw new NoSuchElementException();
                 case "13": return exist(webElement);
                 case "14": driver.navigate().to(value);return 0;
                 case "15": driver.navigate().back();return 0;
+                case "17": return driver.switchTo().alert().getText();
                 default:return 0;
             }
   }

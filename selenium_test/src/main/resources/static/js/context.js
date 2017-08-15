@@ -2995,7 +2995,7 @@ function  in2act4typeandcheck(a) {
     switch (a){
         case "1": return "2,13";
         case "2": return "4,2,13";
-        case "3": return "5,13";
+        case "3": return "13,17";
         case "4": return "4,13";
         case "5": return "13";
         case "6": return "5,13";
@@ -3054,6 +3054,7 @@ function  in2st4action(a) {
         case "14":return "跳转";
         case "15":return "回退";
         case "16":return "获取属性";
+        case "17":return "获取文本";
 
     }
 
