@@ -56,6 +56,7 @@ int updatePrecondition(String type,String cid ,String a,String b,String c);
     int updateOneseriesStatus(String status,String ordertime,String id);
 
     List<Series> getSeries( String tid);
+    int removeSeries(String id);
 
 
 

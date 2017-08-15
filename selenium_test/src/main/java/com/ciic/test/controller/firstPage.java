@@ -867,6 +867,49 @@ if(id.equalsIgnoreCase("0")){
 
     }
 
+    @RequestMapping("/removeseries/{seid}")
+    String removeSeries(@PathVariable String seid){
+        int a= caseService.removeSeries(seid);
+
+        if(a==1){
+            return "{\"isok\":0,\"msg\":\"删除成功\",\"to\":\"/\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"删除失败\",\"to\":\"/\"}";
+        }
+
+    }
+    @RequestMapping("/runseries/{seid}/{tid}")
+    String runSeries(@PathVariable String seid,@PathVariable String tid){
+        int a= caseService.updateOneseriesStatus("1","",seid);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                caseService.startrun(tid);
+            }
+        }).start();
+
+        if(a==1){
+            return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+        }
+
+    }
+    @RequestMapping("/pauseseries/{seid}/{tid}")
+    String pauseSeries(@PathVariable String seid,@PathVariable String tid){
+        int a= caseService.updateOneseriesStatus("0","",seid);
+
+
+        if(a==1){
+            return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"操作失败,正好轮到运行\",\"to\":\"/\"}";
+        }
+
+    }
+
+
+
     @RequestMapping("/removedatasource/{did}")
     String removeDatasource(@PathVariable String did){
         int a= configService.removeDatasource(did);

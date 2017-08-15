@@ -308,6 +308,11 @@ return "0";
     }
 
     @Override
+    public int removeSeries(String id) {
+        return jdbcTemplate.update("update series set isused=0 where id=?",new Object[]{id});
+    }
+
+    @Override
     public boolean isRuning(String tid) {
 
         List<tmp> lt= jdbcTemplate.query("select 1 value from series where isused=1 and tid=? and status=2",new Object[]{tid},new BeanPropertyRowMapper<tmp>(tmp.class));
@@ -406,14 +411,14 @@ void addCase2res(String cid,String seriesid){
     }
 
     void isNowKeep(String tid){
-        if(!iskeep){
+
             List<tmp> lt=   jdbcTemplate.query("SELECT 1 value from series where isused=1 and status=1  and tid =? order by ordertime",new Object[]{tid},new BeanPropertyRowMapper<tmp>(tmp.class));
             if(lt.size()>0){
                 iskeep=true;
             }else {
                 iskeep=false;
             }
-        }
+
     }
 
 
