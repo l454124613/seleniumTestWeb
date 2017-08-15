@@ -2357,7 +2357,8 @@ $('#mcase').click(
       if(tid<1){
           alertf("请先选择项目~")
       }else{
-          ueswidth()
+          ueswidth();
+          pid=0;
           var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
               "                        <th  style=\"width: 25%\">用例名称</th>\n" +
               "                        <th   style='min-width: 100px'>用例描述</th>\n" +

@@ -4,6 +4,7 @@ import com.ciic.test.bean.*;
 import com.ciic.test.service.CaseService;
 import com.ciic.test.service.GetCase;
 
+import com.ciic.test.service.SeleniumService;
 import com.ciic.test.tools.mycode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -24,6 +25,8 @@ public class Casesdao implements CaseService {
     private GetCase getCase;
 @Autowired
 private JdbcTemplate jdbcTemplate;
+@Autowired
+private SeleniumService seleniumService;
 
 private boolean iskeep=false;
 
@@ -357,10 +360,14 @@ return "0";
             Series series= ls.get(0);
             String[] cids=series.getCids().split(",");
         for (int i = 0; i <cids.length ; i++) {
-           int a= jdbcTemplate.update("INSERT INTO \"runtimecase\" ( \"cid\", \"tid\") VALUES ("+cids[i]+", "+tid+") ");
-          if(a>0){
+          // int a= jdbcTemplate.update("INSERT INTO \"runtimecase\" ( \"cid\", \"tid\") VALUES ("+cids[i]+", "+tid+") ");
+
               addCase2res(cids[i],series.getId());
-          }
+              updateOneseriesStatus("2","",series.getId());
+                seleniumService.run(tid);
+              updateOneseriesStatus("3","",series.getId());
+
+
 
 
 
