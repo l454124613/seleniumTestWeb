@@ -53,6 +53,8 @@ int updatePrecondition(String type,String cid ,String a,String b,String c);
 
     int addRunCase(String series,String cids,String tid,String type);
     List<Series> getOneSeries(String series, String tid);
+    List<Series> getFinishSeries(String series);
+
     int updateOneseriesStatus(String status,String ordertime,String id);
 
     List<Series> getSeries( String tid);
@@ -69,6 +71,8 @@ int updatePrecondition(String type,String cid ,String a,String b,String c);
     List<CaseHome> getCaseHome(String tid);
     int removeCaseHome(String id);
     int updateCaseHome(String id,String name,String des);
+
+List<CaseresList> getCaseresList(String seriesid);
 
 
 

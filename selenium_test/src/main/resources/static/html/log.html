@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查看结果</title>
+    <link href="../css/semantic.min.css" rel="stylesheet">
+</head>
+<body>
+<h2 class="ui center aligned icon header" id="title">测试结果 </h2>
+
+
+
+<script src="../js/jquery-3.2.1.min.js" ></script>
+<script src="../js/semantic.min.js" ></script>
+<script src="../js/js.cookie.js" ></script>
+<script>
+    $(document).ready(function () {
+        $.get('/com',function (data,status) {
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            if(o.isok!=0){
+                alertf(o.msg);
+                location.href=o.to;
+            }else{
+
+                var c= Cookies.get('log');
+                var c2=c.split("qbwd90211j1qwdsqjwe1me01");
+              //  alert(c2);
+                $.get('/getseriesandcase',function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+                    var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+                    var se1=o.series;
+                    var cas1=o.cases;
+                    if(se1.length==1&&cas1.length>0){
+
+
+
+
+                    }else {
+                        alert("数据错误，请联系管理员")
+                    }
+
+                    
+                });
+
+
+            }
+        });
+
+
+
+    });
+
+
+</script>
+
+</body>
+</html>

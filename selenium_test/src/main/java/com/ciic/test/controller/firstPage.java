@@ -386,10 +386,20 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
 
 
     //case
+    @RequestMapping("/getseriesandcase/{seriesid}")
+    String getSeriesAndCase(@PathVariable String seriesid){
+        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"cases\":"+caseService.getCaseresList(seriesid)+",\"series\":" + caseService.getFinishSeries(seriesid) + "}";
+    }
+
 
     @RequestMapping("/getcase/{tid}")
 String getcase(@PathVariable String tid){
         return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"cases\":"+caseService.getcase(tid)+"}";
+    }
+
+    @RequestMapping("/getcasereslist/{seriesid}")
+    String getCasereslist(@PathVariable String seriesid){
+        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"cases\":"+caseService.getCaseresList(seriesid)+"}";
     }
 
     @RequestMapping("/getstep/{cid}")
@@ -529,48 +539,36 @@ String getcase(@PathVariable String tid){
 
         if(ls.size()==0){
          n=   caseService.addRunCase(name+"调试",cid,tid,"1");
-            ls=    caseService.getOneSeries(name+"调试",tid);
-        }
 
+        }else{
             boolean hasCid=false;
-            Series s=null;
 
 
-                for (int i = 0; i <ls.size() ; i++) {
-                    if(ls.get(i).getCids().equals(cid)){
-                        hasCid=true;
-                        s=ls.get(i);
-                    }
-                    
+
+            for (int i = 0; i <ls.size() ; i++) {
+                if(ls.get(i).getCids().equals(cid)){
+                    hasCid=true;
+
                 }
 
-
-             if(hasCid){
-                 if(s.getStatus().equals("2")){
-                     return "{\"isok\":0,\"msg\":\"该用例正在运行，请稍等，具体查看测试进度页面\",\"to\":\"/\"}";
-                 }else {
-                     if(s.getStatus().equals("0")&&n==0){
-                         return "{\"isok\":0,\"msg\":\"该用例尚未运行，请稍后再试，具体查看测试进度页面\",\"to\":\"/\"}";
-                     }
-                     else {
-                         if(s.getStatus().equals("1")){
-                             return "{\"isok\":0,\"msg\":\"该用例正在等待运行，请稍等，具体查看测试进度页面\",\"to\":\"/\"}";
-                         }else {
-                             n= caseService.updateOneseriesStatus("0", LocalDate.now()+" "+ LocalTime.now(),s.getId());
-
-                         }
-
-                     }
-                 }
-             }else {
-                 n=   caseService.addRunCase(name+"调试",cid,tid,"1");
+            }
+            if(hasCid){
+                return "{\"isok\":1,\"msg\":\"已有相同调试在运行或等待运行，请在进度中查看\",\"to\":\"/\"}";
+            }else {
+                n=   caseService.addRunCase(name+"调试",cid,tid,"1");
 
 
-             }
+            }
+
+        }
+
+
+
+
 
 
         if(n==1){
-            caseService.updateOneseriesStatus("1","",s.getId());
+
             new Thread(new Runnable() {
                 @Override
                 public void run() {

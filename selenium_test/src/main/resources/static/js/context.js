@@ -24,6 +24,8 @@ var homeid=0;
 var mele=0;
 var int;
 var seriesold=[];
+var int2;
+var caseresold=[];
 
 
 
@@ -604,20 +606,21 @@ function runcase(a,b) {
 }
 
 function lookruncase(a) {
-    $.get('/looktestcase/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
-        if(o.isok=="4"){
-            alertf(o.msg);
-
-        }else {
-            if(o.res==0){
-            alertf("没有可查看的用例");
-            }else{
-                window.open("/html/test.html");
-            }
-        }
-
-    });
+    // $.get('/looktestcase/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+    //     var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+    //     if(o.isok=="4"){
+    //         alertf(o.msg);
+    //
+    //     }else {
+    //         if(o.res==0){
+    //         alertf("没有可查看的用例");
+    //         }else{
+    Cookies.set('log',a+"qbwd90211j1qwdsqjwe1me01"+tid);
+                window.open("/html/log.html");
+    //         }
+    //     }
+    //
+    // });
 }
 
 function shuauser() {
@@ -1684,7 +1687,7 @@ re+= "                    <tr>\n" +
     "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button>\n" +
     "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
     "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" +
-    "<button class=\"ui circular basic icon button \" onclick='lookruncase("+ccs[i].id+")' title=\"查看日志\"><i class=\"record icon \"></i></button>" +
+    //"<button class=\"ui circular basic icon button \" onclick='lookruncase("+ccs[i].id+")' title=\"查看日志\"><i class=\"record icon \"></i></button>" +
     "</td>\n" +
 
     "                    </tr>\n";
@@ -2716,11 +2719,133 @@ function iseq(a,b) {
 
 
 }
+
+function iseq2(a,b) {
+    // var propsA = Object.getOwnPropertyNames(a),
+    //     propsB = Object.getOwnPropertyNames(b);
+
+    if(a.length != b.length){
+        return false;
+    }else {
+        for(var i=0;i<a.length;i++){
+
+            //如果对应属性对应值不相等，则返回false
+            if(a[i].id != b[i].id||a[i].status != b[i].status||a[i].runnum!=b[i].runnum){
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+}
+function closerunseries() {
+   var a= $('.sticky').html();
+   a="<div class=\"ui segment ui sticky\">"+a+"</div>";
+   a=a.replace("compress icon","expand icon").replace("缩回","展开").replace("closerunseries","openrunseries").replace("closeid","openid");
+    $('#segment3').html(a);
+}
+
+
+function shuarunseries(a,b) {
+    var re=a;
+    if(!$('#uthree').hasClass('active')){
+        int2=window.clearInterval(int2);
+        $('#closeid').click();
+        return 0;
+    }
+    $.get('/getcasereslist/'+b,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var cases2=o.cases;
+        if(iseq2(cases2,caseresold)){
+            return 0;
+        }else {
+            caseresold=cases2;
+        }
+
+
+        for(var i=0;i<cases2.length;i++){
+
+            var st="";
+
+            switch (cases2[i].status){
+                case '0':st="等待运行";break;
+                case '1':st="准备运行";break;
+                case '2':st="正在运行";break;
+                case '3':st="运行完毕";break;
+            }
+
+            var res1="";
+
+            switch (cases2[i].res){
+                case '-1':cases2[i].status=="0"?res1="zerode":res1=" teal active";break;
+                case '1':res1=" success ";break;
+                case '2':res1=" errorde ";break;
+                case '3':res1=" warningde ";break;
+
+            }
+
+
+
+
+            re+=   "  <div class=\"item\"> \n"+
+                "    <div class=\"content\">\n"+
+                "      <div class=\"header\">"+cases2[i].cname+"</div>\n"+
+                "      <div class=\"description\">"+cases2[i].cdes+"</div>\n"+
+                "\t  <div class=\"ui "+res1+"  progress\"  data-value=\""+cases2[i].runnum+"\" data-total=\""+cases2[i].allnum+"\" >\n"+
+                "  <div class=\"bar\">\n"+
+                "    <div class=\"progress\" ></div>\n"+
+                "  </div>\n"+
+                "  <div class=\"label\">"+st+"</div>\n"+
+                "</div>\n"+
+                "    </div>\n"+
+                "  </div>";
+
+        }
+        re+="</div>";
+        // console.log(re);
+        $('#segment3').html(re);
+        // console.log( $('#segment3').html())
+        //  $('.ui.progress').progress();
+        $('.ui.sticky')
+            .sticky({
+                context: '#segment3',offset       : 50,
+                bottomOffset : 50
+            });
+        $('.ui.progress')
+            .progress({
+                label: 'ratio',
+                text: {
+                    ratio: '{value} de {total}'
+                }
+            });
+        $('.warningde').progress('set warning');
+        $('.errorde').progress('set error');
+
+
+
+
+
+    });
+    
+}
+function openrunseries(a) {
+    var oldseri=$('#segment3').html().replace("expand icon","compress icon").replace("展开","缩回").replace("openrunseries","closerunseries").replace("\n","").replace("openid","closeid");
+    var re=oldseri+"<div class=\"ui relaxed divided list\">";
+shuarunseries(re,a);
+ int2=setInterval("shuarunseries('"+re+"',"+a+")",2000);
+
+
+    
+}
+
+
 function shuaseries() {
     $.get('/getseries/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
         var ses=o.series;
-        if(iseq(ses,seriesold)){
+        var as=$('.active.segment').html();
+        if(iseq(ses,seriesold)&&as!="loading..."){
 
             return 0;
         }else {
@@ -2732,19 +2857,19 @@ function shuaseries() {
             seriesold=ses;
         }
         var s1={one:0,two:0,three:0,four:0};
-        var s2={one:"<div class=\"ui segments\">",two:"<div class=\"ui segments\">",three:"<div class=\"ui segments\">",four:"<div class=\"ui segments\">"};
+        var s2={one:"<div class=\"ui segments\">",two:"<div class=\"ui segments\">",three:"<div class=\"ui segments\" id='segment3'>",four:"<div class=\"ui segments\">"};
         if(ses.length>0){
             for(var i=0;i<ses.length;i++){
                 switch (ses[i].status){
 
                     case "0":s1.one++;s2.one+="  <div class=\"ui segment\">  <div class=\"ui right floated small   icon button   circular  \" title='删除' style='margin-top: -4px;' onclick='removeseries("+ses[i].id+")' ><i class=\"remove red icon\"></i></div><div class=\"ui right floated small   icon button   circular  \"  style='margin-top: -4px;'  title='运行' onclick='runseries("+ses[i].id+")' ><i class=\"play  green icon\"></i></div><p>"+ses[i].series+"</p>  </div>";break;//<div class=\"ui right floated small   icon button   circular  \"  title='查看' style='margin-top: -4px;' onclick='lookserires()' ><i class=\"search icon \"></i></div><p>"+ses[i].series+"</p>  </div>
                     case "1":s1.two++;s2.two+="  <div class=\"ui segment\">  <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='暂停' onclick='pauseseries("+ses[i].id+")' ><i class=\"pause icon\"></i></div><p>"+ses[i].series+"</p> </div>";break; //<div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' onclick='' ><i class=\"search icon \"></i></div>
-                    case "2":s1.three++;s2.three+="  <div class=\"ui segment\"> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='展开' onclick='openrunseries("+ses[i].id+")' ><i class=\"expand icon \"></i></div> <p>"+ses[i].series+"</p> </div>\n";break;
-                    case "3":s1.four++;s2.four+="  <div class=\"ui segment\"> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' onclick='' ><i class=\"search icon \"></i></div> <p>"+ses[i].series+"</p> </div>\n";break;
+                    case "2":s1.three++;s2.three+="  <div class=\"ui segment ui sticky\"> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' id='openid' title='展开' onclick='openrunseries("+ses[i].id+")' ><i class=\"expand icon \"></i></div> <p>"+ses[i].series+"</p> </div>\n";break;
+                    case "3":s1.four++;s2.four+="  <div class=\"ui segment\"> <div class=\"ui right floated small   icon button   circular  \" title='删除' style='margin-top: -4px;' onclick='removeseries("+ses[i].id+")' ><i class=\"remove red icon\"></i></div> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='查看' onclick='lookruncase("+ses[i].id+")' ><i class=\"record icon \"></i></div> <p>"+ses[i].series+"</p> </div>\n";break;
                 }
 
             }
-            console.log(s1);
+            //console.log(s1);
 
             var l1=s1.one;
 

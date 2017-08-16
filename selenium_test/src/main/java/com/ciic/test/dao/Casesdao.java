@@ -283,12 +283,22 @@ return "0";
 
     @Override
     public int addRunCase(String series,String cids,String tid,String type) {
-        return jdbcTemplate.update("INSERT INTO \"series\" ( \"series\", \"cids\",   \"tid\", \"type\", \"ordertime\") VALUES (?, ?, ?,?, '"+ LocalDate.now()+" "+ LocalTime.now()+"')",mycode.prase(new Object[]{series,cids,tid,type}));
+        if(type.equals("1")){
+            return jdbcTemplate.update("INSERT INTO \"series\" ( \"series\", \"cids\",  \"status\",   \"tid\", \"type\", \"ordertime\") VALUES (?, ?, '1',?,?, '"+ LocalDate.now()+" "+ LocalTime.now()+"')",mycode.prase(new Object[]{series,cids,tid,type}));
+        }else {
+            return jdbcTemplate.update("INSERT INTO \"series\" ( \"series\", \"cids\",   \"tid\", \"type\", \"ordertime\") VALUES (?, ?, ?,?, '"+ LocalDate.now()+" "+ LocalTime.now()+"')",mycode.prase(new Object[]{series,cids,tid,type}));
+        }
+
     }
 
     @Override
     public List<Series> getOneSeries(String series, String tid) {
-        return  jdbcTemplate.query("select *  from series where isused=1 and series=? and tid=?",new Object[]{series,tid},new BeanPropertyRowMapper<Series>(Series.class));
+        return  jdbcTemplate.query("select *  from series where isused=1 and status in ('1','2') and series=? and tid=?",new Object[]{series,tid},new BeanPropertyRowMapper<Series>(Series.class));
+    }
+
+    @Override
+    public List<Series> getFinishSeries(String series) {
+        return jdbcTemplate.query("select * from series where isused=1 and status=3 and id=?",new Object[]{series},new BeanPropertyRowMapper<>(Series.class));
     }
 
     @Override
@@ -358,6 +368,11 @@ return "0";
     @Override
     public int updateCaseHome(String id, String name, String des) {
         return jdbcTemplate.update("UPDATE \"casehome\" SET  \"name\"=?, \"des\"=?   WHERE (\"id\" = ?)",mycode.prase(new Object[]{name,des,id}));
+    }
+
+    @Override
+    public List<CaseresList> getCaseresList(String seriesid) {
+        return jdbcTemplate.query("SELECT * from casereslist where seriesid=?",new Object[]{seriesid},new BeanPropertyRowMapper<>(CaseresList.class));
     }
 
     private void updateSeriesStime(String seriesid){
