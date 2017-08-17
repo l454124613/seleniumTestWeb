@@ -388,7 +388,7 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
     //case
     @RequestMapping("/getseriesandcase/{seriesid}")
     String getSeriesAndCase(@PathVariable String seriesid){
-        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"cases\":"+caseService.getCaseresList(seriesid)+",\"series\":" + caseService.getFinishSeries(seriesid) + "}";
+        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"cases\":"+caseService.getCaseresList(seriesid)+",\"series\":" + caseService.getFinishSeries(seriesid) + ",\"res\":" + caseService.getCaseres(seriesid) +"}";//",\"res\":" + caseService.getCaseresNum(seriesid)+
     }
 
 

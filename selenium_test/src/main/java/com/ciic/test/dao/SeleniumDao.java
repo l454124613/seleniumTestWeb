@@ -84,7 +84,7 @@ private String driverPath;
                     }
 
 
-                    updateCaseresRes("1","ok",nowCaseresid);
+                    updateCaseresRes("1","运行成功",nowCaseresid);
 
 
 
@@ -95,13 +95,13 @@ updateCaseListRes("1",caseListId);
 
             } catch (NoSuchElementException e) {
                 System.out.println("fail");
-                updateCaseresRes("2",e.getLocalizedMessage(),nowCaseresid);
+                updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid);
                 updateCaseListRes("2",caseListId);
             }catch (Exception e1){
                 System.out.println("warn");
                 e1.printStackTrace();
                 updateCaseListRes("3",caseListId);
-                updateCaseresRes("3",e1.getLocalizedMessage(),nowCaseresid);
+                updateCaseresRes("3",e1.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid);
             }finally {
                 updateCaseListStatus("3",caseListId);
 

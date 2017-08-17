@@ -4,9 +4,86 @@
     <meta charset="UTF-8">
     <title>查看结果</title>
     <link href="../css/semantic.min.css" rel="stylesheet">
+    <style type="text/css">  a{text-decoration: none;} a:hover{text-decoration: underline;cursor:pointer} </style>
 </head>
 <body>
-<h2 class="ui center aligned icon header" id="title">测试结果 </h2>
+<div class="ui internally celled grid">
+    <div class="row">
+
+        <div class="three wide column   "  id="content" style="position: fixed;z-index: 20">
+            <!--<img src="../img/1.jpg">-->
+
+
+
+
+        </div>
+        <div class="three wide column   " id="kanbujian">
+            <p>&nbsp;</p>
+
+
+        </div>
+        <div class="ten wide column" id="context">
+
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<p>11</p>-->
+            <!--<img src="../img/1.jpg">-->
+            <!--<img src="../img/1.jpg">-->
+            <!--<img src="../img/1.jpg">-->
+            <!--<img src="../img/5.jpg">-->
+        </div>
+        <!--<div class="three wide column  ui sticky">-->
+            <!--<img src="../img/1.jpg">-->
+        <!--</div>-->
+    </div>
+    <!--<div class="row">-->
+        <!--<div class="three wide column">-->
+            <!--<img src="../img/1.jpg">-->
+        <!--</div>-->
+        <!--<div class="ten wide column">-->
+            <!--<p>111</p>-->
+        <!--</div>-->
+        <!--<div class="three wide column">-->
+            <!--<img src="../img/1.jpg">-->
+        <!--</div>-->
+    <!--</div>-->
+</div>
 
 
 
@@ -14,7 +91,25 @@
 <script src="../js/semantic.min.js" ></script>
 <script src="../js/js.cookie.js" ></script>
 <script>
+function getimg(a,b,f,c) {
+
+    var ca=$('#img'+a).html();
+    if(ca.length>0){
+        $(c).text('[查看图片]');
+        $('#img'+a).html('');
+    }else {
+        $(c).text('[隐藏图片]');
+        //replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26")
+        f=f.replace(/%21/g,"(").replace(/%22/g,")").replace(/%23/g,"{").replace(/%24/g,"}").replace(/%25/g,"*").replace(/%26/g,"*");
+
+        $('#img'+a).html("<img class=\"ui fluid image\" src=\"../img/casepic/"+b+"\"><div style=\"margin:0 auto; text-align:center\">"+f+"</div>");
+    }
+
+    
+}
     $(document).ready(function () {
+        $('#kanbujian').css('opacity', '0');
+
         $.get('/com',function (data,status) {
             var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
             if(o.isok!=0){
@@ -25,11 +120,57 @@
                 var c= Cookies.get('log');
                 var c2=c.split("qbwd90211j1qwdsqjwe1me01");
               //  alert(c2);
-                $.get('/getseriesandcase',function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+
+                $.get('/getseriesandcase/'+c2[0],function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
                     var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
                     var se1=o.series;
                     var cas1=o.cases;
-                    if(se1.length==1&&cas1.length>0){
+                    var res1=o.res;
+
+                    if(se1.length==1&&cas1.length>0&&res1.length>0){
+                        var re="<h2>"+se1[0].series+"</h2>\n"+
+                            "            <p>运行开始时间："+se1[0].sttime+"</p>\n"+
+                            "            <p>运行结束时间："+se1[0].etime+"</p>";
+
+                        if(se1[0].type=='1'){
+                            var re2="";
+                            switch (cas1[0].res){
+                                case '1':re2="<label style='color: green'>成功</label>";break;
+                                case '2':re2="<label style='color: red'>失败</label>";break;
+                                case '3':re2="<label style='color: orange'>警告</label>";break;
+                            }
+                            var re3="";
+                            for(var i=0;i<res1.length;i++){
+//                                switch (res1[i].res){
+//                                    case '1': re3+= "  <a class=\"item\"><i class=\"checkmark green icon\"></i> "+res1[i].word+"</a>\n";break;
+//                                    case '2': re3+= "  <div class=\"item\"><i class=\"remove red icon\"></i> "+res1[i].word+"</div>\n";break;
+//                                    case '3': re3+= "  <div class=\"item\"><i class=\"remove circle outline icon yellow\"></i> "+res1[i].word+"</div>\n";break;
+//                                    case '-1': re3+= "  <div class=\"item\"><i class=\"minus  icon grey\"></i> "+res1[i].word+"</div>\n";break;
+//                                }
+                                var func=i+",'"+res1[i].pic+"','"+res1[i].restext+"'";
+                                switch (res1[i].res){
+                                    case '1':re3+= "  <li> "+res1[i].word+"<i class=\"checkmark green icon\"></i><a onclick=\"getimg("+func+",this)\">[查看图片]</a><div id='img"+i+"'></div></li>";break;
+                                    case '2':re3+= "  <li> "+res1[i].word+"<i class=\"remove red  icon\"></i><a onclick=\"getimg("+func+",this)\">[查看图片]</a><div id='img"+i+"'></div></li>";break;
+                                    case '3':re3+= "  <li> "+res1[i].word+"<i class=\"remove circle outline icon yellow\"></i><a onclick=\"getimg("+func+",this)\">[查看图片]</a><div id='img"+i+"'></div></li>";break;
+                                    case '-1':re3+= "  <li> "+res1[i].word+"<i class=\"minus  icon grey\"></i></li>";break;
+
+                                }
+
+                            }
+                            var re1="<p>运行结果："+re2+"</p>";
+                            $('#content').html(re+re1);
+                           // $('#context').html(re);
+                            $('.ui.accordion').accordion();
+                            var con="<h1>具体过程</h1><div class='description'>(说明：<i class=\"checkmark green icon\"></i> 通过，<i class=\"remove red  icon\"></i>失败，<i class=\"remove circle outline icon yellow\"></i>警告，<i class=\"minus  icon grey\"></i>未运行)</div>"+"<ol class=\"ui list\">\n"+
+                               re3+
+                                "</ol>";
+                            $('#context').html(con);
+
+
+                        }else {
+
+                        }
+
 
 
 

@@ -55,6 +55,9 @@ int updatePrecondition(String type,String cid ,String a,String b,String c);
     List<Series> getOneSeries(String series, String tid);
     List<Series> getFinishSeries(String series);
 
+    List<CaserenNum> getCaseresNum(String seriesid);
+    List<Caseres>  getCaseres(String seriesid);
+
     int updateOneseriesStatus(String status,String ordertime,String id);
 
     List<Series> getSeries( String tid);

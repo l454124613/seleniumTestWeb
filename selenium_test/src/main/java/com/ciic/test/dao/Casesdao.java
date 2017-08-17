@@ -302,6 +302,16 @@ return "0";
     }
 
     @Override
+    public List<CaserenNum> getCaseresNum(String seriesid) {
+        return jdbcTemplate.query("SELECT cid ,res,count(1) num from casereslist where  res!='-1' and status=3 and cid in (select cid from casereslist join series on series.id= casereslist.seriesid where series.id=? and series.type=2 GROUP BY cid) group by cid ,res",new Object[]{seriesid},new BeanPropertyRowMapper<>(CaserenNum.class));
+    }
+
+    @Override
+    public List<Caseres> getCaseres(String seriesid) {
+        return jdbcTemplate.query("select * from caseres where listid in (SELECT id from casereslist where seriesid=?)",new Object[]{seriesid},new BeanPropertyRowMapper<>(Caseres.class));
+    }
+
+    @Override
     public int updateOneseriesStatus(String status, String ordertime, String id) {
         if(ordertime.equals("")){
             return jdbcTemplate.update("update series set status=? where id=?",new Object[]{status,id});
@@ -314,7 +324,7 @@ return "0";
 
     @Override
     public List<Series> getSeries(String tid) {
-        return jdbcTemplate.query("select * from series where isused=1 and tid=?",new Object[]{tid},new BeanPropertyRowMapper<>(Series.class));
+        return jdbcTemplate.query("select * from series where isused=1 and tid=? order by ordertime desc",new Object[]{tid},new BeanPropertyRowMapper<>(Series.class));
     }
 
     @Override

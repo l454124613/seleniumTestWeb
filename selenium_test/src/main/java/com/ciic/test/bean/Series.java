@@ -12,6 +12,7 @@ public class Series {
     private String sttime;
     private String etime;
     private String series;
+    private String ordertime;
 
     @Override
     public String toString() {
@@ -32,8 +33,18 @@ public class Series {
                 .append(etime).append('\"');
         sb.append(",\"series\":\"")
                 .append(series).append('\"');
+        sb.append(",\"ordertime\":\"")
+                .append(ordertime).append('\"');
         sb.append('}');
         return sb.toString();
+    }
+
+    public String getOrdertime() {
+        return ordertime;
+    }
+
+    public void setOrdertime(String ordertime) {
+        this.ordertime = ordertime;
     }
 
     public String getSeries() {
