@@ -2916,6 +2916,7 @@ function shuaseries() {
             $('#lookthree').html("没有用例正在运行");
             $('#lookfour').html("没有用例运行完成");
             $('#uone').html("尚未运行");
+            $('#ufour').html("运行完成");
 
         }});
 }
@@ -2973,11 +2974,14 @@ function shuatestcase(type,a) {
                     $('.test.checkbox').checkbox('attach events', '.toggle.button');
                     $('.test.checkbox').checkbox('attach events', '.check.button', 'check');
                     $('.test.checkbox').checkbox('attach events', '.uncheck.button', 'uncheck');
-                   // console.log(a);
-                    var cid1=a.split(",");
-                    for(var i=0;i<cid1.length;i++){
-                        $('#'+cid1[i]).checkbox('check');
+
+                    if(typeof(a)!="undefined"){
+                        var cid1=a.split(",");
+                        for(var i=0;i<cid1.length;i++){
+                            $('#'+cid1[i]).checkbox('check');
+                        }
                     }
+
 
                 }else{
                     $('#testcaseid').html('');

@@ -7,17 +7,15 @@ import com.ciic.test.bean.tmp;
 import com.ciic.test.service.CaseService;
 import com.ciic.test.service.SeleniumService;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.openqa.selenium.NoSuchElementException;
+
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -38,6 +36,8 @@ public class SeleniumDao implements SeleniumService {
 
 @Value("${test.driver.path}")
 private String driverPath;
+    @Value("${test.picture.path}")
+private String picPath;
 
     @Override
     public void run(String tid,String seriesid) {
@@ -69,7 +69,8 @@ private String driverPath;
                 updateCaseresTime(nowCaseresid);
                 Step step=getStep(sid);
                     Element element=getElement(step.getEid());
-                    WebElement webElement=  element2Web(element,driver);
+                    WebElement webElement=  element2Web(element,driver);//未修改提示框//TODO
+                    screenShot(driver,nowCaseresid,seriesid,caseListId,webElement,false);                    //截图
                     action(webElement,step.getCatid(),driver,step.getValue());
                     if(!element.getToframe().equals("-1")){
                         driver.switchTo().defaultContent();
@@ -95,19 +96,30 @@ updateCaseListRes("1",caseListId);
 
             } catch (NoSuchElementException e) {
                 System.out.println("fail");
+                screenShot(driver,nowCaseresid,seriesid,caseListId,null,true);
+                updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid);
+                updateCaseListRes("2",caseListId);
+            }
+            catch (UnhandledAlertException e){
+
+                System.out.println("fail");
+                driver.switchTo().alert().accept();
+                screenShot(driver,nowCaseresid,seriesid,caseListId,null,true);
                 updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid);
                 updateCaseListRes("2",caseListId);
             }catch (Exception e1){
                 System.out.println("warn");
+
                 e1.printStackTrace();
                 updateCaseListRes("3",caseListId);
                 updateCaseresRes("3",e1.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid);
+                screenShot(driver,nowCaseresid,seriesid,caseListId,null,true);
             }finally {
                 updateCaseListStatus("3",caseListId);
-
+                closeDriver(driver);
 
             }
-            closeDriver(driver);
+
 
 
         }
@@ -161,7 +173,7 @@ if(ly.size()==0){
         jdbcTemplate.update("update caseres set time='"+ LocalDate.now()+" "+ LocalTime.now()+"' where id="+id);
     }
     private void updateCaseresPic(String pic ,String id){
-        jdbcTemplate.update("update caseres set pic="+ pic+" where id="+id);
+        jdbcTemplate.update("update caseres set pic='"+ pic+"' where id="+id);
     }
     private WebDriver startDriver(String tid ){
         System.setProperty("webdriver.chrome.driver", driverPath);
@@ -199,6 +211,24 @@ throw new NoSuchElementException("元素等不到");
 
     private Element getElement(String eid){
       return  jdbcTemplate.query("select * from element where id ="+eid,new BeanPropertyRowMapper<>(Element.class)).get(0);
+    }
+
+    private void screenShot(WebDriver driver,String resid,String seriesid,String listid ,WebElement element,boolean iserr){
+        if(!iserr)
+        setYellow(driver,element);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        File srcFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        File file=new File(picPath+seriesid+"_"+listid+"_"+resid+"_"+System.currentTimeMillis()+".jpg");
+        srcFile.renameTo(file);
+        updateCaseresPic(file.getName(),resid);
+        if(!iserr)
+        setYellow(driver,element);
+
+
     }
 
     private WebElement element2Web(Element element,WebDriver driver) throws NoSuchElementException {
@@ -283,6 +313,14 @@ throw new NoSuchElementException("元素等不到");
 private void click(WebDriver driver,WebElement elemnet){
     ((JavascriptExecutor) driver).executeScript("arguments[0].click();",elemnet);
 }
+    private void setYellow(WebDriver driver,WebElement elemnet){
+        ((JavascriptExecutor) driver).executeScript("   var rgb=arguments[0].style.backgroundColor;" +
+
+                "if(rgb=='yellow'){arguments[0].style.backgroundColor =''}else{arguments[0].style.backgroundColor = \"yellow\";}" +
+
+                "",elemnet);
+    }
+
 
 private boolean exist(WebElement webElement){
     try {
