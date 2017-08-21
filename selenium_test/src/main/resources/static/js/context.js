@@ -1676,10 +1676,10 @@ $.get('/getcase/'+tid,function (data,st) {if(st=="success"){}else {alertf("网�
 
             for(var i=0;i<ccs.length;i++){
                 var guodu=ccs[i].id+",'"+ccs[i].name+"'";
-                var aac=ccs[i].id+",'"+ccs[i].name+"','"+ccs[i].des+"',"+ccs[i].important;
+                var aac=ccs[i].id+",'"+ccs[i].name+"','"+ccs[i].des+"',"+ccs[i].important+','+ccs[i].type;
 re+= "                    <tr>\n" +
     "                        <td  >"+(i+1)+"</td>\n" +
-    "                        <td  >"+ccs[i].name+"</td>\n" +
+    "                        <td  >"+(ccs[i].type=='1'?'UI_':'IN_')+ccs[i].name+"</td>\n" +
     "                        <td  >"+ccs[i].des+"</td>\n" +
     "                        <td  >"+int2imp(ccs[i].important)+"</td>\n" +
     "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookstep("+ccs[i].id+")' title=\"查看操作步骤\"><i class=\"indent icon\"></i></button></td>\n" +
@@ -1732,6 +1732,7 @@ $('#closemodal5').click(function () {
     $('#addcasename').val('');
     $('#addcasedes').val('');
     $('#cc22').dropdown('clear');
+    $('#typeele').dropdown('clear');
     $('#modal5').modal('hide');
 
 });
@@ -2057,13 +2058,15 @@ $('#addpageone5').click(function () {
     var name=$.trim($('#addcasename').val());
     var title=$.trim($('#addcasedes').val());
     var uss=$('#cc23').val();
-    if(name.length>0 && title.length>0&&uss!=""){
+    var elev=$('#typeein').val();
+    if(name.length>0 && title.length>0&&uss!=""&&elev!=""){
         $.post('/addcase',{
             name:name,
             des:title,
             important:uss,
             tid:tid,
-            type:ass4
+            type:ass4,
+            elety:elev
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
             isshuaitem=true;
@@ -2356,7 +2359,7 @@ function updatedatasource(id,name,des,link,dataname,type,user) {
 }
 
 
-function updatecase(a,b,c,d) {
+function updatecase(a,b,c,d,e) {
 
     ass4=a;
     $('#addcasename').val(b);
@@ -2364,6 +2367,7 @@ function updatecase(a,b,c,d) {
 
   //  $('#cc22').dropdown('set selected',"\""+d+"\"");
     $('#cc22').dropdown('set selected',d)
+    $('#typeele').dropdown('set selected',e)
 
 
 

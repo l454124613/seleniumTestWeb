@@ -68,8 +68,8 @@ return list;
     }
 
     @Override
-    public int updatecase(String id, String name, String des, String important) {
-        return  jdbcTemplate.update("UPDATE \"main\".\"caselist\" SET  \"name\"=?, \"des\"=?, \"important\"=? WHERE (\"id\"=?)",mycode.prase(new Object[]{name,des,important,id}));
+    public int updatecase(String id, String name, String des, String important,String type) {
+        return  jdbcTemplate.update("UPDATE \"main\".\"caselist\" SET  \"name\"=?, \"des\"=?, \"important\"=? , \"type\"=? WHERE (\"id\"=?)",mycode.prase(new Object[]{name,des,important,type,id}));
 
     }
 
@@ -80,8 +80,8 @@ return list;
     }
 
     @Override
-    public int addCase(String name, String des, String important,String tid) {
-        int n=  jdbcTemplate.update("INSERT INTO \"main\".\"caselist\" ( \"name\", \"des\", \"important\", \"tid\") VALUES ( ?, ?, ?, ?)",mycode.prase(new Object[]{name,des,important,tid}));
+    public int addCase(String name, String des, String important,String tid,String type) {
+        int n=  jdbcTemplate.update("INSERT INTO \"main\".\"caselist\" ( \"name\", \"des\", \"important\", \"tid\", \"type\") VALUES ( ?, ?, ?, ?,?)",mycode.prase(new Object[]{name,des,important,tid,type}));
         if(n==1){
             int n2=jdbcTemplate.update("INSERT INTO \"precondition\" ( \"type\", \"a\", \"b\", \"c\",\"cid\") VALUES (4, -1, -1, -1, (SELECT max(id) from caselist where isused=1 and tid=?))",mycode.prase(new Object[]{tid}));
         if(n2==1){

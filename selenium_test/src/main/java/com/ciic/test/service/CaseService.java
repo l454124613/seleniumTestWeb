@@ -12,10 +12,10 @@ public interface CaseService {
 
 List<CaseInfo> getcase(String tid);
 
-int updatecase(String id ,String name ,String des,String important);
+int updatecase(String id ,String name ,String des,String important,String type);
 
 int removeCase(String id);
-int addCase(String name ,String des,String important,String tid);
+int addCase(String name ,String des,String important,String tid,String type);
 
 List<CaseInfo> getOnecase(String id);
 
