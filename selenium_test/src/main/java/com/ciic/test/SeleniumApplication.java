@@ -13,15 +13,15 @@ public class SeleniumApplication {
 		SpringApplication.run(SeleniumApplication.class, args);
 	}
 
-	@Bean
-	public EmbeddedServletContainerCustomizer containerCustomizer(){
-		return new EmbeddedServletContainerCustomizer() {
-			@Override
-			public void customize(ConfigurableEmbeddedServletContainer Container) {
-				Container.setSessionTimeout(60*60);//单位为S
-			}
-		};
-	}
+//	@Bean
+//	public EmbeddedServletContainerCustomizer containerCustomizer(){
+//		return new EmbeddedServletContainerCustomizer() {
+//			@Override
+//			public void customize(ConfigurableEmbeddedServletContainer Container) {
+//				Container.setSessionTimeout(60*60);//单位为S
+//			}
+//		};
+//	}
 }
 
 
