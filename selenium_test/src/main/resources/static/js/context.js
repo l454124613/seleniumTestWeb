@@ -274,6 +274,30 @@ function changeyan4() {
 
 }
 
+$('#mlabel').click(
+    function () {
+        if(tid<1){
+            alertf("请先选择项目~")
+
+        }else {
+            forfirstfun();
+
+            var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
+                "                        <th  style=\"width: 25%\">小库名称</th>\n" +
+                "                        <th   style='min-width: 100px'>小库描述</th>\n" +
+
+                // "                        <th style=\"width: 60px\">查看用例</th>\n" +
+
+                "                        <th style=\"width: 80px\">操作按钮</th>",4,'addcasehome()','添加标签','labelid');
+
+
+            $('#context').html(re);
+        //    shuacasehome();
+
+        }
+
+});
+
 function changeyan1() {
     var re=   " <div class=\"ui segment\"><div class=\"ui form\">\n"+
         "            <div class=\"three fields\">\n"+

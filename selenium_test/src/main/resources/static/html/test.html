@@ -8,10 +8,55 @@
     <link href="../css/context.css" rel="stylesheet">
 </head>
 <body>
-111
+<body>
+<!--<div class="ui sidebar">-->
+    <!--...222-->
+<!--</div>-->
+<!--<div class="ui top fixed menu">-->
+    <!--...111-->
+<!--</div>-->
+<!--<div class="pusher">-->
+    <!--Your site's actual content-->
+    <!--<input type="button" value="opem">-->
+<!--</div>-->
+<div class="ui left vertical menu sidebar">
+    <a class="item">
+        Item 1
+    </a>
+    <a class="item">
+        Item 2
+    </a>
+    <a class="item">
+        Item 3
+    </a>
+</div>
+<div class="ui top fixed menu">
+...111
+</div>
+<div class="pusher">
+    <!-- Site content !-->
+    1231
+    <input type="button" value="opem">
+</div>
+
+</body>
 
 
 <script src="../js/jquery-3.2.1.min.js" ></script>
 <script src="../js/semantic.min.js" ></script>
+<script>
+
+    $('.sidebar')
+        .sidebar('attach events', '.button', 'overlay').sidebar('toggle')
+    ;
+    $('.button')
+        .removeClass('disabled')
+    ;
+
+//    $('.demo.sidebar')
+//        .sidebar('setting', 'transition', 'overlay')
+//        .sidebar('toggle')
+//    ;
+</script>
 </body>
 </html>
