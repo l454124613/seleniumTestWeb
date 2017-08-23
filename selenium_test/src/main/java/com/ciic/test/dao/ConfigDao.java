@@ -1,6 +1,8 @@
 package com.ciic.test.dao;
 
 import com.ciic.test.bean.Datasource;
+import com.ciic.test.bean.Label;
+import com.ciic.test.bean.tmp;
 import com.ciic.test.service.ConfigService;
 import com.ciic.test.tools.mycode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,5 +64,33 @@ public class ConfigDao implements ConfigService {
        int e= jdbcTemplate.update("DELETE from step where isused=0");
 
         return a+b+c+d+e;
+    }
+
+    @Override
+    public int addLabel(String name, String des, String tid) {
+        return jdbcTemplate.update("INSERT INTO \"label\" ( \"name\", \"des\",  \"tid\") VALUES ( ?, ?,  ?)",mycode.prase(new Object[]{name,des,tid}));
+    }
+
+    @Override
+    public int updateLabel(String id, String name, String des) {
+        return jdbcTemplate.update("UPDATE \"label\" SET  \"name\"=?, \"des\"=? WHERE (\"id\" = ?)",mycode.prase(new Object[]{name,des,id}));
+    }
+
+    @Override
+    public int removeLabel(String id) {
+        return jdbcTemplate.update("UPDATE \"label\" SET  isused=0 where id=?",new Object[]{id});
+    }
+
+    @Override
+    public List<Label> getLabel(String tid) {
+        return jdbcTemplate.query("select * from label where tid=? and isused=1",new Object[]{tid},new BeanPropertyRowMapper<>(Label.class));
+    }
+
+    @Override
+    public List<Label> getUsedLabel(String tid) {
+        List<tmp> lt= jdbcTemplate.query("SELECT label value from caselist where tid=? and label is not null",new Object[]{tid},new BeanPropertyRowMapper<>(tmp.class));
+return null;
+
+
     }
 }

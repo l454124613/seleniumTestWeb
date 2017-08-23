@@ -10,6 +10,7 @@ public class CaseInfo {
     private  String important;
     private String tid;
     private String type;
+    private String label;
 
     @Override
     public String toString() {
@@ -26,8 +27,18 @@ public class CaseInfo {
                 .append(tid).append('\"');
         sb.append(",\"type\":\"")
                 .append(type).append('\"');
+        sb.append(",\"label\":\"")
+                .append(label).append('\"');
         sb.append('}');
         return sb.toString();
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getType() {

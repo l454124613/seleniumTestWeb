@@ -22,7 +22,7 @@ import java.util.Enumeration;
 @Configuration
 public class aopLogin {
 
-    @Pointcut("execution(* com.ciic.test.controller..*(..)) && !execution(* com.ciic.test.controller.firstPage.login(..))")
+    @Pointcut("execution(* com.ciic.test.controller..*(..)) && !execution(* com.ciic.test.controller.Urls.login(..))")
     public void  execaop(){};
 
     @Around("execaop()")

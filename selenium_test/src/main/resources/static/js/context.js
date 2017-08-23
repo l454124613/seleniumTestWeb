@@ -26,6 +26,7 @@ var int;
 var seriesold=[];
 var int2;
 var caseresold=[];
+var labelid=0;
 
 
 
@@ -274,6 +275,41 @@ function changeyan4() {
 
 }
 
+function shualabel() {
+    $.get('/getlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        if(o.isok!=0){
+            alertf(o.msg);
+        }else{
+            var ccs=o.labels;
+
+            if(ccs.length>0){
+                var re="";
+
+                for(var i=0;i<ccs.length;i++){
+                    var cid2="\'"+ccs[i].cids+"\',"+ccs[i].id;
+                    var aac=ccs[i].id+",'"+ccs[i].name+"','"+ccs[i].des+"'";
+                    re+= "                    <tr>\n" +
+                        "                        <td  >"+(i+1)+"</td>\n" +
+                        "                        <td  >"+ccs[i].name+"</td>\n" +
+                        "                        <td  >"+ccs[i].des+"</td>\n" +
+
+                      //  "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"choosecase("+cid2+")\" title=\"查看操作步骤\"><i class=\"indent icon\"></i></button></td>\n" +
+
+                        "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"updatelabel("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button>\n" +
+                        "                            <button class=\"ui circular basic icon button \" onclick='removelabel("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
+
+
+                        "                    </tr>\n";
+                }
+                $('#labelid').html(re);
+                $('table').tablesort();
+            }else{
+                $('#labelid').html('');
+            }
+        }
+    });
+}
 $('#mlabel').click(
     function () {
         if(tid<1){
@@ -283,16 +319,17 @@ $('#mlabel').click(
             forfirstfun();
 
             var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
-                "                        <th  style=\"width: 25%\">小库名称</th>\n" +
-                "                        <th   style='min-width: 100px'>小库描述</th>\n" +
+                "                        <th  style=\"width: 25%\">标签名称</th>\n" +
+                "                        <th   style='min-width: 100px'>标签描述</th>\n" +
 
                 // "                        <th style=\"width: 60px\">查看用例</th>\n" +
 
-                "                        <th style=\"width: 80px\">操作按钮</th>",4,'addcasehome()','添加标签','labelid');
+                "                        <th style=\"width: 80px\">操作按钮</th>",4,'addlabel()','添加标签','labelid');
 
 
             $('#context').html(re);
         //    shuacasehome();
+            shualabel();
 
         }
 
@@ -1708,7 +1745,7 @@ re+= "                    <tr>\n" +
     "                        <td  >"+int2imp(ccs[i].important)+"</td>\n" +
     "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookstep("+ccs[i].id+")' title=\"查看操作步骤\"><i class=\"indent icon\"></i></button></td>\n" +
     "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookpre("+ccs[i].id+")' title=\"查看预置条件\"><i class=\"grid layout icon\"></i></button></td>\n" +
-    "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button>\n" +
+    "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button>\n" +
     "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
     "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" +
     //"<button class=\"ui circular basic icon button \" onclick='lookruncase("+ccs[i].id+")' title=\"查看日志\"><i class=\"record icon \"></i></button>" +
@@ -1728,6 +1765,36 @@ re+= "                    <tr>\n" +
     
 }
 
+function looklabel(a,b,c) {
+$('#labeltitle').html(b);
+labelid=a;
+    $.get('/getlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+
+      if(o.isok!="0") {alertf(o.msg);}else {
+            var ls=o.labels;
+            var re="";
+for(var i=0;i<ls.length;i++){
+    re+="<option value=\""+ls[i].id+"\" >"+ls[i].name+"</option>";
+
+
+}
+
+$('#labelcon').html(re);
+
+         if(c!="null"){
+             var ca=c.split(',');
+             for(var i=0;i<ca.length;i++){
+                 $('#labelcon').dropdown('set selected',ca[i]);
+             }
+         }
+      }
+        // $('#mpage').click();
+
+    })
+    $('#modal11').modal('show');
+}
 $('#closemodal').click(function () {
     $('#pagetitleadd').val('');
     $('#pagenameadd').val('');
@@ -1737,6 +1804,16 @@ $('#closemodal9').click(function () {
     $('#homename').val('');
     $('#homedes').val('');
     $('#modal9').modal('hide');
+});
+$('#closemodal10').click(function () {
+    $('#labelname').val('');
+    $('#labeldes').val('');
+    $('#modal10').modal('hide');
+});
+$('#closemodal11').click(function () {
+    $('#labeltitle').html('');
+    $('#labelcon').dropdown('clear');
+    $('#modal11').modal('hide');
 });
 $('#closemodal3').click(function () {
     $('#uname').val('');
@@ -1987,6 +2064,58 @@ $('#addpageone9').click(function () {
            shuacasehome()
 
             $('#closemodal9').click();
+
+        });
+
+    }else {
+        alertf('输入信息不全，请检查');
+    }
+});
+
+$('#addpageone11').click(function () {
+
+
+   var lbs= $('#labelcon').val();
+
+
+    if(lbs.length>0){
+        $.post('/upatelabel',{
+            tid:tid,
+            id:labelid,
+
+            labels:lbs.toString()
+        },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+
+            alertf(o.msg);
+shuacaseinfo();
+
+            $('#closemodal11').click();
+
+        });
+
+    }else {
+        alertf('输入信息不全，请检查');
+    }
+});
+$('#addpageone10').click(function () {
+
+
+    var name=$.trim($('#labelname').val());
+    var title=$.trim($('#labeldes').val());
+    if(name.length>0 && title.length>0){
+        $.post('/addlabel',{
+            tid:tid,
+            name:name,
+            des:title,
+            type:labelid
+        },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+
+            alertf(o.msg);
+           shualabel();
+
+            $('#closemodal10').click();
 
         });
 
@@ -2259,6 +2388,18 @@ function removecasehome(a) {
     }
 
 }
+function removelabel(a) {
+    if (confirm("你确定要删除吗？")) {
+        $.get('/removelabel/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            shualabel();
+            alertf(o.msg);
+
+        })
+    }
+
+}
 
 
 function removedatasource(a) {
@@ -2323,6 +2464,13 @@ homeid=a;
     $('#homename').val(b);
     $('#homedes').val(c);
     $('#modal9').modal('show');
+
+}
+function updatelabel(a,b,c) {
+    labelid=a;
+    $('#labelname').val(b);
+    $('#labeldes').val(c);
+    $('#modal10').modal('show');
 
 }
 
@@ -2459,6 +2607,11 @@ function addcasehome() {
 $('#modal9').modal('show');
 
 }
+function addlabel() {
+    labelid=0;
+    $('#modal10').modal('show');
+
+}
 
 function shuacasehome() {
     $.get('/getcasehome/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
@@ -2554,27 +2707,69 @@ $('#mpage').click(
 
 function choosecase(a,b) {
     forfirstfun();
-    var re1="<div class=\"ui horizontal compact segments\">\n"+
-        "  <div class=\"ui segment\">\n"+
-        "    <div class=\"ui positive check button\">全选</div><div class=\"ui negative uncheck button\">全部取消</div><div class=\"ui toggle button\">反转</div>"+
-        " <div class=\"ui right floated small primary labeled icon button\" onclick='returncasehome()' ><i class=\"reply icon\"></i>返回</div> </div>\n"+
 
-        "  <div class=\"ui segment\"  style=\" font-size: larger;\">\n"+
-        "<label>重要等级：</label>"+
-        "    <div class=\"ui test checkbox\"> <input type=\"checkbox\" id='impc1' onchange='checkimp(this)'> <label>高&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> </div><div class=\"ui test checkbox\"> <input type=\"checkbox\"  id='impc2' onchange='checkimp(this)'> <label>中&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> </div><div class=\"ui test checkbox\"> <input type=\"checkbox\" id='impc3' onchange='checkimp(this)'> <label>低</label> </div>"+
-        " <div class=\"ui right floated small primary labeled icon button\" onclick='addcids("+b+")' ><i class=\"radio icon\"></i>选择完毕</div>"+
-        "  </div>\n"+
-        "</div>";
-
-    var re=base( "                        <th style=\"width: 40px\">#</th>\n" +
-        "                        <th  style=\"width: 25%\">用例名称</th>\n" +
-        "                        <th  style=\"min-width: 30em;\" >用例描述</th>\n" +
-        "                        <th style=\"width: 80px\">重要等级</th>\n",4,'addcids('+b+')','选择完毕','testcaseid','2a2');
-
-    $('#context').html(re1+re);
+    $.get('/getlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        if(o.isok!=0){
+            alertf(o.msg);
+        }else{
+            var ccs=o.labels;
+            var re5="";
+            var re1="";
 
 
-    shuatestcase(-1,a);
+
+                for(var i=0;i<ccs.length;i++){
+
+                    re5+= "      <div class=\"item\" onclick='alertf("+ccs[i].id+")'>\n"+
+                        ccs[i].name+
+                        "      </div>\n";
+                }
+                re5+= "      <div class=\"item\" onclick='alertf(0)'>\n 选择全部"+
+
+                    "      </div>\n";
+
+            re1="<div class=\"ui horizontal compact segments\">\n"+
+                "  <div class=\"ui segment\">\n"+
+                "    <div class=\"ui positive check button\">全选</div><div class=\"ui negative uncheck button\">全部取消</div><div class=\"ui toggle button\">反转</div>"+
+                " <div class=\"ui right floated small primary labeled icon button\" onclick='returncasehome()' ><i class=\"reply icon\"></i>返回</div> </div>\n"+
+
+                "  <div class=\"ui segment\"  style=\" font-size: larger;\">\n"+
+                "<label>重要等级：</label>"+
+                "    <div class=\"ui test checkbox\"> <input type=\"checkbox\" id='impc1' onchange='checkimp(this)'> <label>高&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> </div><div class=\"ui test checkbox\"> <input type=\"checkbox\"  id='impc2' onchange='checkimp(this)'> <label>中&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> </div><div class=\"ui test checkbox\"> <input type=\"checkbox\" id='impc3' onchange='checkimp(this)'> <label>低</label> </div>"+
+                "<div class=\"ui inline dropdown\" style='margin-left: 8px' id='selabel'>\n"+
+                "    <div class=\"text\">\n"+
+                "      \n"+
+                "      选择标签\n"+
+                "    </div>\n"+
+                "    <i class=\"dropdown icon\"></i>\n"+
+                "    <div class=\"menu\" id='labelmenu'>\n"+
+                re5+
+                "    \n"+
+                "    </div>\n"+
+                "  </div>"+
+                //  "    </div>\n"+
+
+                " <div class=\"ui right floated small primary labeled icon button\" onclick='addcids("+b+")' ><i class=\"radio icon\"></i>选择完毕</div>"+
+
+                "  </div>\n"+
+                "</div>";
+
+            var re=base( "                        <th style=\"width: 40px\">#</th>\n" +
+                "                        <th  style=\"width: 25%\">用例名称</th>\n" +
+                "                        <th  style=\"min-width: 30em;\" >用例描述</th>\n" +
+                "                        <th style=\"width: 80px\">重要等级</th>\n",4,'addcids('+b+')','选择完毕','testcaseid','2a2');
+
+
+            $('#context').html(re1+re);
+            $('#selabel').dropdown();
+
+
+            shuatestcase(-1,a);
+
+        }
+    });
+
 }
 function returncasehome(){$('#mcasehome').click()}
 function addcids(b) {

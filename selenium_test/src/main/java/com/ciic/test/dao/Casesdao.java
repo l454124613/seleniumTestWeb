@@ -385,6 +385,11 @@ return "0";
         return jdbcTemplate.query("SELECT * from casereslist where seriesid=?",new Object[]{seriesid},new BeanPropertyRowMapper<>(CaseresList.class));
     }
 
+    @Override
+    public int updateLabel(String id, String labels) {
+        return jdbcTemplate.update("UPDATE caselist set label=? where id=?",mycode.prase(new Object[]{labels,id}));
+    }
+
     private void updateSeriesStime(String seriesid){
         jdbcTemplate.update("update series set sttime='"+LocalDate.now()+" "+LocalTime.now()+"'  where id="+seriesid );
     }

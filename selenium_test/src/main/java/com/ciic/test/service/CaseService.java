@@ -77,6 +77,8 @@ int updatePrecondition(String type,String cid ,String a,String b,String c);
 
 List<CaseresList> getCaseresList(String seriesid);
 
+int updateLabel(String id ,String labels);
+
 
 
 

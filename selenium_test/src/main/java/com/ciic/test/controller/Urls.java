@@ -22,7 +22,7 @@ import java.util.List;
  */
 @RestController
 @EnableAutoConfiguration
-public class firstPage {
+public class Urls {
     @Autowired
     private UserService userService;
 @Autowired
@@ -384,6 +384,15 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
         }
     }
 
+    @RequestMapping("/getlabel/{tid}")
+    String getLabel(@PathVariable String tid){
+        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"labels\":"+configService.getLabel(tid)+"}";//",\"res\":" + caseService.getCaseresNum(seriesid)+
+    }
+    @RequestMapping("/getusedlabel/{tid}")
+    String getUsedLabel(@PathVariable String tid){
+        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"labels\":"+configService.getLabel(tid)+"}";//",\"res\":" + caseService.getCaseresNum(seriesid)+
+    }
+
 
     //case
     @RequestMapping("/getseriesandcase/{seriesid}")
@@ -603,8 +612,11 @@ String getcase(@PathVariable String tid){
 
 
     }
+
+
+
     @RequestMapping("/removecasehome/{chid}")
-    String updateCaseHome( @PathVariable String chid){
+    String removeCaseHome( @PathVariable String chid){
         int n=  caseService.removeCaseHome(chid);
 
 
@@ -647,6 +659,34 @@ String getcase(@PathVariable String tid){
                 n=  caseService.addCaseHome(name,des,tid);
             }else {
                 n=caseService.updateCaseHome(type,name,des);
+            }
+        }
+
+
+
+
+
+        if(n==1){
+
+            return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+        }
+
+
+
+    }
+
+    @RequestMapping("/addlabel")
+    String addLabel( String name,String des,String tid,String type){
+        int n=0;
+        if(name.isEmpty()||tid.isEmpty()||type.isEmpty()){
+            return "{\"isok\":1,\"msg\":\"数据信息不全\",\"to\":\"/\"}";
+        }else {
+            if(type.equals("0")){
+                n=  configService.addLabel(name,des,tid);
+            }else {
+                n=configService.updateLabel(type,name,des);
             }
         }
 
@@ -799,6 +839,26 @@ if(step.isEmpty()||type.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmpty()
         }}
 
 
+    @RequestMapping("/upatelabel")
+    String updateLabel( String id,String labels){
+        if(id.isEmpty()||labels.isEmpty()){
+            return "{\"isok\":1,\"msg\":\"参数获取不全\",\"to\":\"/\"}";
+        }else {
+
+
+            int  a   = caseService.updateLabel(id,labels);
+
+
+
+            if(a==1){
+                return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+            }else {
+                return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+            }
+
+        }}
+
+
 
 @RequestMapping("/addcase")
 String addcase(String name,String des,String important,String type,String tid,String elety){
@@ -854,8 +914,20 @@ if(id.equalsIgnoreCase("0")){
 
 
     @RequestMapping("/removecase/{cid}")
-    String removecase(@PathVariable String cid){
+    String removeCase(@PathVariable String cid){
        int a= caseService.removeCase(cid);
+
+        if(a==1){
+            return "{\"isok\":0,\"msg\":\"删除成功\",\"to\":\"/\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"删除失败\",\"to\":\"/\"}";
+        }
+
+    }
+
+    @RequestMapping("/removelabel/{lid}")
+    String removeLabel(@PathVariable String lid){
+        int a= configService.removeLabel(lid);
 
         if(a==1){
             return "{\"isok\":0,\"msg\":\"删除成功\",\"to\":\"/\"}";
