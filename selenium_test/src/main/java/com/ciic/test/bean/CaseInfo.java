@@ -9,6 +9,7 @@ public class CaseInfo {
     private String des;
     private  String important;
     private String tid;
+    private String type;
 
     @Override
     public String toString() {
@@ -23,8 +24,18 @@ public class CaseInfo {
                 .append(important).append('\"');
         sb.append(",\"tid\":\"")
                 .append(tid).append('\"');
+        sb.append(",\"type\":\"")
+                .append(type).append('\"');
         sb.append('}');
         return sb.toString();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getTid() {

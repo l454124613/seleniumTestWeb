@@ -801,15 +801,15 @@ if(step.isEmpty()||type.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmpty()
 
 
 @RequestMapping("/addcase")
-String addcase(String name,String des,String important,String type,String tid){
-       if(name.isEmpty()||important.isEmpty()||des.isEmpty()||type.isEmpty()||tid.isEmpty()){
+String addcase(String name,String des,String important,String type,String tid,String elety){
+       if(name.isEmpty()||important.isEmpty()||des.isEmpty()||type.isEmpty()||tid.isEmpty()||elety.isEmpty()){
            return "{\"isok\":1,\"msg\":\"信息不匹配\",\"to\":\"/\"}";
        }else {
            int a=0;
            if(type.equalsIgnoreCase("0")){
-             a=  caseService.addCase(name,des,important,tid);
+             a=  caseService.addCase(name,des,important,tid,elety);
            }else {
-               a=caseService.updatecase(type,name,des,important);
+               a=caseService.updatecase(type,name,des,important,elety);
 
            }
 
