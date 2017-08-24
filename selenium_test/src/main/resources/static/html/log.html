@@ -203,7 +203,10 @@ function addca(a) {
 
 
                     }else {
-                        alert("数据错误，请联系管理员")
+                        alert("当前页面无运行信息，请查看具体的用例和步骤，谢谢");
+                        window.opener=null;
+                        window.open('','_self');
+                        window.close();
                     }
 
                     

@@ -68,8 +68,8 @@ return list;
     }
 
     @Override
-    public int updatecase(String id, String name, String des, String important,String type) {
-        return  jdbcTemplate.update("UPDATE \"main\".\"caselist\" SET  \"name\"=?, \"des\"=?, \"important\"=? , \"type\"=? WHERE (\"id\"=?)",mycode.prase(new Object[]{name,des,important,type,id}));
+    public int updatecase(String id, String name, String des, String important) {
+        return  jdbcTemplate.update("UPDATE \"main\".\"caselist\" SET  \"name\"=?, \"des\"=?, \"important\"=?  WHERE (\"id\"=?)",mycode.prase(new Object[]{name,des,important,id}));
 
     }
 
@@ -84,7 +84,12 @@ return list;
         int n=  jdbcTemplate.update("INSERT INTO \"main\".\"caselist\" ( \"name\", \"des\", \"important\", \"tid\", \"type\") VALUES ( ?, ?, ?, ?,?)",mycode.prase(new Object[]{name,des,important,tid,type}));
         if(n==1){
             int n2=jdbcTemplate.update("INSERT INTO \"precondition\" ( \"type\", \"a\", \"b\", \"c\",\"cid\") VALUES (4, -1, -1, -1, (SELECT max(id) from caselist where isused=1 and tid=?))",mycode.prase(new Object[]{tid}));
-        if(n2==1){
+            int n3=0;
+            if(type.equals("2")){
+                 n3=addHttpCase(tid);
+            }
+
+        if(n2==1&&n3==1){
             return n2;
         }else {
             return 0;
@@ -390,6 +395,21 @@ return "0";
         return jdbcTemplate.update("UPDATE caselist set label=? where id=?",mycode.prase(new Object[]{labels,id}));
     }
 
+    @Override
+    public int addHttpCase(String tid) {
+       return jdbcTemplate.update("INSERT INTO \"httpcase\" (\"type\", \"url\", \"con\", \"eq\", \"value\", \"cid\") VALUES (-1, -1, -1, -1, -1, (SELECT max(id) from caselist where type=2 and isused=1 and tid=?))",new Object[]{tid});
+    }
+
+    @Override
+    public int updateHttpCase(String type, String url, String con, String eq, String value, String cid) {
+        return jdbcTemplate.update("UPDATE \"httpcase\" SET \"type\"=?, \"url\"=?, \"con\"=?, \"eq\"=?, \"value\"=? WHERE (\"cid\"=?)",mycode.prase2(new Object[]{type,url,con,eq,value,cid}));
+    }
+
+    @Override
+    public List<HttpCase> getHttpCase(String cid) {
+        return jdbcTemplate.query("select * from httpcase where cid=?",new Object[]{cid},new BeanPropertyRowMapper(HttpCase.class));
+    }
+
     private void updateSeriesStime(String seriesid){
         jdbcTemplate.update("update series set sttime='"+LocalDate.now()+" "+LocalTime.now()+"'  where id="+seriesid );
     }
@@ -407,8 +427,14 @@ return "0";
         for (int i = 0; i <cids.length ; i++) {
           // int a= jdbcTemplate.update("INSERT INTO \"runtimecase\" ( \"cid\", \"tid\") VALUES ("+cids[i]+", "+tid+") ");
             //添加用例指caseres和casereslist表
-              addCase2res(cids[i],series.getId());
-              //修改当前系列开始运行
+            try {
+                addCase2res(cids[i],series.getId());
+            } catch (Exception e) {
+                updateOneseriesStatus("4","",series.getId());
+                updateSeriesEtime(series.getId());
+                continue;
+            }}
+            //修改当前系列开始运行
               updateOneseriesStatus("2","",series.getId());
               updateSeriesStime(series.getId());
 
@@ -418,24 +444,43 @@ return "0";
                 //修改当前系列运行结束
               updateOneseriesStatus("3","",series.getId());
               updateSeriesEtime(series.getId());
-              //检查是否还存在要运行的系列
-            startrun(tid);
 
 
 
 
 
-        }
+
+
+        //检查是否还存在要运行的系列
+        startrun(tid);
     }
 
-void addCase2res(String cid,String seriesid){
-       int a= jdbcTemplate.update("INSERT INTO \"casereslist\" ( \"cid\", \"res\", \"runnum\", \"allnum\", \"cname\", \"cdes\", \"seriesid\", \"status\") SELECT caselist.id cid,-1 res,0 runnum,count(step.id) allnum,name cname,des cdes, "+seriesid+" seriesid,0 from caselist join step on step.cid=caselist.id  where  step.isused=1 and  caselist.isused=1 and caselist.id="+cid);
-      if(a>0){
-         List<tmp> lt= jdbcTemplate.query("select id value from casereslist where cid="+cid+" and seriesid = "+seriesid +" order by id desc",new BeanPropertyRowMapper<tmp>(tmp.class));
-        //  System.out.println(lt);
-          jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\")  SELECT cid,step.id sid,'' pic,''''||ename||''''||cat.name||value word,'-1' res ,'-1' restext ,'' time ,"+lt.get(0).getValue()+" listid from step join cat on cat.id=step.catid where cid="+cid+" ORDER BY step");
+void addCase2res(String cid,String seriesid) throws Exception {
+    List<tmp> lt= jdbcTemplate.query("select type value from caselist where id="+cid ,new BeanPropertyRowMapper<tmp>(tmp.class));
 
-      }
+         if( lt.get(0).getValue().equals("1")){
+             int a= jdbcTemplate.update("INSERT INTO \"casereslist\" ( \"cid\", \"res\", \"runnum\", \"allnum\", \"cname\", \"cdes\", \"seriesid\", \"status\") SELECT caselist.id cid,-1 res,0 runnum,count(step.id) allnum,name cname,des cdes, "+seriesid+" seriesid,0 from caselist join step on step.cid=caselist.id  where  step.isused=1 and  caselist.isused=1 and caselist.id="+cid);
+             if(a>0){
+                 lt= jdbcTemplate.query("select id value from casereslist where cid="+cid+" and seriesid = "+seriesid +" order by id desc",new BeanPropertyRowMapper<tmp>(tmp.class));
+                 //  System.out.println(lt);
+                 jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\")  SELECT cid,step.id sid,'' pic,''''||ename||''''||cat.name||value word,'-1' res ,'-1' restext ,'' time ,"+lt.get(0).getValue()+" listid from step join cat on cat.id=step.catid where cid="+cid+" ORDER BY step");
+
+             }else {
+                 throw new Exception("no");
+             }
+         }else {
+            int a=    jdbcTemplate.update("INSERT INTO \"casereslist\" ( \"cid\", \"res\", \"runnum\", \"allnum\", \"cname\", \"cdes\", \"seriesid\", \"status\") SELECT cid,'-1' res,'0' runnum,'1' allnum, name cname,des cdes,'"+seriesid+"' seriesid,0 status from caselist join httpcase on httpcase.cid=caselist.id where httpcase.type !='-1' and  caselist.isused=1  and  caselist.id="+cid);
+
+            if(a>0){
+                lt= jdbcTemplate.query("select id value from casereslist where cid="+cid+" and seriesid = "+seriesid +" order by id desc",new BeanPropertyRowMapper<tmp>(tmp.class));
+                jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\") SELECT cid,'0' sid,'' pic,'接口请求' word,'-1' res,'' restext,'' time,'"+lt.get(0).getValue()+"'  listid from httpcase where cid="+cid);
+            }else {
+                throw new Exception("no");
+            }
+         }
+
+    //System.out.println(cid);
+
 
 
     }

@@ -12,7 +12,7 @@ public interface CaseService {
 
 List<CaseInfo> getcase(String tid);
 
-int updatecase(String id ,String name ,String des,String important,String type);
+int updatecase(String id ,String name ,String des,String important);
 
 int removeCase(String id);
 int addCase(String name ,String des,String important,String tid,String type);
@@ -78,6 +78,12 @@ int updatePrecondition(String type,String cid ,String a,String b,String c);
 List<CaseresList> getCaseresList(String seriesid);
 
 int updateLabel(String id ,String labels);
+
+int addHttpCase(String tid);
+int updateHttpCase(String type,String url,String con,String eq,String value,String cid);
+    List<HttpCase> getHttpCase(String cid);
+
+
 
 
 

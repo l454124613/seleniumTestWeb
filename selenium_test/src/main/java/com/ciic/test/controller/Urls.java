@@ -390,7 +390,7 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
     }
     @RequestMapping("/getusedlabel/{tid}")
     String getUsedLabel(@PathVariable String tid){
-        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"labels\":"+configService.getLabel(tid)+"}";//",\"res\":" + caseService.getCaseresNum(seriesid)+
+        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"labels\":"+configService.getUsedLabel(tid)+"}";//",\"res\":" + caseService.getCaseresNum(seriesid)+
     }
 
 
@@ -536,6 +536,14 @@ String getcase(@PathVariable String tid){
 
 
             return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"casehomes\":"+ caseService.getCaseHome(tid)+"}";
+
+
+    }
+    @RequestMapping("/gethttpcase/{cid}")
+    String getHttpCase(@PathVariable String cid){
+
+
+        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"case\":"+ caseService.getHttpCase(cid)+"}";
 
 
     }
@@ -859,6 +867,25 @@ if(step.isEmpty()||type.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmpty()
         }}
 
 
+    @RequestMapping("/upatehttp")
+    String updateHttp( String type,String url,String con,String eq,String value,String cid){
+        if(cid.isEmpty()||type.isEmpty()||url.isEmpty()||eq.isEmpty()||value.isEmpty()){
+            return "{\"isok\":1,\"msg\":\"参数获取不全\",\"to\":\"/\"}";
+        }else {
+
+
+            int  a   = caseService.updateHttpCase(type,url,con,eq,value,cid);
+
+
+
+            if(a==1){
+                return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+            }else {
+                return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+            }
+
+        }}
+
 
 @RequestMapping("/addcase")
 String addcase(String name,String des,String important,String type,String tid,String elety){
@@ -868,8 +895,9 @@ String addcase(String name,String des,String important,String type,String tid,St
            int a=0;
            if(type.equalsIgnoreCase("0")){
              a=  caseService.addCase(name,des,important,tid,elety);
+
            }else {
-               a=caseService.updatecase(type,name,des,important,elety);
+               a=caseService.updatecase(type,name,des,important);
 
            }
 

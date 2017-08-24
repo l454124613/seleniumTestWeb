@@ -10,7 +10,10 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by lixuecheng on 2017/8/1.
@@ -89,8 +92,31 @@ public class ConfigDao implements ConfigService {
     @Override
     public List<Label> getUsedLabel(String tid) {
         List<tmp> lt= jdbcTemplate.query("SELECT label value from caselist where tid=? and label is not null",new Object[]{tid},new BeanPropertyRowMapper<>(tmp.class));
-return null;
+        Set<String> set =new HashSet<String>();
+        for (tmp t:lt){
+          String a[]=  t.getValue().split(",");
+          for (String b:a){
+              set.add(b);
+          }
+        }
+        if(set.size()>0){
+         //  set2String(set)
+         return   jdbcTemplate.query("select * from label where id in ("+set2String(set)+")",new BeanPropertyRowMapper<>(Label.class));
+
+        }else {
+            return new ArrayList<>();
+        }
 
 
+
+    }
+
+    private String set2String(Set set){
+        final String[] a = {""};
+        set.forEach(k->{
+            a[0] +=","+k;
+
+        });
+        return a[0].substring(1);
     }
 }

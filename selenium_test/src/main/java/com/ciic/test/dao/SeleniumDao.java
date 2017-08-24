@@ -1,12 +1,16 @@
 package com.ciic.test.dao;
 
-import com.ciic.test.bean.Element;
-import com.ciic.test.bean.Series;
-import com.ciic.test.bean.Step;
-import com.ciic.test.bean.tmp;
+import com.ciic.test.bean.*;
 import com.ciic.test.service.CaseService;
 import com.ciic.test.service.SeleniumService;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +20,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 
 import java.util.Set;
@@ -67,24 +73,29 @@ private String picPath;
                     nowCaseresid=    ls.get(j).getValue();
                 String sid=ls.get(j).getValue2();
                 updateCaseresTime(nowCaseresid);
-                Step step=getStep(sid);
-                    Element element=getElement(step.getEid());
-                    WebElement webElement=  element2Web(element,driver);//未修改提示框//TODO
-                    screenShot(driver,nowCaseresid,seriesid,caseListId,webElement,false);                    //截图
-                    action(webElement,step.getCatid(),driver,step.getValue());
-                    if(!element.getToframe().equals("-1")){
+                if(sid.equals("0")){
+
+                    runHttpCase(caseid);
+
+                }else {
+                    Step step = getStep(sid);
+                    Element element = getElement(step.getEid());
+                    WebElement webElement = element2Web(element, driver);//未修改提示框//TODO
+                    screenShot(driver, nowCaseresid, seriesid, caseListId, webElement, false);                    //截图
+                    action(webElement, step.getCatid(), driver, step.getValue());
+                    if (!element.getToframe().equals("-1")) {
                         driver.switchTo().defaultContent();
                     }
-                    if(!element.getTopage().equals("-1")){
-                        toWindow(getTitle(element.getTopage()),driver);
+                    if (!element.getTopage().equals("-1")) {
+                        toWindow(getTitle(element.getTopage()), driver);
 
                     }
-                    updateCaseListRunnum((j+1)+"",caseListId);
-                    if(!step.getExpid().equals("0")){
+                    updateCaseListRunnum((j + 1) + "", caseListId);
+                    if (!step.getExpid().equals("0")) {
                         System.out.println("exp");
                     }
 
-
+                }
                     updateCaseresRes("1","运行成功",nowCaseresid);
 
 
@@ -127,6 +138,61 @@ updateCaseListRes("1",caseListId);
     }
 
 
+
+    private void runHttpCase(String cid) throws IOException {
+     List<HttpCase> lh=   jdbcTemplate.query("select * from httpcase where cid="+cid,new BeanPropertyRowMapper<>(HttpCase.class));
+      if(lh.size()>0){
+         if(lh.get(0).getType().equals("1")){
+             HttpGet httpGet = new HttpGet(lh.get(0).getUrl());
+             if(lh.get(0).getCon().contains("HEAD")){
+                 String head=lh.get(0).getCon();
+               int st=  head.indexOf("HEAD{");
+               int et=  head.indexOf("}",st);
+               head=head.substring(st+5,et);
+                 String[] head2=head.split("\";\"");
+                 for(String a:head2){
+                     String a2[]=a.split(":");
+                     httpGet.setHeader(a2[0],a2[1]);
+                 }
+
+
+
+
+             }
+             CloseableHttpClient client = HttpClients.createDefault();
+             HttpResponse response= client.execute(httpGet);
+             HttpEntity entity = response.getEntity();
+             String  temp= EntityUtils.toString(entity,"UTF-8");
+             System.out.println(Arrays.asList(httpGet.getAllHeaders()));
+             System.out.println("_____________________");
+             System.out.println(temp);
+
+         }else {
+             HttpPost httpPost=new HttpPost(lh.get(0).getUrl());
+             String head="";
+             if(lh.get(0).getCon().contains("HEAD")){
+                  head=lh.get(0).getCon();
+                 int st=  head.indexOf("HEAD{");
+                 int et=  head.indexOf("}",st);
+                 head=head.substring(st+5,et);
+                 String[] head2=head.split("\";\"");
+                 for(String a:head2){
+                     String a2[]=a.split(":");
+                     httpPost.setHeader(a2[0],a2[1]);
+                 }
+
+
+
+
+             }
+
+
+         }
+      }
+        //CloseableHttpClient client = HttpClients.createDefault();
+
+
+    }
 
     private void init(String seriesid){
    lt= jdbcTemplate.query("select id value ,cid value2 from casereslist where status =0 and seriesid= "+seriesid+" order by id",new BeanPropertyRowMapper<>(tmp.class));

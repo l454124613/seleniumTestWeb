@@ -38,7 +38,7 @@ var labelid=0;
 $(document).ready(function () {
 
         $.get('/com',function (data,status) {
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data);
         if(o.isok!=0){
             alertf(o.msg);
             location.href=o.to;
@@ -50,7 +50,7 @@ $(document).ready(function () {
             var c2=uncompileStr(c);
             $('#username').text(c2);
             $.get('/gitem',function (data,ststus) {
-                var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+                var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
                 if(o.isok!=0){
                     alertf("项目有异常，请联系管理员。");
                 }else {
@@ -167,7 +167,7 @@ function changeyan2() {
             alertf("网站出错，请联系管理员");
             return;
         }
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!="0"){
             alertf(o.msg);
         }else {
@@ -223,7 +223,7 @@ function changeyan3() {
         "\n"+
         "                </div>\n"+
         "            <div class=\"field\">\n"+
-        "<label>传输内容，如有头文件，使用格式：HEAD{xxx=aaa,ccc=222}</label>"+
+        "<label>传输内容，如有头文件，使用格式：HEAD{xxx:aaa\";\"ccc:222}</label>"+
         "<textarea id='areaid'></textarea>"+
         "                </div>\n"+
         "            <div class=\"field\">\n"+
@@ -277,7 +277,7 @@ function changeyan4() {
 
 function shualabel() {
     $.get('/getlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -404,7 +404,7 @@ function changeyan1() {
     $('.dropdown').dropdown();
     $.get('/gpage/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
         
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -441,7 +441,7 @@ function changepage2(a) {
     $('#seele2').removeClass('disabled');
 
     $.get('/gele/'+va+"/"+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -564,7 +564,7 @@ function getyan3() {
 
 
 
-    if(http==""||inp==""||type==""||area==""||url==""){
+    if(http==""||inp==""||type==""||url==""){
         return false;
 
     }else {
@@ -652,7 +652,7 @@ if(uncompileStr(cc)=="我是管理员"){
 
 function clearIsused() {
     $.post('/clearisused',{mimi:compileStr(Date.parse(new Date())/1000+'')},function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         alertf(o.msg);
     });
 
@@ -661,14 +661,14 @@ function clearIsused() {
 
 function runcase(a,b) {
     $.get('/testcase/'+a+"/"+tid+"/"+b,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         alertf(o.msg);
     });
 }
 
 function lookruncase(a) {
     // $.get('/looktestcase/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-    //     var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+    //     var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
     //     if(o.isok=="4"){
     //         alertf(o.msg);
     //
@@ -687,7 +687,7 @@ function lookruncase(a) {
 function shuauser() {
 
     $.get('/getuser',function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -735,7 +735,7 @@ function hidemenu() {
 function shuastep() {
 
     $.get('/getstep/'+cid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -823,7 +823,7 @@ function shuastep() {
 function lookpre(a) {
     cid=a;
 $.get('/getprecondition/'+cid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-    var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+    var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
 var pres=o.pre;
 
 if(pres.length==0){
@@ -894,7 +894,7 @@ function changeyu1() {
 
 
     $.get('/getcase/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         var cc=o.cases;
         var v1="";
         for(var i=0;i<cc.length;i++){
@@ -948,7 +948,7 @@ function changeyu2() {
         "    </div></div>";
     $('#yuid').html(re);
     $.get('/getdatasource/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!="0"){
             alertf(o.msg);
         }else {
@@ -1017,7 +1017,7 @@ function changeyu3() {
         "\n"+
         "                </div>\n"+
         "            <div class=\"field\">\n"+
-        "<label>传输内容，如有头文件，使用格式：HEAD{xxx=aaa,ccc=222}</label>"+
+        "<label>传输内容，如有头文件，使用格式：HEAD{xxx:aaa\";\"ccc:222}</label>"+
         "<textarea id='areaid'></textarea>"+
         "                </div>\n"+
 
@@ -1042,7 +1042,7 @@ function  addNowStep(a,b,c,d) {
 $('.addstep1').addClass('disabled');
 
     $.get('/getpid/'+c,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else {
@@ -1090,7 +1090,7 @@ $('.addstep1').addClass('disabled');
                 $(b).parent().parent().after(re);
 
                 $.get('/gettopage/'+c,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-                    var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+                    var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
                     if(o.isok!=0){
                         alertf(o.msg);
                     }else {
@@ -1164,7 +1164,7 @@ function  updatestep(a,b,c,d,e,f) {
    // console.log(b);
   //  ttmp=a;
     $.get('/getpid/'+b,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else {
@@ -1194,7 +1194,7 @@ function showexp(a) {
     stepid=a;
     $('#yan44').checkbox('check');
     $.get('/getexp/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         var ll=o.exp;
         if(ll.length==1){
             var l2=ll[0];
@@ -1240,7 +1240,7 @@ function removestep(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removestep/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
            shuastep();
             alertf(o.msg);
 
@@ -1276,7 +1276,7 @@ function fixstep(a) {
             eid:ev,
             ename:evn
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
 
             shuastep();
             alertf(o.msg);
@@ -1311,7 +1311,7 @@ function addstep(a,b) {
             eid:ev,
             ename:evn
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
 
             shuastep();
             alertf(o.msg);
@@ -1414,7 +1414,7 @@ var vv3="";
 function shuapageinfo(d,e,f) {
 
     $.get('/ge4p/'+pid+'/'+tid+'/'+cid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -1504,7 +1504,7 @@ var re4="";
 function shuapage() {
 
     $.get('/gpage/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -1543,7 +1543,7 @@ function datasourcecon (a,b) {
     $.get('/getdatasourceconnect/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
         $(b).removeClass('loading');
         $(b).removeClass('disabled');
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
 
         alertf(o.con);
 
@@ -1554,7 +1554,7 @@ function datasourcecon (a,b) {
 function shuaDatasource() {
 
     $.get('/getdatasource/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -1592,7 +1592,7 @@ function shuaDatasource() {
 
 function  shuaele() {
     $.get('/gele/'+pid+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -1632,7 +1632,7 @@ function topage() {
 
 function  shuaeleall() {
     $.get('/gele/'+'-1'+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -1670,7 +1670,7 @@ function  shuaeleall() {
 function  shuaitem() {
     if(isshuaitem){
         $.get('/gitema',function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             if(o.isok!=0){
                 alertf(o.msg);
             }else{
@@ -1724,36 +1724,56 @@ function  shuaitem() {
     
 }
 
-function shuacaseinfo() {
+function shuacaseinfo(a,b) {
 $.get('/getcase/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-    var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+    var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
     if(o.isok!=0){
         alertf(o.msg);
     }else{
         var ccs=o.cases;
+var cba;
+var issearch=false;
+if(cba==a){
+    issearch=false;
+}else{
+    issearch=true;
+}
 
         if(ccs.length>0){
             var re="";
+            var rex="";
 
             for(var i=0;i<ccs.length;i++){
                 var guodu=ccs[i].id+",'"+ccs[i].name+"'";
                 var aac=ccs[i].id+",'"+ccs[i].name+"','"+ccs[i].des+"',"+ccs[i].important+','+ccs[i].type;
-re+= "                    <tr>\n" +
-    "                        <td  >"+(i+1)+"</td>\n" +
-    "                        <td  >"+(ccs[i].type=='1'?'UI_':'IN_')+ccs[i].name+"</td>\n" +
-    "                        <td  >"+ccs[i].des+"</td>\n" +
-    "                        <td  >"+int2imp(ccs[i].important)+"</td>\n" +
-    "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookstep("+ccs[i].id+")' title=\"查看操作步骤\"><i class=\"indent icon\"></i></button></td>\n" +
-    "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookpre("+ccs[i].id+")' title=\"查看预置条件\"><i class=\"grid layout icon\"></i></button></td>\n" +
-    "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button>\n" +
-    "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
-    "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" +
-    //"<button class=\"ui circular basic icon button \" onclick='lookruncase("+ccs[i].id+")' title=\"查看日志\"><i class=\"record icon \"></i></button>" +
-    "</td>\n" +
+                var istype=ccs[i].type=='1';
+                if(issearch){
+                    var ismatch=false;
+                    switch (b){
+                        case name:break;
 
-    "                    </tr>\n";
+                    }
+
+                }else {
+                    re+= "                    <tr>\n" +
+                        "                        <td  >"+(i+1)+"</td>\n" +
+                        "                        <td  >"+(istype?'UI_':'IN_')+ccs[i].name+"</td>\n" +
+                        "                        <td  >"+ccs[i].des+"</td>\n" +
+                        "                        <td  >"+int2imp(ccs[i].important)+"</td>\n" +
+                        "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookstep("+ccs[i].id+","+istype+")' title=\"查看操作步骤\"><i class=\"indent icon\"></i></button></td>\n" +
+                        "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookpre("+ccs[i].id+")' title=\"查看预置条件\"><i class=\"grid layout icon\"></i></button></td>\n" +
+                        "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button>\n" +
+                        "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
+                        "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" +
+                        //"<button class=\"ui circular basic icon button \" onclick='lookruncase("+ccs[i].id+")' title=\"查看日志\"><i class=\"record icon \"></i></button>" +
+                        "</td>\n" +
+
+                        "                    </tr>\n";
+                }
+
+
             }
-            $('#caseid').html(re);
+            $('#caseid').html(rex+re);
           //  $('table').tablesort();
         }else{
             $('#caseid').html('');
@@ -1770,7 +1790,7 @@ $('#labeltitle').html(b);
 labelid=a;
     $.get('/getlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
 
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
 
       if(o.isok!="0") {alertf(o.msg);}else {
             var ls=o.labels;
@@ -1951,7 +1971,7 @@ $('#addpageone7').click(function () {
             tid:tid,
             id:adddatasource
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
 
            shuaDatasource();
             alertf(o.msg);
@@ -1986,7 +2006,7 @@ var dat="";
 
     if(dat){
         $.post('/updateexp',dat,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             alertf(o.msg);
             if(o.isok!="0"){
 
@@ -2028,7 +2048,7 @@ $('#addpageone8').click(function () {
 
     if(dat){
         $.post('/updatepre',dat,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             alertf(o.msg);
             if(o.isok!="0"){
 
@@ -2058,7 +2078,7 @@ $('#addpageone9').click(function () {
             des:title,
             type:homeid
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
 
             alertf(o.msg);
            shuacasehome()
@@ -2085,7 +2105,7 @@ $('#addpageone11').click(function () {
 
             labels:lbs.toString()
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
 
             alertf(o.msg);
 shuacaseinfo();
@@ -2110,7 +2130,7 @@ $('#addpageone10').click(function () {
             des:title,
             type:labelid
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
 
             alertf(o.msg);
            shualabel();
@@ -2136,7 +2156,7 @@ $('#addpageone').click(function () {
             pagetitle:title,
             type:a1
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
 
             alertf(o.msg);
             shuapage();
@@ -2167,7 +2187,7 @@ $('#addpageone3').click(function () {
             type:ass2,
             ispass:ispass
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             shuauser();
             alertf(o.msg);
            $('#closemodal3').click();
@@ -2195,7 +2215,7 @@ $('#addpageone4').click(function () {
             users:uss.toString(),
             type:ass3
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             isshuaitem=true;
             shuaitem();
             alertf(o.msg);
@@ -2221,7 +2241,7 @@ $('#addpageone5').click(function () {
             type:ass4,
             elety:elev
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             isshuaitem=true;
             shuacaseinfo();
             alertf(o.msg);
@@ -2301,7 +2321,7 @@ $('#addpageone2').click(function () {
             waitv:waitv
 
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             $('#closemodal2').click();
             if(mele===1){
                shuaeleall();
@@ -2332,7 +2352,7 @@ function removepage(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removepage/'+a+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
 
             alertf(o.msg);
            // $('#mpage').click();
@@ -2349,7 +2369,7 @@ function removeele(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removeele/'+a+'/'+pid+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
            shuaele();
             alertf(o.msg);
 
@@ -2366,7 +2386,7 @@ function removecase(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removecase/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             shuacaseinfo();
             alertf(o.msg);
 
@@ -2380,7 +2400,7 @@ function removecasehome(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removecasehome/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
            shuacasehome();
             alertf(o.msg);
 
@@ -2392,7 +2412,7 @@ function removelabel(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removelabel/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             shualabel();
             alertf(o.msg);
 
@@ -2406,7 +2426,7 @@ function removedatasource(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removedatasource/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
            shuaDatasource();
             alertf(o.msg);
 
@@ -2422,7 +2442,7 @@ function removeuser(a) {
     if (confirm("你确定要禁用吗？")) {
         $.get('/removeuser/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
 
             alertf(o.msg);
             shuauser();
@@ -2439,7 +2459,7 @@ function removeitem(a) {
     if (confirm("你确定要禁用吗？")) {
         $.get('/removeitem/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
 
             alertf(o.msg);
             isshuaitem=true;
@@ -2538,8 +2558,9 @@ function updatecase(a,b,c,d,e) {
     $('#addcasedes').val(c);
 
   //  $('#cc22').dropdown('set selected',"\""+d+"\"");
-    $('#cc22').dropdown('set selected',d)
-    $('#typeele').dropdown('set selected',e)
+    $('#cc22').dropdown('set selected',d);
+    $('#typeele').dropdown('set selected',e);
+    $('#typeele').addClass('disabled');
 
 
 
@@ -2547,8 +2568,22 @@ function updatecase(a,b,c,d,e) {
 
 }
 
+function searchcase() {
+    var inp=$.trim($('#seaca').val())
+    var se=$('#secon').val();
+    if(inp==""){
+        $('#seaca').css('background','yellow');
+    }else {
+        shuacaseinfo(inp,se);
 
+    }
+        }
 
+        
+        function backclear(a) {
+   $('#'+a).css('background','white');
+            
+        }
 $('#mcase').click(
   function () {
       if(tid<1){
@@ -2556,6 +2591,16 @@ $('#mcase').click(
       }else{
           forfirstfun();
           pid=0;
+          var re1="<div class=\"ui action input\">\n"+
+              "  <input type=\"text\" id='seaca' onclick=\"backclear('seaca')\" placeholder=\"Search...\">\n"+
+              "  <select class=\"ui compact selection dropdown\" id='secon' style=\"          padding-bottom: 1px;          padding-top: 1px;          \">\n"+
+              "    <option  selected=\"\" value=\"name\">名称</option>\n"+
+              "    <option  value=\"des\">描述</option>\n"+
+              "    <option value=\"label\">标签</option>\n"+
+              "    <option value=\"imp\">重要级</option>\n"+
+              "  </select>\n"+
+              "  <div type=\"submit\" class=\"ui button\" onclick='searchcase()'>搜索</div>\n"+
+              "</div>"
           var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
               "                        <th  style=\"width: 25%\">用例名称</th>\n" +
               "                        <th   style='min-width: 100px'>用例描述</th>\n" +
@@ -2565,7 +2610,7 @@ $('#mcase').click(
               "                        <th style=\"width: 80px\">操作按钮</th><th style=\"width: 80px\">执行用例</th>",8,'addcase()','添加用例','caseid');
 
 
-          $('#context').html(re);
+          $('#context').html(re1+re);
           shuacaseinfo();
           $('table').tablesort();
 
@@ -2615,7 +2660,7 @@ function addlabel() {
 
 function shuacasehome() {
     $.get('/getcasehome/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -2705,11 +2750,27 @@ $('#mpage').click(
     }
 );
 
+function showlabel(a) {
+    var ls=$('.labelz');
+    for(var i=0;i<ls.length;i++){
+
+        if(a==0){
+            $(ls[i]).css('display','table-row');
+        }else {
+            if($(ls[i]).hasClass('label'+a)){
+                $(ls[i]).css('display','table-row');
+            }else {
+                $(ls[i]).css('display','none');
+            }
+        }
+    }
+}
+
 function choosecase(a,b) {
     forfirstfun();
 
-    $.get('/getlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+    $.get('/getusedlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -2721,13 +2782,16 @@ function choosecase(a,b) {
 
                 for(var i=0;i<ccs.length;i++){
 
-                    re5+= "      <div class=\"item\" onclick='alertf("+ccs[i].id+")'>\n"+
+                    re5+= "      <div class=\"item\" onclick='showlabel("+ccs[i].id+")'>\n"+
                         ccs[i].name+
                         "      </div>\n";
                 }
-                re5+= "      <div class=\"item\" onclick='alertf(0)'>\n 选择全部"+
+                re5+= "      <div class=\"item\" onclick='showlabel(0)'>\n 查看全部"+
 
                     "      </div>\n";
+            re5+= "      <div class=\"item\" onclick='showlabel(null)'>\n 查看无标签"+
+
+                "      </div>\n";
 
             re1="<div class=\"ui horizontal compact segments\">\n"+
                 "  <div class=\"ui segment\">\n"+
@@ -2789,7 +2853,7 @@ function addcids(b) {
             id:b
 
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             alertf(o.msg);
             $('#mcasehome').click();
         })
@@ -2819,6 +2883,17 @@ $('#mtest').click(
               "  <div class=\"ui segment\"  style=\" font-size: larger;\">\n"+
               "<label>重要等级：</label>"+
               "    <div class=\"ui test checkbox\"> <input type=\"checkbox\" id='impc1' onchange='checkimp(this)'> <label>高&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> </div><div class=\"ui test checkbox\"> <input type=\"checkbox\"  id='impc2' onchange='checkimp(this)'> <label>中&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> </div><div class=\"ui test checkbox\"> <input type=\"checkbox\" id='impc3' onchange='checkimp(this)'> <label>低</label> </div>"+
+              "<div class=\"ui inline dropdown\" style='margin-left: 8px' id='selabel'>\n"+
+              "    <div class=\"text\">\n"+
+              "      \n"+
+              "      选择标签\n"+
+              "    </div>\n"+
+              "    <i class=\"dropdown icon\"></i>\n"+
+              "    <div class=\"menu\" id='labelmenu'>\n"+
+
+              "    \n"+
+              "    </div>\n"+
+              "  </div>"+
               " <div class=\"ui right floated small primary labeled icon button\" onclick='addtestcase()' ><i class=\"radio icon\"></i>选择完毕</div>"+
               "  </div>\n"+
               "</div><div id='casehomeid2'></div>";
@@ -2827,7 +2902,7 @@ $('#mtest').click(
           $('.ui.dropdown').dropdown();
           $.get('/getcasehome/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
               re="";
-              var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+              var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
               var cc=o.casehomes;
             //  console.log(cc);
               for(var i=0;i<cc.length;i++){
@@ -2837,9 +2912,34 @@ $('#mtest').click(
               re+="<div class=\"item\" data-value=\"-1\">总库</div>";
               $('#casehomemenu').html(re);
               
-          })
+          });
+          $.get('/getusedlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+              var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
+              if(o.isok!=0){
+                  alertf(o.msg);
+              }else {
+                  var ccs = o.labels;
+                  var re5 = "";
 
-      }
+
+
+                  for (var i = 0; i < ccs.length; i++) {
+
+                      re5 += "      <div class=\"item\" onclick='showlabel(" + ccs[i].id + ")'>\n" +
+                          ccs[i].name +
+                          "      </div>\n";
+                  }
+                  re5 += "      <div class=\"item\" onclick='showlabel(0)'>\n 查看全部" +
+
+                      "      </div>\n";
+                  re5 += "      <div class=\"item\" onclick='showlabel(null)'>\n 查看无标签" +
+
+                      "      </div>\n";
+                  $('#labelmenu').html(re5);
+              }});
+
+
+              }
   }  
 );
 
@@ -2892,7 +2992,7 @@ function removeseries(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removeseries/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             shuaseries();
             alertf(o.msg);
 
@@ -2906,7 +3006,7 @@ function runseries(a) {
     if (confirm("你确定要运行吗？")) {
         $.get('/runseries/'+a+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             shuaseries();
             alertf(o.msg);
 
@@ -2917,7 +3017,7 @@ function runseries(a) {
 function pauseseries(a) {
     $.get('/pauseseries/'+a+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
 
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         shuaseries();
         alertf(o.msg);
 
@@ -2978,7 +3078,7 @@ function shuarunseries(a,b) {
         return 0;
     }
     $.get('/getcasereslist/'+b,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         var cases2=o.cases;
         if(iseq2(cases2,caseresold)){
             return 0;
@@ -3065,7 +3165,7 @@ shuarunseries(re,a);
 
 function shuaseries() {
     $.get('/getseries/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
         var ses=o.series;
         var as=$('.active.segment').html();
         if(iseq(ses,seriesold)&&as!="loading..."){
@@ -3089,6 +3189,7 @@ function shuaseries() {
                     case "1":s1.two++;s2.two+="  <div class=\"ui segment\">  <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='暂停' onclick='pauseseries("+ses[i].id+")' ><i class=\"pause icon\"></i></div><p>"+ses[i].series+"，创建于："+ses[i].ordertime+"</p> </div>";break; //<div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' onclick='' ><i class=\"search icon \"></i></div>
                     case "2":s1.three++;s2.three+="  <div class=\"ui segment ui sticky\"> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' id='openid' title='展开' onclick='openrunseries("+ses[i].id+")' ><i class=\"expand icon \"></i></div> <p>"+ses[i].series+"，创建于："+ses[i].ordertime+"</p> </div>\n";break;
                     case "3":s1.four++;s2.four+="  <div class=\"ui segment\"> <div class=\"ui right floated small   icon button   circular  \" title='删除' style='margin-top: -4px;' onclick='removeseries("+ses[i].id+")' ><i class=\"remove red icon\"></i></div> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='查看' onclick='lookruncase("+ses[i].id+")' ><i class=\"record icon \"></i></div> <p>"+ses[i].series+"，创建于："+ses[i].ordertime+"</p> </div>\n";break;
+                    case "4":s1.four++;s2.four+="  <div class=\"ui orange inverted segment\"> <div class=\"ui right floated small   icon button   circular  \" title='删除' style='margin-top: -4px;' onclick='removeseries("+ses[i].id+")' ><i class=\"remove red icon\"></i></div> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='查看' onclick='lookruncase("+ses[i].id+")' ><i class=\"record icon \"></i></div> <p>"+ses[i].series+"，创建于："+ses[i].ordertime+",问题：有用例步骤错误，请检查</p> </div>\n";break;
                 }
 
             }
@@ -3160,7 +3261,7 @@ function checkimp(a) {
 function shuatestcase(type,a) {
     if(type==-1){
         $.get('/getcase/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             if(o.isok!=0){
                 alertf(o.msg);
             }else{
@@ -3170,11 +3271,16 @@ function shuatestcase(type,a) {
                     var re="";
 
                     for(var i=0;i<ccs.length;i++){
+                        var lab="labelz ";
+                        var lab2=ccs[i].label.split(',');
+                        for(var lb=0;lb<lab2.length;lb++){
+                            lab+=" label"+lab2[lb];
+                        }
                         var guodu=ccs[i].id+",'"+ccs[i].name+"'";
                         var aac=ccs[i].id+",'"+ccs[i].name+"','"+ccs[i].des+"',"+ccs[i].important;
-                        re+= "                    <tr>\n" +
+                        re+= "                    <tr class='"+lab+"'>\n" +
                             "                        <td  >"+" <div class=\"column\">\n"+
-                            "    <div class=\"ui test checkbox imp imp"+ ccs[i].important+"\" id='"+ccs[i].id+"'>\n"+
+                            "    <div class=\"ui test checkbox  imp imp"+ ccs[i].important+"\" id='"+ccs[i].id+"'>\n"+
                             "      <input type=\"checkbox\" >\n"+
                             "      <label> </label>\n"+
                             "    </div>\n"+
@@ -3214,7 +3320,7 @@ function shuatestcase(type,a) {
         });
     }else {
         $.get('/getcase/t'+type,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
             if(o.isok!=0){
                 alertf(o.msg);
             }else{
@@ -3226,9 +3332,14 @@ function shuatestcase(type,a) {
                     for(var i=0;i<ccs.length;i++){
                         var guodu=ccs[i].id+",'"+ccs[i].name+"'";
                         var aac=ccs[i].id+",'"+ccs[i].name+"','"+ccs[i].des+"',"+ccs[i].important;
-                        re+= "                    <tr>\n" +
+                        var lab="labelz ";
+                        var lab2=ccs[i].label.split(',');
+                        for(var lb=0;lb<lab2.length;lb++){
+                            lab+=" label"+lab2[lb];
+                        }
+                        re+= "                    <tr class='"+lab+"'>\n" +
                             "                        <td  >"+" <div class=\"column\">\n"+
-                            "    <div class=\"ui test checkbox imp imp"+ ccs[i].important+"\" id='"+ccs[i].id+"'>\n"+
+                            "    <div class=\"ui test checkbox  imp imp"+ ccs[i].important+"\" id='"+ccs[i].id+"'>\n"+
                             "      <input type=\"checkbox\" >\n"+
                             "      <label> </label>\n"+
                             "    </div>\n"+
@@ -3281,7 +3392,7 @@ function addtestcase() {
           seriesName:dda.toLocaleDateString()+'-'+dda.getHours()+'-'+dda.getMinutes()+"运行"
 
       },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
-          var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+          var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
           alertf(o.msg);
       })
   }
@@ -3315,18 +3426,140 @@ $('#melement').click(function () {
 
 });
 
-function lookstep(a) {
+function lookstep(a,b) {
 cid=a;
-var re=base("                        <th style=\"width: 60px\">步骤</th>\n" +
-    "                        <th  style=\"width: 80px\">元素类型</th>\n" +
-    "                        <th  style=\"width: 15%\" >页面元素</th>\n" +
-    "                        <th  style=\"width: 80px\" >操作</th>\n" +
-    "                        <th style=\"min-width:100px\">输入值</th>\n" +
-    "                        <th style=\"width:80px\">期望值</th>\n" +
-    "                        <th style=\"width: 120px\">操作</th>\n",7,'wancheng()','完成','stepid','2a2');
+if(b){
+    var re=base("                        <th style=\"width: 60px\">步骤</th>\n" +
+        "                        <th  style=\"width: 80px\">元素类型</th>\n" +
+        "                        <th  style=\"width: 15%\" >页面元素</th>\n" +
+        "                        <th  style=\"width: 80px\" >操作</th>\n" +
+        "                        <th style=\"min-width:100px\">输入值</th>\n" +
+        "                        <th style=\"width:80px\">期望值</th>\n" +
+        "                        <th style=\"width: 120px\">操作</th>\n",7,'wancheng()','完成','stepid','2a2');
 
     $('#context').html(re);
     shuastep();
+}else {
+    var re=" <div class=\"ui segment\" style='margin: 1rem'><div class=\"ui form\">\n"+
+        "            <div class=\"field\">\n"+
+        "                <div class=\"fields\">\n"+
+        "\n"+
+        "                    <div class=\"two wide field\">\n"+
+        "                        <div class=\"ui fluid search selection  dropdown\" id='sehttp'>\n"+
+        "                            <input type=\"hidden\" name=\"country\" id='http'>\n"+
+        "                            <i class=\"dropdown icon\"></i>\n"+
+        "                            <div class=\"default text\">发送方式</div>\n"+
+        "                            <div class=\"menu\" >\n"+
+        "                                <div class=\"item\" data-value=\"1\">get</div>\n"+
+        "                                <div class=\"item\" data-value=\"2\">post</div>\n"+
+
+
+        "\n"+
+        "\n"+
+        "                            </div>\n"+
+        "                        </div>\n"+
+        "                    </div>\n"+
+        "\n"+
+        "                    <div class=\"fourteen wide field \" id='urlid'>\n"+
+        "                        <input type=\"text\"   placeholder=\"链接:http(s):\" id='urlv'>\n"+
+        "                    </div>\n"+
+        "\n"+
+        "                </div>\n"+
+        "            <div class=\"field\">\n"+
+        "<label>传输内容，如有头文件，使用格式：HEAD{xxx:aaa\";\"ccc:222}</label>"+
+        "<textarea id='areaid'></textarea>"+
+        "                </div>\n"+
+        "            <div class=\"field\">\n"+
+        "                <label>值</label>\n"+
+        "                <div class=\"fields\">\n"+
+        "\n"+
+        "                    <div class=\"two wide field\">\n"+
+        "                        <div class=\"ui fluid search selection  dropdown\" id='setype3'>\n"+
+        "                            <input type=\"hidden\" name=\"country\" id='type3'>\n"+
+        "                            <i class=\"dropdown icon\"></i>\n"+
+        "                            <div class=\"default text\">选择类型</div>\n"+
+        "                            <div class=\"menu\">\n"+
+        "                                <div class=\"item\" data-value=\"1\">等于</div>\n"+
+        "                                <div class=\"item\" data-value=\"2\">不等于</div>\n"+
+        "                                <div class=\"item\" data-value=\"3\">包含</div>\n"+
+        "                                <div class=\"item\" data-value=\"4\">不包含</div>\n"+
+        "\n"+
+        "\n"+
+        "                            </div>\n"+
+        "                        </div>\n"+
+        "                    </div>\n"+
+        "\n"+
+        "                    <div class=\"eleven wide field \" id='input2'>\n"+
+        "                        <input type=\"text\"   placeholder=\"值的内容\" id='inputv3'>\n"+
+        "                    </div>\n"+
+        "                    <div class=\"two wide field \" id='input2'>\n"+
+        "<div class=\"ui buttons\">\n"+
+        "<button class=\"ui small button\" onclick=\"$('#mcase').click()\">\n"+
+        "  返回\n"+
+        "</button>"+
+        "  <div class=\"or\"></div>\n"+
+        "<button class=\"ui small primary button\" onclick='updatehttpcase("+cid+")'>\n"+
+        "  保存\n"+
+        "</button>"+
+        "</div>"+
+
+
+        "                    </div>\n"+
+        "\n"+
+        "                </div>\n"+
+        "            </div>\n"+
+
+        "    </div></div>";
+    $('#context').html(re);
+    $('.ui.dropdown').dropdown();
+
+    $.get('/gethttpcase/'+cid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
+        if(o.isok!=0){
+            alertf(o.msg);
+        }else{
+           var cs= o.case;
+           if(cs.length==1&&cs[0].type!='-1'){
+               $('#sehttp').dropdown('set selected',cs[0].type);
+               $('#setype3').dropdown('set selected',cs[0].eq);
+               $('#areaid').val(cs[0].con.toString().replace(/<br\/>/g,"\n"));
+               $('#urlv').val(cs[0].url);
+               $('#inputv3').val(cs[0].value);
+           }
+
+
+
+        }});
+
+
+}
+
+}
+
+function updatehttpcase(a) {
+    var http=$('#http').val();
+    var type=$('#type3').val();
+    var area=$.trim($('#areaid').val());
+    var url=$.trim( $('#urlv').val());
+    var inp=$.trim($('#inputv3').val());
+
+
+
+
+    if(http==""||inp==""||type==""||url==""){
+        alertf("请输入完整数据！")
+
+    }else {
+//String type,String url,String con,String eq,String value,String cid
+        $.post('/upatehttp',{type:http,url:url,con:area,eq:type,value:inp,cid:cid
+
+        },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");return;}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';return;}
+
+                alertf(o.msg);
+           })
+
+    }
 }
 
 
@@ -3370,7 +3603,7 @@ function additem() {
 
 function addcase() {
     ass4=0;
-
+    $('#typeele').removeClass('disabled');
     $('#modal5').modal('show');
 }
 
@@ -3532,7 +3765,7 @@ function returnpage() {
 }
 $('#logout').click(function () {
     $.get('/logout',function (data,status) {
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href="/";return;}
+        var o=$.parseJSON(data);
         alertf(o.msg);
          tid=-1;
          pid=0;
