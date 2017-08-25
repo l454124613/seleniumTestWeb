@@ -37,6 +37,7 @@ public class SeleniumDao implements SeleniumService {
 
     private  List<tmp> lt=null;//所有用例
     private  List<tmp> ls=null;//所有step
+    private String seidStop="0";
 @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -51,6 +52,9 @@ private String picPath;
         init(seriesid);
         //循环运行
         for (int i = 0; i < lt.size(); i++) {
+            if(seriesid.equals(seidStop)){
+                break;
+            }
            String caseListId= lt.get(i).getValue();
            String caseid=lt.get(i).getValue2();
             updateCaseListStatus("1",caseListId);//准备
@@ -70,6 +74,9 @@ private String picPath;
             try {
                 getres(caseListId);
                 for (int j = 0; j <ls.size() ; j++) {
+                    if(seidStop.equals(seriesid)){
+                        throw new InterruptedException("运行被中断");
+                    }
                     nowCaseresid=    ls.get(j).getValue();
                 String sid=ls.get(j).getValue2();
                 updateCaseresTime(nowCaseresid);
@@ -118,7 +125,17 @@ updateCaseListRes("1",caseListId);
                 screenShot(driver,nowCaseresid,seriesid,caseListId,null,true);
                 updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid);
                 updateCaseListRes("2",caseListId);
-            }catch (Exception e1){
+            }catch (InterruptedException e2){
+                System.out.println("fail");
+
+
+                updateCaseresRes("2",e2.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid);
+                updateCaseListRes("2",caseListId);
+                updateCaseListStatus("3",caseListId);
+                closeDriver(driver);
+                break;
+            }
+            catch (Exception e1){
                 System.out.println("warn");
 
                 e1.printStackTrace();
@@ -342,7 +359,8 @@ throw new NoSuchElementException("元素等不到");
                 try {
                     Thread.sleep(Integer.parseInt(element.getWaitvalue()));
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
+                    Thread.interrupted();
                 }
             }else {
                 if(element.getWaitid().equals("2")){
@@ -409,11 +427,16 @@ private boolean exist(WebElement webElement){
         driver.switchTo().window(aa[0]);
     }
 
-    private void closeDriver(WebDriver driver){
+    public void closeDriver(WebDriver driver){
         try {
             driver.quit();
         } catch (Exception e) {
 
         }
+    }
+
+    @Override
+    public void stopRun(String seid) {
+this.seidStop=seid;
     }
 }

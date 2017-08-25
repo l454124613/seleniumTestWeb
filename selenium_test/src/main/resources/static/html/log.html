@@ -42,7 +42,7 @@
 <script src="../js/semantic.min.js" ></script>
 <script src="../js/js.cookie.js" ></script>
 <script>
-    var rev={su:[],err:[],wa:[],all:[]};
+    var rev={su:[],err:[],wa:[],all:[],no:[]};
     var res1;
     function showres(a) {
         var re3="";
@@ -100,6 +100,7 @@ function addca(a) {
         case 2:$('#listnum').html("<h1>具体用例</h1>"+rev.su.join("</br>"));break;
         case 3:$('#listnum').html("<h1>具体用例</h1>"+rev.err.join("</br>"));break;
         case 4:$('#listnum').html("<h1>具体用例</h1>"+rev.wa.join("</br>"));break;
+        case -1:$('#listnum').html("<h1>具体用例</h1>"+rev.no.join("</br>"));break;
     }
     
 }
@@ -135,6 +136,7 @@ function addca(a) {
                                 case '1':re2="<label style='color: green'>成功</label>";break;
                                 case '2':re2="<label style='color: red'>失败</label>";break;
                                 case '3':re2="<label style='color: orange'>警告</label>";break;
+                                case '-1':re2="<label style='color: grey'>未运行</label>";break;
                             }
                             var re3="";
                             for(var i=0;i<res1.length;i++){
@@ -166,7 +168,7 @@ function addca(a) {
 
                         }else {
                             //$('#listnum').css('display','none');
-                            var re2={su:0,err:0,wa:0,all:cas1.length};
+                            var re2={su:0,err:0,wa:0,all:cas1.length,no:0};
 
                             for(var i=0;i<cas1.length;i++){
 
@@ -175,6 +177,7 @@ function addca(a) {
                                     case "1":re2.su++; rev.su.push(" <a class=\"item\" title='"+cas1[i].cdes+"' onclick='showres("+cas1[i].id+")'><i class=\"checkmark green icon\"></i> "+cas1[i].cname+"</a>"); rev.all.push(" <a class=\"item\" onclick='showres("+cas1[i].id+")'title='"+cas1[i].cdes+"'><i class=\"checkmark green icon\"></i> "+cas1[i].cname+"</a>");break;
                                     case "2":re2.err++; rev.err.push(" <a class=\"item\" title='"+cas1[i].cdes+"' onclick='showres("+cas1[i].id+")'><i class=\"remove red icon\"></i> "+cas1[i].cname+"</a>");rev.all.push(" <a class=\"item\" onclick='showres("+cas1[i].id+")'title='"+cas1[i].cdes+"'><i class=\"remove red icon\"></i> "+cas1[i].cname+"</a>");break;
                                     case "3":re2.wa++; rev.wa.push(" <a class=\"item\" title='"+cas1[i].cdes+"' onclick='showres("+cas1[i].id+")'><i class=\"remove circle outline icon yellow\"></i> "+cas1[i].cname+"</a>");rev.all.push(" <a class=\"item\"onclick='showres("+cas1[i].id+")' title='"+cas1[i].cdes+"'><i class=\"remove circle outline icon yellow\"></i> "+cas1[i].cname+"</a>");break;
+                                    case "-1":re2.no++; rev.no.push(" <a class=\"item\" title='"+cas1[i].cdes+"' onclick='showres("+cas1[i].id+")'><i class=\"minus  icon grey\"></i> "+cas1[i].cname+"</a>");rev.all.push(" <a class=\"item\"onclick='showres("+cas1[i].id+")' title='"+cas1[i].cdes+"'><i class=\"minus  icon grey\"></i> "+cas1[i].cname+"</a>");break;
                                 }
 
 
@@ -186,7 +189,9 @@ function addca(a) {
                                 "  <li ><a onclick='addca(1)'>全部 <label style='color: grey'>"+re2.all+"</label></a></li>\n"+
                                 "  <li><a onclick='addca(2)'>成功 <label style='color: green'>"+re2.su+"</label></a></li>\n"+
                                 "  <li><a onclick='addca(3)'>失败 <label style='color: red'>"+re2.err+"</label></a></li>\n"+
-                                "  <li><a onclick='addca(4)'>警告 <label style='color: orange'>"+re2.wa+"</label></a></li></ul></div>";
+                                "  <li><a onclick='addca(4)'>警告 <label style='color: orange'>"+re2.wa+"</label></a></li>" +
+                                "  <li><a onclick='addca(-1)'>中断 <label style='color: wheat'>"+re2.no+"</label></a></li>" +
+                                "</ul></div>";
                             $('#content').html(re+re1);
                            // $('#listnum').css('display','block');
 

@@ -67,7 +67,8 @@ int updatePrecondition(String type,String cid ,String a,String b,String c);
 
     boolean isRuning(String tid);
 
-    void startrun(String tid);
+    Thread startrun(String tid);
+    void stopRun(String seid);
 
     int addCaseHome(String name,String des,String tid);
     int updateCaseHome4cids(String cids,String id);

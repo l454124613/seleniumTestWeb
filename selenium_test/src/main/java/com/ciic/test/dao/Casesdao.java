@@ -21,6 +21,9 @@ import java.util.List;
  */
 @Service
 public class Casesdao implements CaseService {
+
+    private String seidStop="0";
+
 @Autowired
     private GetCase getCase;
 @Autowired
@@ -303,7 +306,7 @@ return "0";
 
     @Override
     public List<Series> getFinishSeries(String series) {
-        return jdbcTemplate.query("select * from series where isused=1 and status=3 and id=?",new Object[]{series},new BeanPropertyRowMapper<>(Series.class));
+        return jdbcTemplate.query("select * from series where isused=1 and status in (3,4,5) and id=?",new Object[]{series},new BeanPropertyRowMapper<>(Series.class));
     }
 
     @Override
@@ -348,17 +351,35 @@ return "0";
     }
     }
 
+
     @Override
-    public void startrun(String tid) {
+    public Thread startrun(String tid) {
         isNowKeep(tid); //查看是否有等待运行
+        Thread  thread=null;
         if(!isRuning(tid)&&iskeep){
-            addCase4Run(tid);
+              thread=new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    addCase4Run(tid);
+
+                }
+            });
+
 
 
         }
 
+return thread;
+    }
+
+    @Override
+    public void stopRun(String seid) {
+        seleniumService.stopRun(seid);
+        this.seidStop=seid;
+
 
     }
+
 
     @Override
     public int addCaseHome(String name, String des, String tid) {
@@ -442,7 +463,12 @@ return "0";
 
                 seleniumService.run(tid,series.getId());
                 //修改当前系列运行结束
-              updateOneseriesStatus("3","",series.getId());
+        if(series.getId().equals(seidStop)){
+            updateOneseriesStatus("5","",series.getId());
+        }else {
+            updateOneseriesStatus("3","",series.getId());
+        }
+
               updateSeriesEtime(series.getId());
 
 
@@ -452,7 +478,12 @@ return "0";
 
 
         //检查是否还存在要运行的系列
-        startrun(tid);
+        isNowKeep(tid); //查看是否有等待运行
+
+
+        if(!isRuning(tid)&&iskeep){
+            addCase4Run(tid);
+        }
     }
 
 void addCase2res(String cid,String seriesid) throws Exception {

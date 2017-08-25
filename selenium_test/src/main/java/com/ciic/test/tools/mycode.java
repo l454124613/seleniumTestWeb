@@ -3,7 +3,9 @@ package com.ciic.test.tools;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lixuecheng on 2017/7/10.
@@ -69,6 +71,11 @@ public class mycode {
 //       if(aa==null){
 //           System.out.println(1);
 //       }
-        System.out.println(System.currentTimeMillis()/1000);
+     //   System.out.println(System.currentTimeMillis()/1000);
+        Map map=new HashMap();
+        map.put(11,123);
+        map.put(11,12311);
+        System.out.println(map);
+
     }
 }

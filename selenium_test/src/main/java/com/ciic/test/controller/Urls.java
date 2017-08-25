@@ -15,7 +15,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lixuecheng on 2017/7/4.
@@ -34,6 +36,8 @@ private GetPageService getPageService;
 private CaseService caseService;
 @Autowired
 private ConfigService configService;
+
+private Map<String,Thread> map4thread=new HashMap();
 
     @RequestMapping("/login" )
     String login(HttpSession session,String user) throws UnsupportedEncodingException {
@@ -585,13 +589,23 @@ String getcase(@PathVariable String tid){
 
 
         if(n==1){
+                   if(map4thread.containsKey(tid)){
+                       if(map4thread.get(tid).isAlive()){
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    caseService.startrun(tid);
-                }
-            }).start();
+                       }else {
+                           map4thread.put(tid, caseService.startrun(tid));
+                           map4thread.get(tid).start();
+                       }
+
+                   }else {
+                       map4thread.put(tid, caseService.startrun(tid));
+                       map4thread.get(tid).start();
+                   }
+
+
+
+
+
 
             return "{\"isok\":0,\"msg\":\"操作成功,请稍后查看结果\",\"to\":\"/\"}";
         }else {
@@ -979,18 +993,44 @@ if(id.equalsIgnoreCase("0")){
     @RequestMapping("/runseries/{seid}/{tid}")
     String runSeries(@PathVariable String seid,@PathVariable String tid){
         int a= caseService.updateOneseriesStatus("1","",seid);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                caseService.startrun(tid);
+
+        if(map4thread.containsKey(tid)){
+            if(map4thread.get(tid).isAlive()){
+
+            }else {
+                map4thread.put(tid, caseService.startrun(tid));
+                map4thread.get(tid).start();
             }
-        }).start();
+
+        }else {
+            map4thread.put(tid, caseService.startrun(tid));
+            map4thread.get(tid).start();
+        }
 
         if(a==1){
             return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
         }else {
             return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
         }
+
+    }
+    @RequestMapping("/stopseries/{seid}/{tid}")
+    String stopSeries(@PathVariable String seid,@PathVariable String tid){
+
+        if(map4thread.get(tid).isAlive()){
+            caseService.stopRun(seid);
+            return "{\"isok\":0,\"msg\":\"操作成功，强制中止中\",\"to\":\"/\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"操作失败，已经停止或暂时无法停止\",\"to\":\"/\"}";
+        }
+
+
+
+
+
+
+
+
 
     }
     @RequestMapping("/pauseseries/{seid}/{tid}")
