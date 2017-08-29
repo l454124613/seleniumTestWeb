@@ -431,6 +431,11 @@ return thread;
         return jdbcTemplate.query("select * from httpcase where cid=?",new Object[]{cid},new BeanPropertyRowMapper(HttpCase.class));
     }
 
+    @Override
+    public void test(String cid) {
+        seleniumService.test(cid);
+    }
+
     private void updateSeriesStime(String seriesid){
         jdbcTemplate.update("update series set sttime='"+LocalDate.now()+" "+LocalTime.now()+"'  where id="+seriesid );
     }

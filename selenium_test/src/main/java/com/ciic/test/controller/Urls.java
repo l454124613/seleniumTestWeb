@@ -215,8 +215,8 @@ private Map<String,Thread> map4thread=new HashMap();
 
 
     @RequestMapping("/test" )
-    String test(){
-caseService.startrun("9");
+    String test(String cid){
+caseService.test(cid);
 
         return "ok";
     }

@@ -84,6 +84,8 @@ int addHttpCase(String tid);
 int updateHttpCase(String type,String url,String con,String eq,String value,String cid);
     List<HttpCase> getHttpCase(String cid);
 
+    void test(String cid);
+
 
 
 

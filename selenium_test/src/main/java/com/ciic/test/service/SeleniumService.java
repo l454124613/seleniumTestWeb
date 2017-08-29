@@ -9,6 +9,7 @@ public interface SeleniumService {
     void run(String tid ,String seriesid);
     void closeDriver(WebDriver driver);
     void stopRun(String seid);
+    void test(String cid);
 
 
 }

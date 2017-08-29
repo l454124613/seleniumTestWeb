@@ -223,7 +223,7 @@ function changeyan3() {
         "\n"+
         "                </div>\n"+
         "            <div class=\"field\">\n"+
-        "<label>传输内容，如有头文件，使用格式：HEAD{xxx:aaa\";\"ccc:222}</label>"+
+        "<label>传输内容，如有头文件，使用格式：HEAD{xxx:aaa&ccc:222}xxx=111&ccc=222</label>"+
         "<textarea id='areaid'></textarea>"+
         "                </div>\n"+
         "            <div class=\"field\">\n"+
@@ -1017,7 +1017,7 @@ function changeyu3() {
         "\n"+
         "                </div>\n"+
         "            <div class=\"field\">\n"+
-        "<label>传输内容，如有头文件，使用格式：HEAD{xxx:aaa\";\"ccc:222}</label>"+
+        "<label>传输内容，如有头文件，使用格式：HEAD{xxx:aaa&ccc:222}xxx=111&ccc=222</label>"+
         "<textarea id='areaid'></textarea>"+
         "                </div>\n"+
 
@@ -3574,7 +3574,7 @@ if(b){
         "\n"+
         "                </div>\n"+
         "            <div class=\"field\">\n"+
-        "<label>传输内容，如有头文件，使用格式：HEAD{xxx:aaa\";\"ccc:222}</label>"+
+        "<label>传输内容，如有头文件，使用格式：HEAD{xxx:aaa&ccc:222}xxx=111&ccc=222</label>"+
         "<textarea id='areaid'></textarea>"+
         "                </div>\n"+
         "            <div class=\"field\">\n"+

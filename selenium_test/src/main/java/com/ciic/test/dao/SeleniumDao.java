@@ -1,15 +1,20 @@
 package com.ciic.test.dao;
 
-import com.ciic.test.bean.*;
-import com.ciic.test.service.CaseService;
+import com.ciic.test.bean.Element;
+import com.ciic.test.bean.HttpCase;
+import com.ciic.test.bean.Step;
+import com.ciic.test.bean.tmp;
 import com.ciic.test.service.SeleniumService;
-
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -25,7 +30,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
-
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -154,57 +158,147 @@ updateCaseListRes("1",caseListId);
 
     }
 
+public void test(String cid) {
 
 
-    private void runHttpCase(String cid) throws IOException {
+        runHttpCase(cid);
+
+}
+
+
+private String getHttpCon(String url, Header[] head, String type, String con){
+    CloseableHttpClient client = HttpClients.createDefault();
+    StringBuffer stringBuffer=new StringBuffer();
+    RequestConfig config = RequestConfig.custom().setConnectTimeout(20000).setSocketTimeout(20000).build();
+    try {
+        if(type.equals("get")){
+            HttpGet httpGet=new HttpGet(url);
+
+            httpGet.setConfig(config);
+            if(head!=null){
+                httpGet.setHeaders(head);
+            }
+
+
+            stringBuffer.append("请求信息："+httpGet.getRequestLine().toString()+"\n");
+            stringBuffer.append("\n");
+            stringBuffer.append("请求信息头："+ Arrays.asList(httpGet.getAllHeaders())+"\n");
+            stringBuffer.append("--------------------------------------------------\n");
+            HttpResponse response= client.execute(httpGet);
+            HttpEntity entity = response.getEntity();
+            String  temp= EntityUtils.toString(entity,"UTF-8");
+            stringBuffer.append("响应信息："+response.getStatusLine()+"\n");
+            stringBuffer.append("\n");
+            stringBuffer.append("响应信息头："+Arrays.asList(response.getAllHeaders())+"\n");
+            stringBuffer.append("\n");
+            stringBuffer.append("响应内容："+temp+"\n");
+            stringBuffer.append("--------------------------------------------------\n");
+
+
+        }else {
+            HttpPost httpPost=new HttpPost(url);
+            httpPost.setConfig(config);
+            if(head!=null){
+                httpPost.setHeaders(head);
+            }
+
+            StringEntity entity = new StringEntity(con,"utf-8");
+            if(con.charAt(0)=='{'){
+                entity.setContentType("application/json");
+            }else {
+                entity.setContentType("application/x-www-form-urlencoded");
+            }
+
+            httpPost.setEntity(entity);
+            stringBuffer.append("请求信息："+httpPost.getRequestLine().toString()+"\n");
+            stringBuffer.append("\n");
+            stringBuffer.append("请求信息头："+Arrays.asList(httpPost.getAllHeaders()));
+            stringBuffer.append(httpPost.getEntity()+"\n");
+            stringBuffer.append("\n");
+            stringBuffer.append("请求内容："+con+"\n");
+            stringBuffer.append("--------------------------------------------------\n");
+            HttpResponse response= client.execute(httpPost);
+            HttpEntity entity2 = response.getEntity();
+            String  temp= EntityUtils.toString(entity2,"UTF-8");
+            stringBuffer.append("响应信息："+response.getStatusLine()+"\n");
+            stringBuffer.append("\n");
+            stringBuffer.append("响应信息头："+Arrays.asList(response.getAllHeaders())+"\n");
+            stringBuffer.append("\n");
+            stringBuffer.append("响应内容："+temp+"\n");
+            stringBuffer.append("--------------------------------------------------\n");
+        }
+    } catch (Exception e) {
+       stringBuffer.append(e.getLocalizedMessage());
+    } finally {
+        try {
+            client.close();
+        } catch (IOException e) {
+
+        }
+    }
+    return  stringBuffer.toString();
+
+}
+private Header[] getheaders(String head){
+    String[] a=head.split("&");
+    if(a.length>0){
+        Header[] headers=new Header[a.length];
+        for (int i = 0; i <a.length ; i++) {
+            String[] b=a[i].split(":");
+            headers[i]=new BasicHeader(b[0],b[1]);
+        }
+        return headers;
+    }else {
+        return null;
+    }
+
+
+}
+
+    private void runHttpCase(String cid)  {
      List<HttpCase> lh=   jdbcTemplate.query("select * from httpcase where cid="+cid,new BeanPropertyRowMapper<>(HttpCase.class));
-      if(lh.size()>0){
-         if(lh.get(0).getType().equals("1")){
-             HttpGet httpGet = new HttpGet(lh.get(0).getUrl());
-             if(lh.get(0).getCon().contains("HEAD")){
-                 String head=lh.get(0).getCon();
-               int st=  head.indexOf("HEAD{");
-               int et=  head.indexOf("}",st);
-               head=head.substring(st+5,et);
-                 String[] head2=head.split("\";\"");
-                 for(String a:head2){
-                     String a2[]=a.split(":");
-                     httpGet.setHeader(a2[0],a2[1]);
+
+      if(lh.size()>0)          {
+             if(lh.get(0).getType().equals("1")){
+                    Header[] headers=null;
+                 if(lh.get(0).getCon().contains("HEAD")){
+                     String head=lh.get(0).getCon();
+                     int st=  head.indexOf("HEAD{");
+                     int et=  head.indexOf("}",st);
+                     head=head.substring(st+5,et);
+                    headers= getheaders(head);
+
+
+
                  }
 
 
+                String res= getHttpCon(lh.get(0).getUrl(),headers,"get","");
+
+                 System.out.println(res);
 
 
-             }
-             CloseableHttpClient client = HttpClients.createDefault();
-             HttpResponse response= client.execute(httpGet);
-             HttpEntity entity = response.getEntity();
-             String  temp= EntityUtils.toString(entity,"UTF-8");
-             System.out.println(Arrays.asList(httpGet.getAllHeaders()));
-             System.out.println("_____________________");
-             System.out.println(temp);
 
-         }else {
-             HttpPost httpPost=new HttpPost(lh.get(0).getUrl());
-             String head="";
-             if(lh.get(0).getCon().contains("HEAD")){
-                  head=lh.get(0).getCon();
-                 int st=  head.indexOf("HEAD{");
-                 int et=  head.indexOf("}",st);
-                 head=head.substring(st+5,et);
-                 String[] head2=head.split("\";\"");
-                 for(String a:head2){
-                     String a2[]=a.split(":");
-                     httpPost.setHeader(a2[0],a2[1]);
+             }else {
+                 String head = "";
+                 Header[] headers = null;
+                 if (lh.get(0).getCon().contains("HEAD")) {
+                     head = lh.get(0).getCon();
+                     int st = head.indexOf("HEAD{");
+                     int et = head.indexOf("}", st);
+                     head = head.substring(st + 5, et);
+                     headers = getheaders(head);
+
+
                  }
-
-
-
-
+                 String con = lh.get(0).getCon().replace(head, "").replace("HEAD{}", "");
+                 String res = getHttpCon(lh.get(0).getUrl(), headers, "post", con);
+                 System.out.println(res);
              }
 
+      }      else {
 
-         }
+          System.out.println("no case");
       }
         //CloseableHttpClient client = HttpClients.createDefault();
 
