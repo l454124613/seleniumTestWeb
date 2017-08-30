@@ -44,6 +44,7 @@
 <script>
     var rev={su:[],err:[],wa:[],all:[],no:[]};
     var res1;
+    var textimg="";
     function showres(a) {
         var re3="";
         for(var i=0;i<res1.length;i++){
@@ -82,18 +83,59 @@ function getimg(a,b,f,c) {
         //replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26")
         f=f.replace(/%21/g,"(").replace(/%22/g,")").replace(/%23/g,"{").replace(/%24/g,"}").replace(/%25/g,"*").replace(/%26/g,"*");
         if(b.length>1){
-            $('#img'+a).html("<img class=\"ui fluid image\" src=\"../"+b+"\"><div style=\"margin:0 auto; text-align:center\">"+f+"</div><div class=\"ui divider\"></div>");
+            $('#img'+a).html("<img class=\"ui fluid image\" src=\"../"+b+"\"><div style=\"margin:0 auto; text-align:center\" id='ff'></div><div class=\"ui divider\"></div>");
 
         }else {
-            $('#img'+a).html("<div style=\"margin:0 auto; text-align:center\">"+f+"</div>");
+            $('#img'+a).html("<div  id='ff'></div>");
 
         }
+        var f2=f.split("$$$666");
+
+        switch (f2.length){
+            case 1:$('#ff').html(f);break;
+            case 2:$('#ff').html(f.replace("$$$666"),"<br/>");break;
+            case 7:$('#ff').html("<br/>"+f2[0]+"<div class=\"list\">\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f1')\"><i class=\"circle icon\"></i>请求信息</a><div id='f1' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f2')\"><i class=\"circle icon\"></i>请求信息头</a><div id='f2' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f3')\"><i class=\"circle icon\"></i>响应信息</a><div id='f3' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f4')\"><i class=\"circle icon\"></i>响应信息头</a><div id='f4' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f5')\"><i class=\"circle icon\"></i>响应内容</a><div id='f5' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f6')\"><i class=\"circle icon\"></i>校验内容</a><div id='f6' style='display: none'></div>\n"+
+                "    </div>");
+            $('#f1').text(f2[1]);
+            $('#f2').text(f2[2]);
+            $('#f3').text(f2[3]);
+            $('#f4').text(f2[4]);
+            $('#f5').text(f2[5]);
+            $('#f6').text(f2[6]);
+            break;
+            case 8:$('#ff').html("<br/>"+f2[0]+"<div class=\"list\">\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f1')\"><i class=\"circle icon\"></i>请求信息</a><div id='f1' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f2')\"><i class=\"circle icon\"></i>请求信息头</a><div id='f2' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f3')\"><i class=\"circle icon\"></i>请求内容</a><div id='f3' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f4')\"><i class=\"circle icon\"></i>响应信息</a><div id='f4' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f5')\"><i class=\"circle icon\"></i>响应信息头</a><div id='f5' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f6')\"><i class=\"circle icon\"></i>响应内容</a><div id='f6' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f7')\"><i class=\"circle icon\"></i>校验内容</a><div id='f7' style='display: none'></div>\n"+
+                "    </div>");
+                $('#f1').text(f2[1]);
+                $('#f2').text(f2[2]);
+                $('#f3').text(f2[3]);
+                $('#f4').text(f2[4]);
+                $('#f5').text(f2[5]);
+                $('#f6').text(f2[6]);
+                $('#f7').text(f2[7]);
+            break;
+        }
+
 
     }
 
     
 }
-
+function showinfo(a) {
+    $('#'+a).toggle();
+}
 function addca(a) {
     switch (a){
         case 1:$('#listnum').html("<h1>具体用例</h1>"+rev.all.join("</br>"));break;

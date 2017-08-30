@@ -66,6 +66,15 @@ public class mycode {
 
     }
 
+    public static String  praseString2(String a){
+
+         return   a.replace("\n","").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\").replace("<","&lt;").replace(">","&gt;");
+
+
+
+    }
+
+
 
     public static void main(String[] args) throws IOException {
 //       String aa="";

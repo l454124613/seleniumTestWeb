@@ -5,6 +5,7 @@ import com.ciic.test.bean.HttpCase;
 import com.ciic.test.bean.Step;
 import com.ciic.test.bean.tmp;
 import com.ciic.test.service.SeleniumService;
+import com.ciic.test.tools.mycode;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -63,16 +64,25 @@ private String picPath;
            String caseid=lt.get(i).getValue2();
             updateCaseListStatus("1",caseListId);//准备
            String pre=getpre(caseid);
-            WebDriver driver=startDriver(tid );
+            WebDriver driver=null;
             try {
-                if(!pre.equals("0")){
-     //TODO
+//                if(!pre.equals("0")){
+//     //TODO
+//                }
+                switch (pre){
+                    case "0":break;
+                    case "1":driver=startDriver(tid );break;
+                    case "2":break;
+                    case "3":break;
+                    case "4":break;
                 }
             } catch (Exception e) {
                 updateCaseListRes("3lolo"+"预置条件出错，用例停止运行。出错原因："+e.getLocalizedMessage(),caseListId);
                 continue;
 
             }
+
+
             updateCaseListStatus("2",caseListId);//正式运行
             String nowCaseresid="0";
             try {
@@ -86,9 +96,19 @@ private String picPath;
                 updateCaseresTime(nowCaseresid);
                 if(sid.equals("0")){
 
-                    runHttpCase(caseid);
+                    String res=runHttpCase(caseid,nowCaseresid);
+                    if(res.equals("2")){
+                        throw new MyException("校验错误");
+                    }else {
+                        if(res.equals("3")){
+                            throw new Exception("运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤");
+                        }
+                    }
 
                 }else {
+                    if(driver==null){
+                        driver= startDriver(tid );
+                    }
                     Step step = getStep(sid);
                     Element element = getElement(step.getEid());
                     WebElement webElement = element2Web(element, driver);//未修改提示框//TODO
@@ -105,9 +125,10 @@ private String picPath;
                     if (!step.getExpid().equals("0")) {
                         System.out.println("exp");
                     }
+                    updateCaseresRes("1","运行成功",nowCaseresid);
 
                 }
-                    updateCaseresRes("1","运行成功",nowCaseresid);
+
 
 
 
@@ -138,6 +159,15 @@ updateCaseListRes("1",caseListId);
                 updateCaseListStatus("3",caseListId);
                 closeDriver(driver);
                 break;
+            }catch (MyException e3){
+                System.out.println("fail");
+
+
+               // updateCaseresRes("2",e2.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid);
+                updateCaseListRes("2",caseListId);
+                updateCaseListStatus("3",caseListId);
+                //closeDriver(driver);
+                break;
             }
             catch (Exception e1){
                 System.out.println("warn");
@@ -161,7 +191,7 @@ updateCaseListRes("1",caseListId);
 public void test(String cid) {
 
 
-        runHttpCase(cid);
+        runHttpCase(cid,"214");
 
 }
 
@@ -180,27 +210,25 @@ private String getHttpCon(String url, Header[] head, String type, String con){
             }
 
 
-            stringBuffer.append("请求信息："+httpGet.getRequestLine().toString()+"\n");
-            stringBuffer.append("\n");
-            stringBuffer.append("请求信息头："+ Arrays.asList(httpGet.getAllHeaders())+"\n");
-            stringBuffer.append("--------------------------------------------------\n");
+            stringBuffer.append("请求信息："+httpGet.getRequestLine().toString());
+            stringBuffer.append("$$$666");
+            stringBuffer.append("请求信息头："+ Arrays.asList(httpGet.getAllHeaders()));
+            stringBuffer.append("$$$666");
             HttpResponse response= client.execute(httpGet);
             HttpEntity entity = response.getEntity();
             String  temp= EntityUtils.toString(entity,"UTF-8");
-            stringBuffer.append("响应信息："+response.getStatusLine()+"\n");
-            stringBuffer.append("\n");
-            stringBuffer.append("响应信息头："+Arrays.asList(response.getAllHeaders())+"\n");
-            stringBuffer.append("\n");
-            stringBuffer.append("响应内容："+temp+"\n");
-            stringBuffer.append("--------------------------------------------------\n");
+            stringBuffer.append("响应信息："+response.getStatusLine());
+            stringBuffer.append("$$$666");
+            stringBuffer.append("响应信息头："+Arrays.asList(response.getAllHeaders()));
+            stringBuffer.append("$$$666");
+            stringBuffer.append("响应内容："+temp);
+          //  stringBuffer.append("--------------------------------------------------\n");
 
 
         }else {
             HttpPost httpPost=new HttpPost(url);
             httpPost.setConfig(config);
-            if(head!=null){
-                httpPost.setHeaders(head);
-            }
+
 
             StringEntity entity = new StringEntity(con,"utf-8");
             if(con.charAt(0)=='{'){
@@ -208,24 +236,26 @@ private String getHttpCon(String url, Header[] head, String type, String con){
             }else {
                 entity.setContentType("application/x-www-form-urlencoded");
             }
-
+            if(head!=null){
+                httpPost.setHeaders(head);
+            }
             httpPost.setEntity(entity);
-            stringBuffer.append("请求信息："+httpPost.getRequestLine().toString()+"\n");
-            stringBuffer.append("\n");
+            stringBuffer.append("请求信息："+httpPost.getRequestLine().toString());
+            stringBuffer.append("$$$666");
             stringBuffer.append("请求信息头："+Arrays.asList(httpPost.getAllHeaders()));
-            stringBuffer.append(httpPost.getEntity()+"\n");
-            stringBuffer.append("\n");
-            stringBuffer.append("请求内容："+con+"\n");
-            stringBuffer.append("--------------------------------------------------\n");
+            stringBuffer.append(httpPost.getEntity());
+            stringBuffer.append("$$$666");
+            stringBuffer.append("请求内容："+con);
+            stringBuffer.append("$$$666");
             HttpResponse response= client.execute(httpPost);
             HttpEntity entity2 = response.getEntity();
             String  temp= EntityUtils.toString(entity2,"UTF-8");
-            stringBuffer.append("响应信息："+response.getStatusLine()+"\n");
-            stringBuffer.append("\n");
-            stringBuffer.append("响应信息头："+Arrays.asList(response.getAllHeaders())+"\n");
-            stringBuffer.append("\n");
-            stringBuffer.append("响应内容："+temp+"\n");
-            stringBuffer.append("--------------------------------------------------\n");
+            stringBuffer.append("响应信息："+response.getStatusLine());
+            stringBuffer.append("$$$666");
+            stringBuffer.append("响应信息头："+Arrays.asList(response.getAllHeaders()));
+            stringBuffer.append("$$$666");
+            stringBuffer.append("响应内容："+temp);
+            //stringBuffer.append("--------------------------------------------------\n");
         }
     } catch (Exception e) {
        stringBuffer.append(e.getLocalizedMessage());
@@ -255,7 +285,7 @@ private Header[] getheaders(String head){
 
 }
 
-    private void runHttpCase(String cid)  {
+    private String runHttpCase(String cid,String resid)  {
      List<HttpCase> lh=   jdbcTemplate.query("select * from httpcase where cid="+cid,new BeanPropertyRowMapper<>(HttpCase.class));
 
       if(lh.size()>0)          {
@@ -274,8 +304,26 @@ private Header[] getheaders(String head){
 
 
                 String res= getHttpCon(lh.get(0).getUrl(),headers,"get","");
+                 boolean isok=false;
+                 String eq="";
+                 switch (lh.get(0).getEq()){
+                     case "1":if(res.equals(lh.get(0).getValue()))isok=true;eq="等于";break;
+                     case "2":if(!res.equals(lh.get(0).getValue()))isok=true;eq="不等于";break;
+                     case "3":if(res.contains(lh.get(0).getValue()))isok=true;eq="包含";break;
+                     case "4":if(!res.contains(lh.get(0).getValue()))isok=true;eq="不包含";break;
+                     default: isok=false;
+                 }
+                if (isok){
 
-                 System.out.println(res);
+                     updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                     return "1";
+                }else {
+                    updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                    return "2";
+
+                }
+
+
 
 
 
@@ -293,12 +341,32 @@ private Header[] getheaders(String head){
                  }
                  String con = lh.get(0).getCon().replace(head, "").replace("HEAD{}", "");
                  String res = getHttpCon(lh.get(0).getUrl(), headers, "post", con);
-                 System.out.println(res);
+                 boolean isok=false;
+                 String eq="";
+                 switch (lh.get(0).getEq()){
+                     case "1":if(res.equals(lh.get(0).getValue()))isok=true;eq="等于";break;
+                     case "2":if(!res.equals(lh.get(0).getValue()))isok=true;eq="不等于";break;
+                     case "3":if(res.contains(lh.get(0).getValue()))isok=true;eq="包含";break;
+                     case "4":if(!res.contains(lh.get(0).getValue()))isok=true;eq="不包含";break;
+                     default: isok=false;
+                 }
+                 if (isok){
+                     updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                     return "1";
+                 }else {
+                     updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                     return "2";
+
+                 }
+
              }
 
       }      else {
 
-          System.out.println("no case");
+
+             // updateCaseresRes("3","运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤",resid);
+              return "3";
+
       }
         //CloseableHttpClient client = HttpClients.createDefault();
 
