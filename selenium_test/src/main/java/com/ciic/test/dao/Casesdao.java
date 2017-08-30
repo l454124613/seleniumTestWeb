@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by lixuecheng on 2017/7/10.
@@ -442,6 +441,73 @@ return thread;
     private void updateSeriesEtime(String seriesid){
         jdbcTemplate.update("update series set etime='"+LocalDate.now()+" "+LocalTime.now()+"'  where id="+seriesid );
     }
+private void map2Sql(Map<String,Set<String>> map){
+    jdbcTemplate.update("DELETE from runtimecase");
+        map.forEach((k,v)->{
+            String[] y = v.toArray(new String[0]);
+            for (int i = 0; i < y.length; i++) {
+                if(map.containsKey(y[i])){
+                    map.get(y[i]).forEach(k3->{
+                        map.get(k).add(k3);
+                        //TODO
+                    });
+
+                }else {
+                    //TODO
+                }
+
+            };
+            y = v.toArray(new String[0]);
+
+
+        });
+
+
+
+}
+
+    private void orderCases(String cids){
+        List<String> ls=new ArrayList<>();
+        List<String> ls2=new ArrayList<>();
+        Set sety=new HashSet();
+        Map<String,Set<String>> map=new HashMap<>();
+            List<tmp3> lc=jdbcTemplate.query("SELECT type value1,a value2,cid value3 from precondition where   cid in ("+cids+")",new BeanPropertyRowMapper<>(tmp3.class));
+        for (int i = 0; i <lc.size() ; i++) {
+            if(lc.get(i).getValue1().equals("1")) {
+                if (map.containsKey(lc.get(i).getValue2())) {
+                    map.get(lc.get(i).getValue2()).add(lc.get(i).getValue3());
+                } else {
+                    Set set = new HashSet();
+                    set.add(lc.get(i).getValue3());
+                    map.put(lc.get(i).getValue2(), set);
+                }
+                lc.add(jdbcTemplate.query("SELECT type value1,a value2,cid value3 from precondition where   cid  =" + lc.get(i).getValue3(), new BeanPropertyRowMapper<>(tmp3.class)).get(0));
+                sety.add(lc.get(i).getValue2());
+            }
+              //  lsy.add(lc.get(i).getValue3());
+//            }else {
+//                ls.add(lc.get(i).getValue3());
+//            }
+            
+        }
+        for (int i = 0; i < lc.size(); i++) {
+            if(!sety.contains(lc.get(i).getValue3())){
+                ls.add(lc.get(i).getValue3());
+
+            }
+        }
+        for (int i = 0; i <ls.size() ; i++) {
+
+        }
+
+
+
+
+    }
+
+    private void getPreCid(){
+
+    }
 
     void addCase4Run(String tid){
         //获得等待的系列
@@ -450,6 +516,8 @@ return thread;
             Series series= ls.get(0);
             //获得用例
             String[] cids=series.getCids().split(",");
+
+
         for (int i = 0; i <cids.length ; i++) {
           // int a= jdbcTemplate.update("INSERT INTO \"runtimecase\" ( \"cid\", \"tid\") VALUES ("+cids[i]+", "+tid+") ");
             //添加用例指caseres和casereslist表

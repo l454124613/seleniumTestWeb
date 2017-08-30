@@ -57,7 +57,7 @@ private String picPath;
         init(seriesid);
         //循环运行
         for (int i = 0; i < lt.size(); i++) {
-            if(seriesid.equals(seidStop)){
+            if(seriesid.equals(seidStop)){ //是否中断
                 break;
             }
            String caseListId= lt.get(i).getValue();
@@ -66,16 +66,8 @@ private String picPath;
            String pre=getpre(caseid);
             WebDriver driver=null;
             try {
-//                if(!pre.equals("0")){
-//     //TODO
-//                }
-                switch (pre){
-                    case "0":break;
-                    case "1":driver=startDriver(tid );break;
-                    case "2":break;
-                    case "3":break;
-                    case "4":break;
-                }
+
+                driver=runPre(pre,tid);
             } catch (Exception e) {
                 updateCaseListRes("3lolo"+"预置条件出错，用例停止运行。出错原因："+e.getLocalizedMessage(),caseListId);
                 continue;
@@ -84,80 +76,34 @@ private String picPath;
 
 
             updateCaseListStatus("2",caseListId);//正式运行
-            String nowCaseresid="0";
+            String[] nowCaseresid={"0"};
             try {
                 getres(caseListId);
-                for (int j = 0; j <ls.size() ; j++) {
-                    if(seidStop.equals(seriesid)){
-                        throw new InterruptedException("运行被中断");
-                    }
-                    nowCaseresid=    ls.get(j).getValue();
-                String sid=ls.get(j).getValue2();
-                updateCaseresTime(nowCaseresid);
-                if(sid.equals("0")){
+                runStep(seriesid,driver,tid,caseListId,nowCaseresid,caseid);
 
-                    String res=runHttpCase(caseid,nowCaseresid);
-                    if(res.equals("2")){
-                        throw new MyException("校验错误");
-                    }else {
-                        if(res.equals("3")){
-                            throw new Exception("运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤");
-                        }
-                    }
-
-                }else {
-                    if(driver==null){
-                        driver= startDriver(tid );
-                    }
-                    Step step = getStep(sid);
-                    Element element = getElement(step.getEid());
-                    WebElement webElement = element2Web(element, driver);//未修改提示框//TODO
-                    screenShot(driver, nowCaseresid, seriesid, caseListId, webElement, false);                    //截图
-                    action(webElement, step.getCatid(), driver, step.getValue());
-                    if (!element.getToframe().equals("-1")) {
-                        driver.switchTo().defaultContent();
-                    }
-                    if (!element.getTopage().equals("-1")) {
-                        toWindow(getTitle(element.getTopage()), driver);
-
-                    }
-                    updateCaseListRunnum((j + 1) + "", caseListId);
-                    if (!step.getExpid().equals("0")) {
-                        System.out.println("exp");
-                    }
-                    updateCaseresRes("1","运行成功",nowCaseresid);
-
-                }
-
-
-
-
-
-
-                }
-updateCaseListRes("1",caseListId);
+                updateCaseListRes("1",caseListId);
 
             } catch (NoSuchElementException e) {
                 System.out.println("fail");
-                screenShot(driver,nowCaseresid,seriesid,caseListId,null,true);
-                updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid);
+                screenShot(driver,nowCaseresid[0],seriesid,caseListId,null,true);
+                updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
                 updateCaseListRes("2",caseListId);
             }
             catch (UnhandledAlertException e){
 
                 System.out.println("fail");
                 driver.switchTo().alert().accept();
-                screenShot(driver,nowCaseresid,seriesid,caseListId,null,true);
-                updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid);
+                screenShot(driver,nowCaseresid[0],seriesid,caseListId,null,true);
+                updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
                 updateCaseListRes("2",caseListId);
             }catch (InterruptedException e2){
                 System.out.println("fail");
 
 
-                updateCaseresRes("2",e2.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid);
+                updateCaseresRes("2",e2.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
                 updateCaseListRes("2",caseListId);
                 updateCaseListStatus("3",caseListId);
-                closeDriver(driver);
+               // closeDriver(driver);
                 break;
             }catch (MyException e3){
                 System.out.println("fail");
@@ -174,8 +120,8 @@ updateCaseListRes("1",caseListId);
 
                 e1.printStackTrace();
                 updateCaseListRes("3",caseListId);
-                updateCaseresRes("3",e1.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid);
-                screenShot(driver,nowCaseresid,seriesid,caseListId,null,true);
+                updateCaseresRes("3",e1.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
+                screenShot(driver,nowCaseresid[0],seriesid,caseListId,null,true);
             }finally {
                 updateCaseListStatus("3",caseListId);
                 closeDriver(driver);
@@ -186,6 +132,68 @@ updateCaseListRes("1",caseListId);
 
         }
 
+    }
+
+    private  void  runStep(String seriesid,WebDriver driver,String tid,String caseListId,String[] nowCaseresid,String caseid) throws Exception {
+        for (int j = 0; j <ls.size() ; j++) {
+            if(seidStop.equals(seriesid)){
+                throw new InterruptedException("运行被中断");
+            }
+            nowCaseresid[0]=    ls.get(j).getValue();
+            String sid=ls.get(j).getValue2();
+            updateCaseresTime(nowCaseresid[0]);
+            if(sid.equals("0")){
+
+                String res=runHttpCase(caseid,nowCaseresid[0]);
+                if(res.equals("2")){
+                    throw new MyException("校验错误");
+                }else {
+                    if(res.equals("3")){
+                        throw new Exception("运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤");
+                    }
+                }
+
+            }else {
+                if(driver==null){
+                    driver= startDriver(tid );
+                }
+                Step step = getStep(sid);
+                Element element = getElement(step.getEid());
+                WebElement webElement = element2Web(element, driver);//未修改提示框//TODO
+                screenShot(driver, nowCaseresid[0], seriesid, caseListId, webElement, false);                    //截图
+                action(webElement, step.getCatid(), driver, step.getValue());
+                if (!element.getToframe().equals("-1")) {
+                    driver.switchTo().defaultContent();
+                }
+                if (!element.getTopage().equals("-1")) {
+                    toWindow(getTitle(element.getTopage()), driver);
+
+                }
+                updateCaseListRunnum((j + 1) + "", caseListId);
+                if (!step.getExpid().equals("0")) {
+                    System.out.println("exp");
+                }
+                updateCaseresRes("1","运行成功",nowCaseresid[0]);
+
+            }
+
+
+
+
+
+
+        }
+    }
+
+    private WebDriver runPre(String pre,String tid){
+        switch (pre){
+            case "0":break;
+            case "1":startDriver(tid );break;
+            case "2":break;
+            case "3":break;
+            case "4":break;
+        }
+        return  null;
     }
 
 public void test(String cid) {

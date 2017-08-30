@@ -5,9 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by lixuecheng on 2017/7/10.
@@ -83,8 +81,41 @@ public class mycode {
 //           System.out.println(1);
 //       }
      //   System.out.println(System.currentTimeMillis()/1000);
-        SeleniumDao d=new SeleniumDao();
-        d.test("20");
+//        SeleniumDao d=new SeleniumDao();
+//        d.test("20");
+        Map<String,Set<String>> map=new HashMap<>();
+        Map<String,Set<String>> map2=new HashMap<>();
+        Set<String> set=new HashSet<>();
+        Set<String> set2=new HashSet<>();
+        set.add("5");
+        set.add("6");
+        set.add("7");
+        set.add("8");
+        set2.add("1");
+        set2.add("4");
+        map.put("1",set);
+        map.put("2",set2);
+
+        map.forEach((k,v)->{
+           // map2.put(k,v);
+            String[] y = v.toArray(new String[0]);
+            for (int i = 0; i < y.length; i++) {
+                if(map.containsKey(y[i])){
+                    map.get(y[i]).forEach(k3->{
+                        map.get(k).add(k3);
+                    });
+                 //   map2.get(k).addAll(map.get(k2));
+                    //  System.out.println(map2);
+                }
+            }
+            System.out.println(v);
+
+
+
+
+
+        });
+
 
     }
 }
