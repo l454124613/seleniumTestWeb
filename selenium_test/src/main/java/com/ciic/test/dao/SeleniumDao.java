@@ -64,10 +64,10 @@ private String picPath;
            String caseid=lt.get(i).getValue2();
             updateCaseListStatus("1",caseListId);//准备
            String pre=getpre(caseid);
-            WebDriver driver=null;
+            WebDriver[] driver={null};
             try {
 
-                driver=runPre(pre,tid);
+                runPre(pre,tid);
             } catch (Exception e) {
                 updateCaseListRes("3lolo"+"预置条件出错，用例停止运行。出错原因："+e.getLocalizedMessage(),caseListId);
                 continue;
@@ -85,15 +85,15 @@ private String picPath;
 
             } catch (NoSuchElementException e) {
                 System.out.println("fail");
-                screenShot(driver,nowCaseresid[0],seriesid,caseListId,null,true);
+                screenShot(driver[0],nowCaseresid[0],seriesid,caseListId,null,true);
                 updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
                 updateCaseListRes("2",caseListId);
             }
             catch (UnhandledAlertException e){
 
                 System.out.println("fail");
-                driver.switchTo().alert().accept();
-                screenShot(driver,nowCaseresid[0],seriesid,caseListId,null,true);
+                driver[0].switchTo().alert().accept();
+                screenShot(driver[0],nowCaseresid[0],seriesid,caseListId,null,true);
                 updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
                 updateCaseListRes("2",caseListId);
             }catch (InterruptedException e2){
@@ -121,10 +121,10 @@ private String picPath;
                 e1.printStackTrace();
                 updateCaseListRes("3",caseListId);
                 updateCaseresRes("3",e1.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
-                screenShot(driver,nowCaseresid[0],seriesid,caseListId,null,true);
+                screenShot(driver[0],nowCaseresid[0],seriesid,caseListId,null,true);
             }finally {
                 updateCaseListStatus("3",caseListId);
-                closeDriver(driver);
+                closeDriver(driver[0]);
 
             }
 
@@ -134,7 +134,7 @@ private String picPath;
 
     }
 
-    private  void  runStep(String seriesid,WebDriver driver,String tid,String caseListId,String[] nowCaseresid,String caseid) throws Exception {
+    private  void  runStep(String seriesid,WebDriver[] driver,String tid,String caseListId,String[] nowCaseresid,String caseid) throws Exception {
         for (int j = 0; j <ls.size() ; j++) {
             if(seidStop.equals(seriesid)){
                 throw new InterruptedException("运行被中断");
@@ -154,19 +154,19 @@ private String picPath;
                 }
 
             }else {
-                if(driver==null){
-                    driver= startDriver(tid );
+                if(driver[0]==null){
+                    driver[0]= startDriver(tid );
                 }
                 Step step = getStep(sid);
                 Element element = getElement(step.getEid());
-                WebElement webElement = element2Web(element, driver);//未修改提示框//TODO
-                screenShot(driver, nowCaseresid[0], seriesid, caseListId, webElement, false);                    //截图
-                action(webElement, step.getCatid(), driver, step.getValue());
+                WebElement webElement = element2Web(element, driver[0]);//未修改提示框//TODO
+                screenShot(driver[0], nowCaseresid[0], seriesid, caseListId, webElement, false);                    //截图
+                action(webElement, step.getCatid(), driver[0], step.getValue());
                 if (!element.getToframe().equals("-1")) {
-                    driver.switchTo().defaultContent();
+                    driver[0].switchTo().defaultContent();
                 }
                 if (!element.getTopage().equals("-1")) {
-                    toWindow(getTitle(element.getTopage()), driver);
+                    toWindow(getTitle(element.getTopage()), driver[0]);
 
                 }
                 updateCaseListRunnum((j + 1) + "", caseListId);
@@ -183,17 +183,18 @@ private String picPath;
 
 
         }
+
     }
 
-    private WebDriver runPre(String pre,String tid){
+    private void runPre(String pre,String tid){
         switch (pre){
             case "0":break;
-            case "1":startDriver(tid );break;
+            case "1":break;
             case "2":break;
             case "3":break;
             case "4":break;
         }
-        return  null;
+
     }
 
 public void test(String cid) {

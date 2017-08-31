@@ -5,6 +5,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -50,15 +51,20 @@ public class aopLogin {
 //                break;
 //            }
 //        }
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        HttpSession session = request.getSession();
+
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        HttpSession session = (HttpSession) requestAttributes.resolveReference(RequestAttributes.REFERENCE_SESSION);
+       // HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+       // HttpSession session = request.getSession();
 //        Enumeration e1=session.getAttributeNames();
 //        while (e1.hasMoreElements()) {
 //            Object o = e1.nextElement();
 //            System.out.println(o);
 //        }
 
-        if(session.getAttributeNames().hasMoreElements()&&session.getAttribute(session.getAttributeNames().nextElement())!=null){
+        boolean a=session.getAttributeNames().hasMoreElements();
+        if(session.getAttributeNames().hasMoreElements()
+                &&session.getAttribute(session.getAttributeNames().nextElement())!=null){
             try {
              //   System.out.println(1);
                 if (isparam){

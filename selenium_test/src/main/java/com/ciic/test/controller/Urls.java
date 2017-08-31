@@ -1017,19 +1017,17 @@ if(id.equalsIgnoreCase("0")){
     @RequestMapping("/stopseries/{seid}/{tid}")
     String stopSeries(@PathVariable String seid,@PathVariable String tid){
 
-        if(map4thread.get(tid).isAlive()){
-            caseService.stopRun(seid);
-            return "{\"isok\":0,\"msg\":\"操作成功，强制中止中\",\"to\":\"/\"}";
-        }else {
-            return "{\"isok\":1,\"msg\":\"操作失败，已经停止或暂时无法停止\",\"to\":\"/\"}";
+        try {
+            if(map4thread.get(tid).isAlive()){
+                caseService.stopRun(seid);
+                return "{\"isok\":0,\"msg\":\"操作成功，强制中止中\",\"to\":\"/\"}";
+            }else {
+                return "{\"isok\":1,\"msg\":\"操作失败，已经停止或暂时无法停止\",\"to\":\"/\"}";
+            }
+        } catch (NullPointerException e) {
+
+            return "{\"isok\":1,\"msg\":\"操作失败，运行出现错误，请修改数据库\",\"to\":\"/\"}";
         }
-
-
-
-
-
-
-
 
 
     }

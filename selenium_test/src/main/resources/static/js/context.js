@@ -50,7 +50,7 @@ $(document).ready(function () {
             var c2=uncompileStr(c);
             $('#username').text(c2);
             $.get('/gitem',function (data,ststus) {
-                var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+                var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
                 if(o.isok!=0){
                     alertf("项目有异常，请联系管理员。");
                 }else {
@@ -167,7 +167,7 @@ function changeyan2() {
             alertf("网站出错，请联系管理员");
             
         }
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!="0"){
             alertf(o.msg);
         }else {
@@ -277,7 +277,7 @@ function changeyan4() {
 
 function shualabel() {
     $.get('/getlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -404,7 +404,7 @@ function changeyan1() {
     $('.dropdown').dropdown();
     $.get('/gpage/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -441,7 +441,7 @@ function changepage2(a) {
     $('#seele2').removeClass('disabled');
 
     $.get('/gele/'+va+"/"+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -652,7 +652,7 @@ if(uncompileStr(cc)=="我是管理员"){
 
 function clearIsused() {
     $.post('/clearisused',{mimi:compileStr(Date.parse(new Date())/1000+'')},function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         alertf(o.msg);
     });
 
@@ -661,14 +661,14 @@ function clearIsused() {
 
 function runcase(a,b) {
     $.get('/testcase/'+a+"/"+tid+"/"+b,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         alertf(o.msg);
     });
 }
 
 function lookruncase(a) {
     // $.get('/looktestcase/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-    //     var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+    //     var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
     //     if(o.isok=="4"){
     //         alertf(o.msg);
     //
@@ -687,7 +687,7 @@ function lookruncase(a) {
 function shuauser() {
 
     $.get('/getuser',function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -735,7 +735,7 @@ function hidemenu() {
 function shuastep() {
 
     $.get('/getstep/'+cid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -823,7 +823,7 @@ function shuastep() {
 function lookpre(a) {
     cid=a;
 $.get('/getprecondition/'+cid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-    var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+    var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 var pres=o.pre;
 
 if(pres.length==0){
@@ -894,7 +894,7 @@ function changeyu1() {
 
 
     $.get('/getcase/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         var cc=o.cases;
         var v1="";
         for(var i=0;i<cc.length;i++){
@@ -948,7 +948,7 @@ function changeyu2() {
         "    </div></div>";
     $('#yuid').html(re);
     $.get('/getdatasource/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!="0"){
             alertf(o.msg);
         }else {
@@ -1042,7 +1042,7 @@ function  addNowStep(a,b,c,d) {
 $('.addstep1').addClass('disabled');
 
     $.get('/getpid/'+c,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else {
@@ -1090,7 +1090,7 @@ $('.addstep1').addClass('disabled');
                 $(b).parent().parent().after(re);
 
                 $.get('/gettopage/'+c,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-                    var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+                    var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
                     if(o.isok!=0){
                         alertf(o.msg);
                     }else {
@@ -1164,7 +1164,7 @@ function  updatestep(a,b,c,d,e,f) {
    // console.log(b);
   //  ttmp=a;
     $.get('/getpid/'+b,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else {
@@ -1194,7 +1194,7 @@ function showexp(a) {
     stepid=a;
     $('#yan44').checkbox('check');
     $.get('/getexp/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         var ll=o.exp;
         if(ll.length==1){
             var l2=ll[0];
@@ -1240,7 +1240,7 @@ function removestep(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removestep/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
            shuastep();
             alertf(o.msg);
 
@@ -1276,7 +1276,7 @@ function fixstep(a) {
             eid:ev,
             ename:evn
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
             shuastep();
             alertf(o.msg);
@@ -1311,7 +1311,7 @@ function addstep(a,b) {
             eid:ev,
             ename:evn
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
             shuastep();
             alertf(o.msg);
@@ -1414,7 +1414,7 @@ var vv3="";
 function shuapageinfo(d,e,f) {
 
     $.get('/ge4p/'+pid+'/'+tid+'/'+cid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -1504,7 +1504,7 @@ var re4="";
 function shuapage() {
 
     $.get('/gpage/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -1543,7 +1543,7 @@ function datasourcecon (a,b) {
     $.get('/getdatasourceconnect/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         $(b).removeClass('loading');
         $(b).removeClass('disabled');
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
         alertf(o.con);
 
@@ -1554,7 +1554,7 @@ function datasourcecon (a,b) {
 function shuaDatasource() {
 
     $.get('/getdatasource/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -1592,7 +1592,7 @@ function shuaDatasource() {
 
 function  shuaele() {
     $.get('/gele/'+pid+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -1632,7 +1632,7 @@ function topage() {
 
 function  shuaeleall() {
     $.get('/gele/'+'-1'+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -1670,7 +1670,7 @@ function  shuaeleall() {
 function  shuaitem() {
     if(isshuaitem){
         $.get('/gitema',function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             if(o.isok!=0){
                 alertf(o.msg);
             }else{
@@ -1738,7 +1738,7 @@ function contains(a,b) {
 
 function shuacaseinfo(a,b) {
 $.get('/getcase/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-    var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+    var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
     if(o.isok!=0){
         alertf(o.msg);
     }else{
@@ -1837,7 +1837,7 @@ $('#labeltitle').html(b);
 labelid=a;
     $.get('/getlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
       if(o.isok!="0") {alertf(o.msg);}else {
             var ls=o.labels;
@@ -2018,7 +2018,7 @@ $('#addpageone7').click(function () {
             tid:tid,
             id:adddatasource
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
            shuaDatasource();
             alertf(o.msg);
@@ -2053,7 +2053,7 @@ var dat="";
 
     if(dat){
         $.post('/updateexp',dat,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             alertf(o.msg);
             if(o.isok!="0"){
 
@@ -2095,7 +2095,7 @@ $('#addpageone8').click(function () {
 
     if(dat){
         $.post('/updatepre',dat,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             alertf(o.msg);
             if(o.isok!="0"){
 
@@ -2125,7 +2125,7 @@ $('#addpageone9').click(function () {
             des:title,
             type:homeid
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
             alertf(o.msg);
            shuacasehome()
@@ -2152,7 +2152,7 @@ $('#addpageone11').click(function () {
 
             labels:lbs.toString()
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
             alertf(o.msg);
 shuacaseinfo();
@@ -2177,7 +2177,7 @@ $('#addpageone10').click(function () {
             des:title,
             type:labelid
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
             alertf(o.msg);
            shualabel();
@@ -2203,7 +2203,7 @@ $('#addpageone').click(function () {
             pagetitle:title,
             type:a1
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
             alertf(o.msg);
             shuapage();
@@ -2234,7 +2234,7 @@ $('#addpageone3').click(function () {
             type:ass2,
             ispass:ispass
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             shuauser();
             alertf(o.msg);
            $('#closemodal3').click();
@@ -2262,7 +2262,7 @@ $('#addpageone4').click(function () {
             users:uss.toString(),
             type:ass3
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             isshuaitem=true;
             shuaitem();
             alertf(o.msg);
@@ -2288,7 +2288,7 @@ $('#addpageone5').click(function () {
             type:ass4,
             elety:elev
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             isshuaitem=true;
             shuacaseinfo();
             alertf(o.msg);
@@ -2368,7 +2368,7 @@ $('#addpageone2').click(function () {
             waitv:waitv
 
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             $('#closemodal2').click();
             if(mele===1){
                shuaeleall();
@@ -2399,7 +2399,7 @@ function removepage(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removepage/'+a+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
             alertf(o.msg);
            // $('#mpage').click();
@@ -2416,7 +2416,7 @@ function removeele(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removeele/'+a+'/'+pid+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
            shuaele();
             alertf(o.msg);
 
@@ -2433,7 +2433,7 @@ function removecase(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removecase/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             shuacaseinfo();
             alertf(o.msg);
 
@@ -2447,7 +2447,7 @@ function removecasehome(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removecasehome/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
            shuacasehome();
             alertf(o.msg);
 
@@ -2459,7 +2459,7 @@ function removelabel(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removelabel/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             shualabel();
             alertf(o.msg);
 
@@ -2473,7 +2473,7 @@ function removedatasource(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removedatasource/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
            shuaDatasource();
             alertf(o.msg);
 
@@ -2489,7 +2489,7 @@ function removeuser(a) {
     if (confirm("你确定要禁用吗？")) {
         $.get('/removeuser/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
             alertf(o.msg);
             shuauser();
@@ -2506,7 +2506,7 @@ function removeitem(a) {
     if (confirm("你确定要禁用吗？")) {
         $.get('/removeitem/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
             alertf(o.msg);
             isshuaitem=true;
@@ -2633,7 +2633,7 @@ function searchcase() {
         }
         function getusedlabel() {
             $.get('/getusedlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-                var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+                var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
                 var re=  "  <select class=\"ui compact selection dropdown\"  id='seaca' style=\"          padding-bottom: 1px;          padding-top: 1px;          \">\n";
 
                 if(o.isok!=0){
@@ -2755,7 +2755,7 @@ function addlabel() {
 
 function shuacasehome() {
     $.get('/getcasehome/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -2865,7 +2865,7 @@ function choosecase(a,b) {
     forfirstfun();
 
     $.get('/getusedlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -2948,7 +2948,7 @@ function addcids(b) {
             id:b
 
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             alertf(o.msg);
             $('#mcasehome').click();
         })
@@ -2997,7 +2997,7 @@ $('#mtest').click(
           $('.ui.dropdown').dropdown();
           $.get('/getcasehome/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
               re="";
-              var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+              var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
               var cc=o.casehomes;
             //  console.log(cc);
               for(var i=0;i<cc.length;i++){
@@ -3009,7 +3009,7 @@ $('#mtest').click(
               
           });
           $.get('/getusedlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-              var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+              var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
               if(o.isok!=0){
                   alertf(o.msg);
               }else {
@@ -3087,7 +3087,7 @@ function removeseries(a) {
     if (confirm("你确定要删除吗？")) {
         $.get('/removeseries/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             shuaseries();
             alertf(o.msg);
 
@@ -3101,7 +3101,7 @@ function runseries(a) {
     if (confirm("你确定要运行吗？")) {
         $.get('/runseries/'+a+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             shuaseries();
             alertf(o.msg);
 
@@ -3112,7 +3112,7 @@ function runseries(a) {
 function pauseseries(a) {
     $.get('/pauseseries/'+a+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         shuaseries();
         alertf(o.msg);
 
@@ -3177,7 +3177,7 @@ function shuarunseries(a,b) {
     }
     $.get('/getcasereslist/'+b,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         var cases2=o.cases;
         if(iseq2(cases2,caseresold)){
             return 0;
@@ -3265,14 +3265,14 @@ shuarunseries(re,a);
 function stopseries(a) {
     if (confirm("你确定要停止吗？")) {
     $.get('/stopseries/'+a+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
     alertf(o.msg);
     });}
     
 }
 function shuaseries() {
     $.get('/getseries/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         var ses=o.series;
         var as=$('.active.segment').html();
         if(iseq(ses,seriesold)&&as!="loading..."){
@@ -3369,7 +3369,7 @@ function checkimp(a) {
 function shuatestcase(type,a) {
     if(type==-1){
         $.get('/getcase/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             if(o.isok!=0){
                 alertf(o.msg);
             }else{
@@ -3428,7 +3428,7 @@ function shuatestcase(type,a) {
         });
     }else {
         $.get('/getcase/t'+type,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             if(o.isok!=0){
                 alertf(o.msg);
             }else{
@@ -3500,7 +3500,7 @@ function addtestcase() {
           seriesName:dda.toLocaleDateString()+'-'+dda.getHours()+'-'+dda.getMinutes()+"运行"
 
       },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-          var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+          var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
           alertf(o.msg);
       })
   }
@@ -3622,7 +3622,7 @@ if(b){
     $('.ui.dropdown').dropdown();
 
     $.get('/gethttpcase/'+cid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
         }else{
@@ -3662,7 +3662,7 @@ function updatehttpcase(a) {
         $.post('/upatehttp',{type:http,url:url,con:area,eq:type,value:inp,cid:cid
 
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/html/context.html';}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
                 alertf(o.msg);
            })
