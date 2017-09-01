@@ -290,9 +290,9 @@ return "0";
 //    }
 
     @Override
-    public int addRunCase(String series,String cids,String tid,String type) {
+    public int addRunCase(String series,String cids,String tid,String type,String uid) {
         if(type.equals("1")){
-            return jdbcTemplate.update("INSERT INTO \"series\" ( \"series\", \"cids\",  \"status\",   \"tid\", \"type\", \"ordertime\") VALUES (?, ?, '1',?,?, '"+ LocalDate.now()+" "+ LocalTime.now()+"')",mycode.prase(new Object[]{series,cids,tid,type}));
+            return jdbcTemplate.update("INSERT INTO \"series\" ( \"series\", \"cids\",  \"status\",   \"tid\", \"type\", \"ordertime\",uid) VALUES (?, ?, '1',?,?, '"+ LocalDate.now()+" "+ LocalTime.now()+"',?)",mycode.prase(new Object[]{series,cids,tid,type,uid}));
         }else {
             return jdbcTemplate.update("INSERT INTO \"series\" ( \"series\", \"cids\",   \"tid\", \"type\", \"ordertime\") VALUES (?, ?, ?,?, '"+ LocalDate.now()+" "+ LocalTime.now()+"')",mycode.prase(new Object[]{series,cids,tid,type}));
         }
@@ -331,8 +331,8 @@ return "0";
     }
 
     @Override
-    public List<Series> getSeries(String tid) {
-        return jdbcTemplate.query("select * from series where isused=1 and tid=? order by ordertime desc",new Object[]{tid},new BeanPropertyRowMapper<>(Series.class));
+    public List<Series> getSeries(String tid,String uid) {
+        return jdbcTemplate.query("select * from series where isused=1 and tid=? and (type=2 or uid=?) order by ordertime desc",new Object[]{tid,uid},new BeanPropertyRowMapper<>(Series.class));
     }
 
     @Override
@@ -467,6 +467,16 @@ private void map2Sql(Map<String,Set<String>> map,String tid){
 
 }
 
+private int updateHttpcase0(String cid ){
+    List<tmp3> l3=jdbcTemplate.query("SELECT a value1 ,b value2 ,c value3 from precondition where type=3 and cid="+cid,new BeanPropertyRowMapper<>(tmp3.class));
+    if (l3.size()==1){
+        return jdbcTemplate.update("update httpcase set type='"+l3.get(0).getValue1()+"' ,url='"+l3.get(0).getValue2()+"' ,con='"+l3.get(0).getValue3() +"' where cid =-1");
+    }else {
+        return 0;
+    }
+
+}
+
     private void orderCases(String cids,String tid,String seriesid){
         List<String> ls=new ArrayList<>();
         List<String> ls2=new ArrayList<>();
@@ -513,6 +523,14 @@ private void map2Sql(Map<String,Set<String>> map,String tid){
 
 
                     }else {
+                        if(l4.get(0).getValue().equals("2")){
+
+                        }else {
+                            if(l4.get(0).getValue().equals("3")){
+                                updateHttpcase0(cid1);
+                                l3.add("-1");
+                            }
+                        }
                         break;
 
                     }
@@ -561,8 +579,12 @@ private void map2Sql(Map<String,Set<String>> map,String tid){
 
               //运行脚本
 
-                seleniumService.run(tid,series.getId());
-                //修改当前系列运行结束
+        try {
+            seleniumService.run(tid,series.getId());
+        } catch (Exception e) {
+            updateOneseriesStatus("4","",series.getId());
+        }
+        //修改当前系列运行结束
         if(series.getId().equals(seidStop)){
             updateOneseriesStatus("5","",series.getId());
         }else {
@@ -596,11 +618,11 @@ void addCase2res(String cid,String seriesid,String[] precids) throws Exception {
                  //  System.out.println(lt);
                  for (int i = 0; i <precids.length ; i++) {
                      List<tmp> lt2= jdbcTemplate.query("select type value from caselist where id="+precids[i] ,new BeanPropertyRowMapper<tmp>(tmp.class));
-                     if(lt2.get(0).getValue().equals("1")){
+                     if(!precids[i].equals("-1")&&lt2.get(0).getValue().equals("1")){
                          jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\")  SELECT cid,step.id sid,'' pic,''''||ename||''''||cat.name||value||'_预置条件' word,'-1' res ,'-1' restext ,'' time ,"+lt.get(0).getValue()+" listid from step join cat on cat.id=step.catid where cid="+precids[i]+" ORDER BY step");
 
                      }else {
-                         jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\") SELECT cid,'0' sid,'' pic,'接口请求_预置条件' word,'-1' res,'' restext,'' time,'"+lt.get(0).getValue()+"'  listid from httpcase where cid="+cid);
+                         jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\") SELECT cid,'0' sid,'' pic,'接口请求_预置条件' word,'-1' res,'' restext,'' time,'"+lt.get(0).getValue()+"'  listid from httpcase where cid="+precids[i]);
 
                      }
 
@@ -618,11 +640,11 @@ void addCase2res(String cid,String seriesid,String[] precids) throws Exception {
 
                 for (int i = 0; i <precids.length ; i++) {
                     List<tmp> lt2= jdbcTemplate.query("select type value from caselist where id="+precids[i] ,new BeanPropertyRowMapper<tmp>(tmp.class));
-                    if(lt2.get(0).getValue().equals("1")){
+                    if(!precids[i].equals("-1")&&lt2.get(0).getValue().equals("1")){
                         jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\")  SELECT cid,step.id sid,'' pic,''''||ename||''''||cat.name||value||'_预置条件' word,'-1' res ,'-1' restext ,'' time ,"+lt.get(0).getValue()+" listid from step join cat on cat.id=step.catid where cid="+precids[i]+" ORDER BY step");
 
                     }else {
-                        jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\") SELECT cid,'0' sid,'' pic,'接口请求_预置条件' word,'-1' res,'' restext,'' time,'"+lt.get(0).getValue()+"'  listid from httpcase where cid="+cid);
+                        jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\") SELECT cid,'0' sid,'' pic,'接口请求_预置条件' word,'-1' res,'' restext,'' time,'"+lt.get(0).getValue()+"'  listid from httpcase where cid="+precids[i]);
 
                     }
 

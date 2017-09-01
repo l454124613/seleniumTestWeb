@@ -65,14 +65,15 @@ private String picPath;
             updateCaseListStatus("1",caseListId);//准备
            String pre=getpre(caseid);
             WebDriver[] driver={null};
-            try {
-
-                runPre(pre,tid);
-            } catch (Exception e) {
-                updateCaseListRes("3lolo"+"预置条件出错，用例停止运行。出错原因："+e.getLocalizedMessage(),caseListId);
-                continue;
-
-            }
+            //TODO
+//            try {
+//
+//                runPre(pre,tid);
+//            } catch (Exception e) {
+//                updateCaseListRes("3lolo"+"预置条件出错，用例停止运行。出错原因："+e.getLocalizedMessage(),caseListId);
+//                continue;
+//
+//            }
 
 
             updateCaseListStatus("2",caseListId);//正式运行
@@ -88,6 +89,19 @@ private String picPath;
                 screenShot(driver[0],nowCaseresid[0],seriesid,caseListId,null,true);
                 updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
                 updateCaseListRes("2",caseListId);
+               List<tmp> lt2= jdbcTemplate.query("select cida value,cidb value2 from runtimecase where tid="+tid+" cida=(SELECT cid from caseres where id="+nowCaseresid[0]+")",new BeanPropertyRowMapper<>(tmp.class));
+                if(lt2.size()>1){
+                    for (int j = 1; j < lt2.size(); j++) {
+                        List<tmp> lt3 =  jdbcTemplate.query("select listid value,id value2 from caseres where id > "+nowCaseresid[0]+" cid = "+lt2.get(j),new BeanPropertyRowMapper<>(tmp.class));
+                        for (int k = 0; k <lt3.size() ; k++) {
+                            jdbcTemplate.update("update casereslist set res=3 where id="+lt3.get(k).getValue());
+                            jdbcTemplate.update("UPDATE caseres set res=3 , restext='预置条件运行失败', time='"+LocalDate.now()+" "+LocalTime.now()+"' where id="+lt3.get(k).getValue2());
+                        }
+                    }
+                    init(seriesid);
+                    i=0;
+
+                }
             }
             catch (UnhandledAlertException e){
 
@@ -96,6 +110,19 @@ private String picPath;
                 screenShot(driver[0],nowCaseresid[0],seriesid,caseListId,null,true);
                 updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
                 updateCaseListRes("2",caseListId);
+                List<tmp> lt2= jdbcTemplate.query("select cida value,cidb value2 from runtimecase where tid="+tid+" cida=(SELECT cid from caseres where id="+nowCaseresid[0]+")",new BeanPropertyRowMapper<>(tmp.class));
+                if(lt2.size()>1){
+                    for (int j = 1; j < lt2.size(); j++) {
+                        List<tmp> lt3 =  jdbcTemplate.query("select listid value,id value2 from caseres where id > "+nowCaseresid[0]+" cid = "+lt2.get(j),new BeanPropertyRowMapper<>(tmp.class));
+                        for (int k = 0; k <lt3.size() ; k++) {
+                            jdbcTemplate.update("update casereslist set res=3 where id="+lt3.get(k).getValue());
+                            jdbcTemplate.update("UPDATE caseres set res=3 , restext='预置条件运行失败', time='"+LocalDate.now()+" "+LocalTime.now()+"' where id="+lt3.get(k).getValue2());
+                        }
+                    }
+                    init(seriesid);
+                    i=0;
+
+                }
             }catch (InterruptedException e2){
                 System.out.println("fail");
 
@@ -113,7 +140,20 @@ private String picPath;
                 updateCaseListRes("2",caseListId);
                 updateCaseListStatus("3",caseListId);
                 //closeDriver(driver);
-                break;
+                List<tmp> lt2= jdbcTemplate.query("select cida value,cidb value2 from runtimecase where tid="+tid+" cida=(SELECT cid from caseres where id="+nowCaseresid[0]+")",new BeanPropertyRowMapper<>(tmp.class));
+                if(lt2.size()>1){
+                    for (int j = 1; j < lt2.size(); j++) {
+                        List<tmp> lt3 =  jdbcTemplate.query("select listid value,id value2 from caseres where id > "+nowCaseresid[0]+" cid = "+lt2.get(j),new BeanPropertyRowMapper<>(tmp.class));
+                        for (int k = 0; k <lt3.size() ; k++) {
+                            jdbcTemplate.update("update casereslist set res=3 where id="+lt3.get(k).getValue());
+                            jdbcTemplate.update("UPDATE caseres set res=3 , restext='预置条件运行失败', time='"+LocalDate.now()+" "+LocalTime.now()+"' where id="+lt3.get(k).getValue2());
+                        }
+                    }
+                    init(seriesid);
+                    i=0;
+
+
+                }
             }
             catch (Exception e1){
                 System.out.println("warn");
@@ -122,6 +162,19 @@ private String picPath;
                 updateCaseListRes("3",caseListId);
                 updateCaseresRes("3",e1.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
                 screenShot(driver[0],nowCaseresid[0],seriesid,caseListId,null,true);
+                List<tmp> lt2= jdbcTemplate.query("select cida value,cidb value2 from runtimecase where tid="+tid+" cida=(SELECT cid from caseres where id="+nowCaseresid[0]+")",new BeanPropertyRowMapper<>(tmp.class));
+                if(lt2.size()>1){
+                    for (int j = 1; j < lt2.size(); j++) {
+                        List<tmp> lt3 =  jdbcTemplate.query("select listid value,id value2 from caseres where id > "+nowCaseresid[0]+" cid = "+lt2.get(j),new BeanPropertyRowMapper<>(tmp.class));
+                        for (int k = 0; k <lt3.size() ; k++) {
+                            jdbcTemplate.update("update casereslist set res=3 where id="+lt3.get(k).getValue());
+                            jdbcTemplate.update("UPDATE caseres set res=3 , restext='预置条件运行失败', time='"+LocalDate.now()+" "+LocalTime.now()+"' where id="+lt3.get(k).getValue2());
+                        }
+                    }
+                    init(seriesid);
+                    i=0;
+
+                }
             }finally {
                 updateCaseListStatus("3",caseListId);
                 closeDriver(driver[0]);
@@ -143,8 +196,10 @@ private String picPath;
             String sid=ls.get(j).getValue2();
             updateCaseresTime(nowCaseresid[0]);
             if(sid.equals("0")){
+                //System.out.println(caseid);
+              //  System.out.println(nowCaseresid[0]);
+                String res=runHttpCase(nowCaseresid[0]);
 
-                String res=runHttpCase(caseid,nowCaseresid[0]);
                 if(res.equals("2")){
                     throw new MyException("校验错误");
                 }else {
@@ -200,7 +255,7 @@ private String picPath;
 public void test(String cid) {
 
 
-        runHttpCase(cid,"214");
+        runHttpCase("214");
 
 }
 
@@ -267,7 +322,7 @@ private String getHttpCon(String url, Header[] head, String type, String con){
             //stringBuffer.append("--------------------------------------------------\n");
         }
     } catch (Exception e) {
-       stringBuffer.append(e.getLocalizedMessage());
+       stringBuffer.append(e.getCause().getLocalizedMessage());
     } finally {
         try {
             client.close();
@@ -294,8 +349,8 @@ private Header[] getheaders(String head){
 
 }
 
-    private String runHttpCase(String cid,String resid)  {
-     List<HttpCase> lh=   jdbcTemplate.query("select * from httpcase where cid="+cid,new BeanPropertyRowMapper<>(HttpCase.class));
+    private String runHttpCase(String resid)  {
+     List<HttpCase> lh=   jdbcTemplate.query("select * from httpcase where cid=(SELECT cid from caseres where id="+resid+")",new BeanPropertyRowMapper<>(HttpCase.class));
 
       if(lh.size()>0)          {
              if(lh.get(0).getType().equals("1")){
@@ -320,12 +375,21 @@ private Header[] getheaders(String head){
                      case "2":if(!res.equals(lh.get(0).getValue()))isok=true;eq="不等于";break;
                      case "3":if(res.contains(lh.get(0).getValue()))isok=true;eq="包含";break;
                      case "4":if(!res.contains(lh.get(0).getValue()))isok=true;eq="不包含";break;
+                     case "5":isok=true;break;
                      default: isok=false;
                  }
                 if (isok){
+                     if(res.split("\\$\\$\\$666").length>3){
+                         updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                         return "1";
+                     }else {
 
-                     updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
-                     return "1";
+                         updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                         return "2";
+
+                     }
+
+
                 }else {
                     updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
                     return "2";
@@ -360,8 +424,14 @@ private Header[] getheaders(String head){
                      default: isok=false;
                  }
                  if (isok){
-                     updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
-                     return "1";
+                     if(res.split("$$$666").length>4){
+                         updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                         return "1";
+                     }else {
+                         updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                         return "2";
+                     }
+
                  }else {
                      updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
                      return "2";
@@ -475,12 +545,16 @@ throw new NoSuchElementException("元素等不到");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        File srcFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        File file=new File(picPath+seriesid+"_"+listid+"_"+resid+"_"+System.currentTimeMillis()+".jpg");
-        srcFile.renameTo(file);
-        updateCaseresPic(file.getName(),resid);
-        if(!iserr)
-        setYellow(driver,element);
+        try {
+            File srcFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+            File file=new File(picPath+seriesid+"_"+listid+"_"+resid+"_"+System.currentTimeMillis()+".jpg");
+            srcFile.renameTo(file);
+            updateCaseresPic(file.getName(),resid);
+            if(!iserr)
+            setYellow(driver,element);
+        } catch (NullPointerException e) {
+
+        }
 
 
     }

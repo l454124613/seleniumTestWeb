@@ -3,6 +3,7 @@ package com.ciic.test.controller;
 import com.ciic.test.bean.*;
 import com.ciic.test.service.*;
 import com.ciic.test.tools.mycode;
+import com.sun.net.httpserver.HttpsConfigurator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -506,10 +507,10 @@ String getcase(@PathVariable String tid){
 
     }
     @RequestMapping("/getseries/{tid}")
-    String getSeries(@PathVariable String tid){
+    String getSeries(@PathVariable String tid, HttpSession session){
 
 
-        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"series\":"+caseService.getSeries(tid)+"}";
+        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"series\":"+caseService.getSeries(tid,session.getAttributeNames().nextElement())+"}";
 
     }
 
@@ -554,12 +555,12 @@ String getcase(@PathVariable String tid){
 
 
     @RequestMapping("/testcase/{cid}/{tid}/{name}")
-    String testCase(@PathVariable String cid,@PathVariable String tid,@PathVariable String name){
+    String testCase(@PathVariable String cid,@PathVariable String tid,@PathVariable String name,HttpSession session){
         int n=0;
         List<Series> ls=    caseService.getOneSeries(name+"调试",tid);
 
         if(ls.size()==0){
-         n=   caseService.addRunCase(name+"调试",cid,tid,"1");
+         n=   caseService.addRunCase(name+"调试",cid,tid,"1",session.getAttributeNames().nextElement());
 
         }else{
             boolean hasCid=false;
@@ -576,7 +577,7 @@ String getcase(@PathVariable String tid){
             if(hasCid){
                 return "{\"isok\":1,\"msg\":\"已有相同调试在运行或等待运行，请在进度中查看\",\"to\":\"/\"}";
             }else {
-                n=   caseService.addRunCase(name+"调试",cid,tid,"1");
+                n=   caseService.addRunCase(name+"调试",cid,tid,"1",session.getAttributeNames().nextElement());
 
 
             }
@@ -620,7 +621,7 @@ String getcase(@PathVariable String tid){
 
         @RequestMapping("/addseries")
     String addSeries( String cids,String tid,String seriesName){
-      int n=  caseService.addRunCase(seriesName,cids,tid,"2");
+      int n=  caseService.addRunCase(seriesName,cids,tid,"2","0");
 
 
             if(n==1){
