@@ -95,66 +95,66 @@ function getimg(a,b,f,c) {
             case 1:$('#ff'+a).html(f);break;
             case 2:$('#ff'+a).html(f.replace("$$$666"),"<br/>");break;
             case 5:$('#ff'+a).html("<br/>"+f2[0]+"<div class=\"list\">\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f1')\"><i class=\"circle icon\"></i>请求信息</a><div id='f1' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f2')\"><i class=\"circle icon\"></i>请求信息头</a><div id='f2' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f3')\"><i class=\"circle icon\"></i>报错信息</a><div id='f3' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f1"+a+"')\"><i class=\"circle icon\"></i>请求信息</a><div id='f1"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f2"+a+"')\"><i class=\"circle icon\"></i>请求信息头</a><div id='f2"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f3"+a+"')\"><i class=\"circle icon\"></i>报错信息</a><div id='f3"+a+"' style='display: none'></div>\n"+
 //                "      <a class=\"item\" onclick=\"showinfo('f4')\"><i class=\"circle icon\"></i>响应信息头</a><div id='f4' style='display: none'></div>\n"+
 //                "      <a class=\"item\" onclick=\"showinfo('f5')\"><i class=\"circle icon\"></i>响应内容</a><div id='f5' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f6')\"><i class=\"circle icon\"></i>校验内容</a><div id='f6' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f6"+a+"')\"><i class=\"circle icon\"></i>校验内容</a><div id='f6"+a+"' style='display: none'></div>\n"+
                 "    </div>");
-                $('#f1').text(f2[1]);
-                $('#f2').text(f2[2]);
-                $('#f3').text(f2[3]);
+                $('#f1'+a).text(f2[1]);
+                $('#f2'+a).text(f2[2]);
+                $('#f3'+a).text(f2[3]);
 //                $('#f4').text(f2[4]);
 //                $('#f5').text(f2[5]);
-                $('#f6').text(f2[4]);
+                $('#f6'+a).text(f2[4]);
                 break;
             case 6:$('#ff'+a).html("<br/>"+f2[0]+"<div class=\"list\">\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f1')\"><i class=\"circle icon\"></i>请求信息</a><div id='f1' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f2')\"><i class=\"circle icon\"></i>请求信息头</a><div id='f2' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f5')\"><i class=\"circle icon\"></i>请求内容</a><div id='f5' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f3')\"><i class=\"circle icon\"></i>报错信息</a><div id='f3' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f1"+a+"')\"><i class=\"circle icon\"></i>请求信息</a><div id='f1"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f2"+a+"')\"><i class=\"circle icon\"></i>请求信息头</a><div id='f2"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f5"+a+"')\"><i class=\"circle icon\"></i>请求内容</a><div id='f5"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f3"+a+"')\"><i class=\"circle icon\"></i>报错信息</a><div id='f3"+a+"' style='display: none'></div>\n"+
 //                "      <a class=\"item\" onclick=\"showinfo('f4')\"><i class=\"circle icon\"></i>响应信息头</a><div id='f4' style='display: none'></div>\n"+
 //                "      <a class=\"item\" onclick=\"showinfo('f5')\"><i class=\"circle icon\"></i>响应内容</a><div id='f5' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f6')\"><i class=\"circle icon\"></i>校验内容</a><div id='f6' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f6"+a+"')\"><i class=\"circle icon\"></i>校验内容</a><div id='f6"+a+"' style='display: none'></div>\n"+
                 "    </div>");
-                $('#f1').text(f2[1]);
-                $('#f2').text(f2[2]);
-                $('#f3').text(f2[3]);
+                $('#f1'+a).text(f2[1]);
+                $('#f2'+a).text(f2[2]);
+                $('#f3'+a).text(f2[3]);
 //                $('#f4').text(f2[4]);
-                $('#f5').text(f2[4]);
-                $('#f6').text(f2[5]);
+                $('#f5'+a).text(f2[4]);
+                $('#f6'+a).text(f2[5]);
             case 7:$('#ff'+a).html("<br/>"+f2[0]+"<div class=\"list\">\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f1')\"><i class=\"circle icon\"></i>请求信息</a><div id='f1' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f2')\"><i class=\"circle icon\"></i>请求信息头</a><div id='f2' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f3')\"><i class=\"circle icon\"></i>响应信息</a><div id='f3' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f4')\"><i class=\"circle icon\"></i>响应信息头</a><div id='f4' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f5')\"><i class=\"circle icon\"></i>响应内容</a><div id='f5' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f6')\"><i class=\"circle icon\"></i>校验内容</a><div id='f6' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f1"+a+"')\"><i class=\"circle icon\"></i>请求信息</a><div id='f1"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f2"+a+"')\"><i class=\"circle icon\"></i>请求信息头</a><div id='f2"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f3"+a+"')\"><i class=\"circle icon\"></i>响应信息</a><div id='f3"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f4"+a+"')\"><i class=\"circle icon\"></i>响应信息头</a><div id='f4"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f5"+a+"')\"><i class=\"circle icon\"></i>响应内容</a><div id='f5"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f6"+a+"')\"><i class=\"circle icon\"></i>校验内容</a><div id='f6"+a+"' style='display: none'></div>\n"+
                 "    </div>");
-            $('#f1').text(f2[1]);
-            $('#f2').text(f2[2]);
-            $('#f3').text(f2[3]);
-            $('#f4').text(f2[4]);
-            $('#f5').text(f2[5]);
-            $('#f6').text(f2[6]);
+            $('#f1'+a).text(f2[1]);
+            $('#f2'+a).text(f2[2]);
+            $('#f3'+a).text(f2[3]);
+            $('#f4'+a).text(f2[4]);
+            $('#f5'+a).text(f2[5]);
+            $('#f6'+a).text(f2[6]);
             break;
             case 8:$('#ff'+a).html("<br/>"+f2[0]+"<div class=\"list\">\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f1')\"><i class=\"circle icon\"></i>请求信息</a><div id='f1' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f2')\"><i class=\"circle icon\"></i>请求信息头</a><div id='f2' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f3')\"><i class=\"circle icon\"></i>请求内容</a><div id='f3' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f4')\"><i class=\"circle icon\"></i>响应信息</a><div id='f4' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f5')\"><i class=\"circle icon\"></i>响应信息头</a><div id='f5' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f6')\"><i class=\"circle icon\"></i>响应内容</a><div id='f6' style='display: none'></div>\n"+
-                "      <a class=\"item\" onclick=\"showinfo('f7')\"><i class=\"circle icon\"></i>校验内容</a><div id='f7' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f1"+a+"')\"><i class=\"circle icon\"></i>请求信息</a><div id='f1"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f2"+a+"')\"><i class=\"circle icon\"></i>请求信息头</a><div id='f2"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f3"+a+"')\"><i class=\"circle icon\"></i>请求内容</a><div id='f3"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f4"+a+"')\"><i class=\"circle icon\"></i>响应信息</a><div id='f4"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f5"+a+"')\"><i class=\"circle icon\"></i>响应信息头</a><div id='f5"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f6"+a+"')\"><i class=\"circle icon\"></i>响应内容</a><div id='f6"+a+"' style='display: none'></div>\n"+
+                "      <a class=\"item\" onclick=\"showinfo('f7"+a+"')\"><i class=\"circle icon\"></i>校验内容</a><div id='f7"+a+"' style='display: none'></div>\n"+
                 "    </div>");
-                $('#f1').text(f2[1]);
-                $('#f2').text(f2[2]);
-                $('#f3').text(f2[3]);
-                $('#f4').text(f2[4]);
-                $('#f5').text(f2[5]);
-                $('#f6').text(f2[6]);
-                $('#f7').text(f2[7]);
+                $('#f1'+a).text(f2[1]);
+                $('#f2'+a).text(f2[2]);
+                $('#f3'+a).text(f2[3]);
+                $('#f4'+a).text(f2[4]);
+                $('#f5'+a).text(f2[5]);
+                $('#f6'+a).text(f2[6]);
+                $('#f7'+a).text(f2[7]);
             break;
         }
 
@@ -260,7 +260,8 @@ function addca(a) {
 
 
 //                            "<p>运行结果：成功&nbsp;"+re2.su+",失败&nbsp;"+re2.err+",警告&nbsp;"+re2.wa+"</p>"+
-                            var re1=   "  <div class=\"ui  segment\" style='font-size: large'><p><i class=\"sidebar icon\"></i>查看结果</p>"+"<ul class=\"ui  list\">\n"+
+                            var re1=   "  <div class=\"ui  segment\" style='font-size: large'><p><i class=\"sidebar icon\"></i>查看结果<i id ='help' data-content=\"用例运行经过优化，把预置条件的用例在预置条件中运行，导致与勾选的用例数量不一致。\" data-variation=\"wide\"  data-position=\"bottom left\" class=\"help circle outline icon\"></i>"+
+                            "</p>"+"<ul class=\"ui  list\">\n"+
                                 "  <li ><a onclick='addca(1)'>全部 <label style='color: grey'>"+re2.all+"</label></a></li>\n"+
                                 "  <li><a onclick='addca(2)'>成功 <label style='color: green'>"+re2.su+"</label></a></li>\n"+
                                 "  <li><a onclick='addca(3)'>失败 <label style='color: red'>"+re2.err+"</label></a></li>\n"+
@@ -269,7 +270,7 @@ function addca(a) {
                                 "</ul></div>";
                             $('#content').html(re+re1);
                            // $('#listnum').css('display','block');
-
+                            $('#help').popup();
 
                             $('#listnum').html("<h1>具体用例</h1>");//re3.all.join("</br>")
                             var con="<h1>具体过程</h1><div class='description'>(说明：<i class=\"checkmark green icon\"></i> 通过，<i class=\"remove red  icon\"></i>失败，<i class=\"remove circle outline icon yellow\"></i>警告，<i class=\"minus  icon grey\"></i>未运行)</div>"+"<ol class=\"ui list\">\n"+
