@@ -167,12 +167,15 @@ function showinfo(a) {
     $('#'+a).toggle();
 }
 function addca(a) {
+        var con1="<h1>具体过程</h1><div class='description'>(说明：<i class=\"checkmark green icon\"></i> 通过，<i class=\"remove red  icon\"></i>失败，<i class=\"remove circle outline icon yellow\"></i>警告，<i class=\"minus  icon grey\"></i>未运行)</div>"+"<ol class=\"ui list\">\n"+
+         //   re3+
+            "</ol>";
     switch (a){
-        case 1:$('#listnum').html("<h1>具体用例</h1>"+rev.all.join("</br>"));break;
-        case 2:$('#listnum').html("<h1>具体用例</h1>"+rev.su.join("</br>"));break;
-        case 3:$('#listnum').html("<h1>具体用例</h1>"+rev.err.join("</br>"));break;
-        case 4:$('#listnum').html("<h1>具体用例</h1>"+rev.wa.join("</br>"));break;
-        case -1:$('#listnum').html("<h1>具体用例</h1>"+rev.no.join("</br>"));break;
+        case 1:$('#listnum').html("<h1>具体用例</h1>"+rev.all.join("</br>"));$('#context').html(con1);break;
+        case 2:$('#listnum').html("<h1>具体用例</h1>"+rev.su.join("</br>"));$('#context').html(con1);break;
+        case 3:$('#listnum').html("<h1>具体用例</h1>"+rev.err.join("</br>"));$('#context').html(con1);break;
+        case 4:$('#listnum').html("<h1>具体用例</h1>"+rev.wa.join("</br>"));$('#context').html(con1);break;
+        case -1:$('#listnum').html("<h1>具体用例</h1>"+rev.no.join("</br>"));$('#context').html(con1);break;
     }
     
 }
