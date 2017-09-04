@@ -1,9 +1,6 @@
 package com.ciic.test.dao;
 
-import com.ciic.test.bean.Element;
-import com.ciic.test.bean.HttpCase;
-import com.ciic.test.bean.Step;
-import com.ciic.test.bean.tmp;
+import com.ciic.test.bean.*;
 import com.ciic.test.service.SeleniumService;
 import com.ciic.test.tools.mycode;
 import org.apache.http.Header;
@@ -40,9 +37,9 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class SeleniumDao implements SeleniumService {
 
-    private  List<tmp> lt=null;//所有用例
-    private  List<tmp> ls=null;//所有step
-    private String seidStop="0";
+    private  List<tmp>  lt       =null;//所有用例
+    private  List<tmp3> ls       =null;//所有step
+    private String      seidStop ="0";
 @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -63,7 +60,7 @@ private String picPath;
            String caseListId= lt.get(i).getValue();
            String caseid=lt.get(i).getValue2();
             updateCaseListStatus("1",caseListId);//准备
-           String pre=getpre(caseid);
+         //  String pre=getpre(caseid);
             WebDriver[] driver={null};
             //TODO
 //            try {
@@ -209,13 +206,14 @@ private String picPath;
             if(seidStop.equals(seriesid)){
                 throw new InterruptedException("运行被中断");
             }
-            nowCaseresid[0]=    ls.get(j).getValue();
+            nowCaseresid[0]=    ls.get(j).getValue1();
             String sid=ls.get(j).getValue2();
+            String type=ls.get(j).getValue3();
             updateCaseresTime(nowCaseresid[0]);
-            if(sid.equals("0")){
+            if(type.equals("3")){
                 //System.out.println(caseid);
               //  System.out.println(nowCaseresid[0]);
-                String res=runHttpCase(nowCaseresid[0]);
+                String res=runHttpCase(nowCaseresid[0],2);//1,预置条件2,用例3，
 
                 if(res.equals("2")){
                     throw new MyException("校验错误");
@@ -226,26 +224,67 @@ private String picPath;
                 }
 
             }else {
-                if(driver[0]==null){
-                    driver[0]= startDriver(tid );
-                }
-                Step step = getStep(sid);
-                Element element = getElement(step.getEid());
-                WebElement webElement = element2Web(element, driver[0]);//未修改提示框//TODO
-                screenShot(driver[0], nowCaseresid[0], seriesid, caseListId, webElement, false);                    //截图
-                action(webElement, step.getCatid(), driver[0], step.getValue());
-                if (!element.getToframe().equals("-1")) {
-                    driver[0].switchTo().defaultContent();
-                }
-                if (!element.getTopage().equals("-1")) {
-                    toWindow(getTitle(element.getTopage()), driver[0]);
+                if(type.equals("1")){
+                    if(driver[0]==null){
+                        driver[0]= startDriver(tid );
+                    }
+                    Step step = getStep(sid);
+                    Element element = getElement(step.getEid());
+                    WebElement webElement = element2Web(element, driver[0]);//未修改提示框//TODO
+                    screenShot(driver[0], nowCaseresid[0], seriesid, caseListId, webElement, false);                    //截图
+                    action(webElement, step.getCatid(), driver[0], step.getValue());
+                    if (!element.getToframe().equals("-1")) {
+                        driver[0].switchTo().defaultContent();
+                    }
+                    if (!element.getTopage().equals("-1")) {
+                        toWindow(getTitle(element.getTopage()), driver[0]);
+
+                    }
+                    updateCaseListRunnum((j + 1) + "", caseListId);
+                    if (!step.getExpid().equals("0")) {
+                        System.out.println("exp");
+                    }
+                    updateCaseresRes("1","运行成功",nowCaseresid[0]);
+                }else if(type.equals("2")){
+
+
+                }else if(type.equals("4")){
+
+                            String res=runHttpCase(nowCaseresid[0],3);//1,预置条件2,用例3，
+
+                            if(res.equals("2")){
+                                throw new MyException("校验错误");
+                            }else {
+                                if(res.equals("3")){
+                                    throw new Exception("运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤");
+                                }
+                            }
+
+
+
+
+
+
+                    }else if(type.equals("5")){
+                    String res=runHttpCase(nowCaseresid[0],1);//1,预置条件2,用例3，
+
+                    if(res.equals("2")){
+                        throw new MyException("校验错误");
+                    }else {
+                        if(res.equals("3")){
+                            throw new Exception("运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤");
+                        }
+                    }
+
+                } else {
+                        throw new Exception("no case!");
+                    }
+
+
 
                 }
-                updateCaseListRunnum((j + 1) + "", caseListId);
-                if (!step.getExpid().equals("0")) {
-                    System.out.println("exp");
-                }
-                updateCaseresRes("1","运行成功",nowCaseresid[0]);
+
+
 
             }
 
@@ -254,7 +293,7 @@ private String picPath;
 
 
 
-        }
+
 
     }
 
@@ -272,7 +311,7 @@ private String picPath;
 public void test(String cid) {
 
 
-        runHttpCase("214");
+    //    runHttpCase("214");
 
 }
 
@@ -366,10 +405,22 @@ private Header[] getheaders(String head){
 
 }
 
-    private String runHttpCase(String resid)  {
-     List<HttpCase> lh=   jdbcTemplate.query("select * from httpcase where cid=(SELECT cid from caseres where id="+resid+")",new BeanPropertyRowMapper<>(HttpCase.class));
+    private String runHttpCase(String resid,int type)  {
+    //jdbcTemplate.query("select word value from ")
+        List<HttpCase> lh=null;
+        if (type==2) {
+            lh = jdbcTemplate.query("select * from httpcase where cid=(SELECT cid from caseres where id="+resid+")",new BeanPropertyRowMapper<>(HttpCase.class));
+        } else if(type==3){
 
-      if(lh.size()>0)          {
+            lh = jdbcTemplate.query("select * from httpcase where cid=(select a from  precondition where cid=( SELECT cid from caseres where id="+resid+"))",new BeanPropertyRowMapper<>(HttpCase.class));
+
+        }else {
+            lh = jdbcTemplate.query("SELECT a type,b url,c con, '5' eq ,'' value from precondition where cid=(SELECT cid from caseres where id="+resid+" )",new BeanPropertyRowMapper<>(HttpCase.class));
+
+
+        }
+
+        if(lh.size()>0) {
              if(lh.get(0).getType().equals("1")){
                     Header[] headers=null;
                  if(lh.get(0).getCon().contains("HEAD")){
@@ -492,7 +543,7 @@ if(ly.size()==0){
     }
 
     private void getres(String listid){
-       ls= jdbcTemplate.query("select id value,sid value2 from caseres where listid="+listid+"  order by id",new BeanPropertyRowMapper<>(tmp.class));
+       ls= jdbcTemplate.query("select id value1,sid value2,type value3 from caseres where listid="+listid+"  order by id",new BeanPropertyRowMapper<>(tmp3.class));
     }
 
     private  Step getStep(String sid){
