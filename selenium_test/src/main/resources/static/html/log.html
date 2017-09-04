@@ -74,6 +74,7 @@
     }
 function getimg(a,b,f,c) {
 
+
     var ca=$('#img'+a).html();
     if(ca.length>0){
         $(c).text('[查看图片/信息]');
@@ -83,7 +84,7 @@ function getimg(a,b,f,c) {
         //replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26")
         f=f.replace(/%21/g,"(").replace(/%22/g,")").replace(/%23/g,"{").replace(/%24/g,"}").replace(/%25/g,"*").replace(/%26/g,"*");
         if(b.length>1){
-            $('#img'+a).html("<img class=\"ui fluid image\" src=\"../"+b+"\"><div style=\"margin:0 auto; text-align:center\" id='ff'></div><div class=\"ui divider\"></div>");
+            $('#img'+a).html("<img class=\"ui fluid image\" src=\"../"+b+"\"><div style=\"margin:0 auto; text-align:center\" id='ff"+a+"'></div><div class=\"ui divider\"></div>");
 
         }else {
             $('#img'+a).html("<div  id='ff"+a+"'></div>");
