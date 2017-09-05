@@ -16,6 +16,7 @@ public interface ConfigService {
     int removeDatasource(String did);
     List<Datasource> getDatasource(String tid);
     String connectDatasource(String did);
+    String[] updateDate(String data);
 
     int clearisused();
 

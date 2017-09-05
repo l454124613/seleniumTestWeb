@@ -90,6 +90,8 @@ return list;
             int n3=0;
             if(type.equals("2")){
                  n3=addHttpCase(tid);
+            }else {
+                n3=1;
             }
 
         if(n2==1&&n3==1){
@@ -236,7 +238,7 @@ return "0";
         }
 
 
-        return jdbcTemplate.update("UPDATE \"precondition\" SET  \"type\"=?, \"a\"=?, \"b\"=?, \"c\"=?  WHERE (\"cid\" = ?)",mycode.prase2(new Object[]{type,a,b,c,cid}));
+        return jdbcTemplate.update("UPDATE \"precondition\" SET  \"type\"=?, \"a\"=?, \"b\"=?, \"c\"=?  WHERE (\"cid\" = ?)",mycode.prase3(new Object[]{type,a,b,c,cid}));
     }
 
 //    @Override

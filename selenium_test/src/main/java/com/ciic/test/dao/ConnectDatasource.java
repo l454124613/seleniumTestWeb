@@ -14,6 +14,7 @@ public class ConnectDatasource {
     private String     link;
     private String     dataname;
 
+
     public ConnectDatasource(String link, String dataname, String user, String pass, String type) {
         this.link = link;
         this.dataname = dataname;
@@ -37,7 +38,7 @@ public class ConnectDatasource {
 
 
 
-    public void Connection(){
+    public Connection Connection(){
         String driver="";
         String url="";
         if(type.equalsIgnoreCase("1")){
@@ -55,9 +56,9 @@ public class ConnectDatasource {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
+        Connection con2=null;
         try {
-            Connection  con2= DriverManager.getConnection(url+link+dataname,user,pass);
+              con2= DriverManager.getConnection(url+link+dataname,user,pass);
             if(con2.isClosed()){
                 connectRes="连接失败";
             }else {
@@ -68,6 +69,7 @@ public class ConnectDatasource {
         } catch (SQLException e) {
             connectRes=e.getErrorCode()+":"+e.getMessage();
         }
+        return con2;
 
     }
 

@@ -63,6 +63,14 @@ public class mycode {
         return a;
 
     }
+    public static Object[] prase3(Object[] a){
+        for (int i = 0; i <a.length ; i++) {
+            a[i]= a[i].toString().replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+                    .replace("\"","%25").replace("'","%26").replace("\n","<br/>");
+        }
+        return a;
+
+    }
 
     public static String  praseString2(String a){
 

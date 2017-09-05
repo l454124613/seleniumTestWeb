@@ -1,6 +1,7 @@
 package com.ciic.test.dao;
 
 import com.ciic.test.bean.*;
+import com.ciic.test.service.ConfigService;
 import com.ciic.test.service.SeleniumService;
 import com.ciic.test.tools.mycode;
 import org.apache.http.Header;
@@ -42,6 +43,8 @@ public class SeleniumDao implements SeleniumService {
     private String      seidStop ="0";
 @Autowired
     private JdbcTemplate jdbcTemplate;
+@Autowired
+private ConfigService configService;
 
 @Value("${test.driver.path}")
 private String driverPath;
@@ -201,6 +204,54 @@ private String picPath;
 
     }
 
+    private String runSql(String resid){
+        List<tmp> lt=jdbcTemplate.query("SELECT a value ,b value2 from precondition where type=2 and cid =(SELECT cid from caseres where id="+resid+")",new BeanPropertyRowMapper<>(tmp.class));
+        if(lt.size()==1){
+        String daid=    lt.get(0).getValue();
+        String sqls=   lt.get(0).getValue2();
+
+String iscon=configService.connectDatasource(daid);
+if(iscon.equals("连接成功")){
+    String[] datas=sqls.replace("<br/>","").replace("%25","\"").replace("%26","'").split(";");
+    String re="";
+    boolean isok=true;
+    for (String d:datas){
+        if(d.length()<6){
+            continue;
+        }
+        String[] con1=  configService.updateDate(d);
+        re+="<br/>执行sql为："+d.replace("'","%26").replace("\"","%25");
+        if(con1[1].length()>0){
+            re+="<br/>"+con1[1].replace("\n","<br/>").replace("\"","\\\"")+"<br/>";
+            isok=false;
+        }else {
+            re+="<br/>修改数据:"+con1[0]+"条<br/>";
+
+        }
+    }
+if(isok){
+    updateCaseresRes("1",re,resid);
+        return "";
+}else {
+   // updateCaseresRes("3",re,resid);
+    return re;
+}
+
+
+}else {
+  //  updateCaseresRes("3",iscon.replace("\"","\\\""),resid);
+
+    return iscon.replace("\"","\\\"");
+}
+
+        }else {
+
+            return "查不到对应的预置条件";
+        }
+
+
+    }
+
     private  void  runStep(String seriesid,WebDriver[] driver,String tid,String caseListId,String[] nowCaseresid,String caseid) throws Exception {
         for (int j = 0; j <ls.size() ; j++) {
             if(seidStop.equals(seriesid)){
@@ -246,6 +297,11 @@ private String picPath;
                     }
                     updateCaseresRes("1","运行成功",nowCaseresid[0]);
                 }else if(type.equals("2")){
+                    String re2=runSql(nowCaseresid[0]);
+                    if(re2.length()>0){
+                        throw new Exception(re2);
+                    }
+
 
 
                 }else if(type.equals("4")){

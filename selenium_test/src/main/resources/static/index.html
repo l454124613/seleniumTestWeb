@@ -135,6 +135,12 @@ $.get('/com',function (data,status) {
                            }else {
                                name=uu[1];
                            }
+                           if($('#rem').is(':checked')){
+                               Cookies.set('user', compileStr($("#email").val()+"???"+$("#password").val()), { expires: 30 });
+                           }else {
+                               Cookies.remove('user');
+                           }
+
                             Cookies.set('user1', compileStr(name));
                            if(uu[2]=="1"){
                                Cookies.set('user2', compileStr("我是管理员"));
@@ -156,16 +162,18 @@ $.get('/com',function (data,status) {
        }
 
    });
-$("#rem").click(function () {
-    if(this.checked){
-
-        Cookies.set('user', compileStr($("#email").val()+"???"+$("#password").val()), { expires: 30 });
-
-    }else{
-        Cookies.remove('user');
-    }
-
-});
+  // var isrem=false;
+//$("#rem").click(function () {
+//    if(this.checked){
+//        isrem=true;
+//
+//        //Cookies.set('user', compileStr($("#email").val()+"???"+$("#password").val()), { expires: 30 });
+//
+//    }else{
+//        isrem=false;
+//    }
+//
+//});
 
 //    function  su() {
 //        var aa=$("#inputPassword").val();

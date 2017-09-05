@@ -962,7 +962,8 @@ function changeyu2() {
             if(pretmp.a!=-1&&pretmp.type==2){
 
                 $('#sedatass').dropdown('set selected',pretmp.a);
-                $('#areaid').val(pretmp.b.toString().replace(/<br\/>/g,"\n"));
+
+                $('#areaid').val(pretmp.b.toString().replace(/<br\/>/g,"\n").replace(/%25/g,"\"").replace(/%26/g,"'"));
 
 
 
@@ -1186,7 +1187,7 @@ function closeUpdateStep(a) {
     if(a>0){
         pid=a;
     }
-    lookstep(cid);
+    lookstep(cid,true);
 
 }
 
@@ -1476,7 +1477,7 @@ var re4="";
 
                 re4+="    <div class=\"item\" data-value=\"7\">上传</div>\n";
             }
-            re4+="<div class=\"item\" data-value=\"9\">跳转</div>";
+           // re4+="<div class=\"item\" data-value=\"9\">跳转</div>";
 
             $('#typeg').html(re4);
             $('.ui.dropdown').dropdown();
@@ -3770,7 +3771,7 @@ function  in2st4type(a) {
         case "6": return "文本";
         case "7": return "上传";
         case "8": return "frame";
-        case "9": return "跳转";
+       // case "9": return "跳转";
     }
 
 }
@@ -3798,7 +3799,7 @@ function  in2act4type(a) {
         case "5": return "8,9,10";
         case "6": return "11,3";
         case "7": return "12";
-        case "9": return "14,15";
+       // case "9": return "14,15";
 
     }
 
@@ -3814,7 +3815,7 @@ function  in2en4type(a) {
         case "6": return "text";
         case "7": return "upload";
         case "8": return "frame";
-        case "9": return "link";
+       // case "9": return "link";
     }
 
 }

@@ -6,10 +6,12 @@ import com.ciic.test.bean.tmp;
 import com.ciic.test.service.ConfigService;
 import com.ciic.test.tools.mycode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +25,8 @@ public class ConfigDao implements ConfigService {
 
     @Autowired
    private JdbcTemplate jdbcTemplate;
+
+    private Connection con;
 
     @Override
     public int addDataspource(String name, String des, String type, String link,String dataname, String user,String pass, String tid) {
@@ -49,7 +53,7 @@ public class ConfigDao implements ConfigService {
         List<Datasource> ld=  jdbcTemplate.query("select * from datasource where id=?",mycode.prase(new Object[]{did}),new BeanPropertyRowMapper<Datasource>(Datasource.class));
         if(ld.size()==1){
             ConnectDatasource connectDatasource=   new ConnectDatasource(ld.get(0).getLink(),ld.get(0).getDataname(),ld.get(0).getUser(),ld.get(0).getPass(),ld.get(0).getType());
-            connectDatasource.Connection();
+          con=  connectDatasource.Connection();
             return connectDatasource.getConnectRes();
 
         }else {
@@ -59,14 +63,36 @@ public class ConfigDao implements ConfigService {
     }
 
     @Override
+    public String[] updateDate(String data) {
+        int a=0;
+        String e1="";
+        try {
+             a=con.createStatement().executeUpdate(data);
+
+        } catch (DataAccessException e) {
+            e1=e.getCause().getLocalizedMessage();
+        }finally {
+            return new String[]{a+"",e1};
+
+        }
+    }
+
+    @Override
     public int clearisused() {
        int a= jdbcTemplate.update("DELETE from caselist where isused=0");
        int b= jdbcTemplate.update("DELETE from datasource where isused=0");
        int c= jdbcTemplate.update("DELETE from element where isused=0");
        int d= jdbcTemplate.update("DELETE from page where isused=0");
        int e= jdbcTemplate.update("DELETE from step where isused=0");
+       int f= jdbcTemplate.update("DELETE from casehome where isused=0");
+       int g= jdbcTemplate.update("DELETE from exp where sid not in (select id from step where isused=1)");
+       int h= jdbcTemplate.update("DELETE from httpcase where cid not in (SELECT id from caselist where isused=1)");
+       int i= jdbcTemplate.update("DELETE from label where isused=0 ");
+       int j= jdbcTemplate.update("DELETE FROM precondition where cid not in (SELECT id from caselist WHERE isused=1)");
+       int k= jdbcTemplate.update("DELETE from series where isused =0");
 
-        return a+b+c+d+e;
+
+        return a+b+c+d+e+f+g+h+i+j+k;
     }
 
     @Override
