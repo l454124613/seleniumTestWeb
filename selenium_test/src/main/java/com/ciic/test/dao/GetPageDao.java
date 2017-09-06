@@ -64,7 +64,7 @@ private Map<String, SwitchToService> mapsw;
 
     @Override
     public List<Element> get(String page) {
-        list=jdbcTemplate.query("SELECT id,type,locationMethod,value,name,lastupdatetime,updater,topage,toframe,waitid,waitvalue from element where isused=1 and pid=?", mycode.prase(new Object[]{page}),new BeanPropertyRowMapper<Element>(Element.class));
+        list=jdbcTemplate.query("SELECT id,num,isframe,locationMethod,value,name,lastupdatetime,updater,topage,toframe,waitid,waitvalue from element where isused=1 and pid=?", mycode.prase(new Object[]{page}),new BeanPropertyRowMapper<Element>(Element.class));
 
 
    return list;
@@ -72,7 +72,7 @@ private Map<String, SwitchToService> mapsw;
 
     @Override
     public List<Element> getall(String tid) {
-        return jdbcTemplate.query("SELECT element.id,pid,type,locationMethod,value,name,lastupdatetime,updater,topage,toframe,waitid,waitvalue,page.pagename from element join page on element.pid=page.id where element.isused=1 and page.isused=1 and tid=?",new Object[]{tid},new BeanPropertyRowMapper<>(Element.class));
+        return jdbcTemplate.query("SELECT element.id,pid,num,isframe,locationMethod,value,name,lastupdatetime,updater,topage,toframe,waitid,waitvalue,page.pagename from element join page on element.pid=page.id where element.isused=1 and page.isused=1 and tid=?",new Object[]{tid},new BeanPropertyRowMapper<>(Element.class));
     }
 
     @Override
@@ -190,15 +190,15 @@ private Map<String, SwitchToService> mapsw;
 
     @Override
     public int addEle(Element element,String user,String pid) {
-        return jdbcTemplate.update("INSERT INTO \"main\".\"element\" ( \"type\", \"pid\", \"locationMethod\", \"value\", \"name\", \"topage\", \"toframe\",\"createtime\", \"waitid\",\"waitvalue\", \"creater\") VALUES ( ?, ?, ?, ?, ?, ?,?, ?,?,?,  ?)",
-                mycode.prase(new Object[]{element.getType(),pid,element.getLocationMethod(),element.getValue(),element.getName(),element.getTopage(), element.getToframe(),LocalDate.now()+" "+ LocalTime.now(),element.getWaitid(),element.getWaitvalue(),user}));
+        return jdbcTemplate.update("INSERT INTO \"element\" ( \"num\", \"isframe\", \"pid\", \"locationMethod\", \"value\", \"name\", \"topage\", \"toframe\",\"createtime\", \"waitid\",\"waitvalue\", \"creater\") VALUES ( ?, ?,?, ?, ?, ?, ?,?, ?,?,?,  ?)",
+                mycode.prase(new Object[]{element.getNum(),element.getIsframe(),pid,element.getLocationMethod(),element.getValue(),element.getName(),element.getTopage(), element.getToframe(),LocalDate.now()+" "+ LocalTime.now(),element.getWaitid(),element.getWaitvalue(),user}));
 
     }
 
     @Override
     public int updateEle(Element element,String user,String eid) {
-      return   jdbcTemplate.update("UPDATE \"main\".\"element\" SET  \"type\"=?,  \"locationMethod\"=?, \"value\"=?, \"name\"=?, \"topage\"=?, \"toframe\"=?,  \"lastupdatetime\"=?, \"updater\"=?, \"waitid\"=?, \"waitvalue\"=? WHERE (\"id\"=?)",
-              mycode.prase(new Object[]{element.getType(),element.getLocationMethod(),element.getValue(),element.getName(),element.getTopage(), element.getToframe(),LocalDate.now()+" "+ LocalTime.now(),user,element.getWaitid(),element.getWaitvalue(),eid}));
+      return   jdbcTemplate.update("UPDATE \"element\" SET  \"num\"=?,\"isframe\"=?,   \"locationMethod\"=?, \"value\"=?, \"name\"=?, \"topage\"=?, \"toframe\"=?,  \"lastupdatetime\"=?, \"updater\"=?, \"waitid\"=?, \"waitvalue\"=? WHERE (\"id\"=?)",
+              mycode.prase(new Object[]{element.getNum(),element.getIsframe(),element.getLocationMethod(),element.getValue(),element.getName(),element.getTopage(), element.getToframe(),LocalDate.now()+" "+ LocalTime.now(),user,element.getWaitid(),element.getWaitvalue(),eid}));
 
 
     }

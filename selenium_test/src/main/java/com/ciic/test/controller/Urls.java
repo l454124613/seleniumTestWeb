@@ -322,20 +322,22 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
 
     }
     @RequestMapping(value = "/addele")
-    String addEle(String item,String elename,String eletype,String type,String elelo,String elevalue,String pid,String topage,String toframe,String waitv,String waitid,HttpSession session){
+    String addEle(String item,String elename,String num,String type,String elelo,String elevalue,String pid,String topage,String toframe,String waitv,String waitid,String isframe,HttpSession session){
 
-        if(item.isEmpty()||elename.isEmpty()||eletype.isEmpty()||type.isEmpty()||elelo.isEmpty()||elevalue.isEmpty()||pid.isEmpty()||topage.isEmpty()||toframe.isEmpty()||waitid.isEmpty()||waitv.isEmpty()||!getPageService.isOwnPage(pid,item)){
+        if(isframe.isEmpty()||item.isEmpty()||elename.isEmpty()||num.isEmpty()||type.isEmpty()||elelo.isEmpty()||elevalue.isEmpty()||pid.isEmpty()||topage.isEmpty()||toframe.isEmpty()||waitid.isEmpty()||waitv.isEmpty()||!getPageService.isOwnPage(pid,item)){
             return "{\"isok\":1,\"msg\":\"信息不能为空\",\"to\":\"/\"}";
         }else {
             Element element=new Element();
             element.setLocationMethod(elelo);
             element.setName(elename);
             element.setTopage(topage);
-            element.setType(eletype);
+
             element.setValue(elevalue);
             element.setToframe(toframe);
             element.setWaitid(waitid);
             element.setWaitvalue(waitv);
+            element.setNum(num);
+            element.setIsframe(isframe);
             int a=0;
             if(type.equalsIgnoreCase("0")){
                 a= getPageService.addEle(element,session.getAttributeNames().nextElement(),pid);

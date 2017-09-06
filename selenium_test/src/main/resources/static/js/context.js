@@ -148,12 +148,12 @@ function changeyan2() {
         "                    </div>\n"+
         "\n"+
         "                    <div class=\"twelve wide field \" id='inputsql'>\n"+
-        "                        <input type=\"text\"   placeholder=\"sql语句\" id='inputvsql'>\n"+
+        "                        <input type=\"text\"   placeholder=\"sql语句,例如：select a,b,c from d\" id='inputvsql'>\n"+
         "                    </div>\n"+
         "\n"+
         "                </div>\n"+
         "            <div class=\"field\">\n"+
-        "                        <input type=\"text\"   placeholder=\"结果:多个结果验证，使用、（顿号）区分，例如：xxx、xxx\" id='vsql'>\n"+
+        "                        <input type=\"text\"   placeholder=\"结果:多个结果验证，使用、（顿号）区分，例如：a=xxx、b=xxx、c=xxx\" id='vsql'>\n"+
         "                </div>\n"+
 
         "    </div></div>";
@@ -1607,9 +1607,10 @@ function  shuaele() {
                         "\n" +
                         "                        <td  >"+(i+1)+"</td>\n" +
                         "                        <td  >"+re1[i].name+"</td>\n" +
-                        "                        <td  >"+in2st4type(re1[i].type)+"</td>\n" +
+                        // "                        <td  >"+in2st4type(re1[i].type)+"</td>\n" +
                         "                        <td  >"+in2st4lo(re1[i].locationMethod)+"</td>\n" +
                         "                        <td  >"+re1[i].value+"</td>\n" +
+                        "                        <td  >"+(re1[i].isframe=="1")+"</td>\n" +
                         "                        <td  >"+(re1[i].topage!="-1")+"</td>\n" +
                         "                        <td  ><button class=\"ui  circular basic icon button\" onclick='updateele("+re1[i].id+")' title=\"修改元素\"><i class=\"paint brush icon\"></i></button>\n" +
                         "                            <button class=\"ui circular basic icon button\" onclick='removeele("+re1[i].id+")' title=\"删除元素\"><i class=\"remove circle icon red\"></i></button></td>\n" +
@@ -1648,10 +1649,12 @@ function  shuaeleall() {
                         "                        <td  >"+(i+1)+"</td>\n" +
                         "                        <td  >"+re1[i].pagename+"</td>\n" +
                         "                        <td  >"+re1[i].name+"</td>\n" +
-                        "                        <td  >"+in2st4type(re1[i].type)+"</td>\n" +
+
                         "                        <td  >"+in2st4lo(re1[i].locationMethod)+"</td>\n" +
                         "                        <td  >"+re1[i].value+"</td>\n" +
                         "                        <td  >"+(re1[i].topage!="-1")+"</td>\n" +
+                        "                        <td  >"+(re1[i].isframe=="1")+"</td>\n" +
+
                         "                        <td  ><button class=\"ui  circular basic icon button\" onclick='pid="+re1[i].pid+";updateele("+re1[i].id+")' title=\"修改元素\"><i class=\"paint brush icon\"></i></button>\n" +
                         "                            <button class=\"ui circular basic icon button\" onclick='pid="+re1[i].pid+";removeele("+re1[i].id+")' title=\"删除元素\"><i class=\"remove circle icon red\"></i></button></td>\n" +
 
@@ -1939,9 +1942,11 @@ $('#closemodal2').click(function () {
     $('#modal2').modal('hide');
     $('#ename').val('');
     $('#eval').val('');
-    $('#etype').dropdown('clear');
+    $('#enum').val('');
+    //$('#etype').dropdown('clear');
     $('#elo').dropdown('clear');
     $('#chfr').checkbox('uncheck');
+    $('#chisfr').checkbox('uncheck');
     $('#chwin').checkbox('uncheck');
     $('#sefr').dropdown('clear');
     $('#sewin').dropdown('clear');
@@ -2314,11 +2319,14 @@ function int2imp(a) {
 $('#addpageone2').click(function () {
     // <!--$('#etype').find("option:selected").text();-->
     var ename=$.trim($('#ename').val());
-    var etypeid=$('#etype').val();
-    var etypeval=$('#etype').find("option:selected").text();
+    // var etypeid=$('#etype').val();
+    // var etypeval=$('#etype').find("option:selected").text();
+
     var eloid=$('#elo').val();
     var eloval=$('#elo').find("option:selected").text();
     var eval=$.trim($('#eval').val());
+    var chisfr=$('#chisfr').checkbox('is checked')?1:0;
+    var num=$.trim($('#enum').val())==""?"0":$.trim($('#enum').val());
     var frame=-1;
     var window=-1;
     var waitid=-1;
@@ -2352,13 +2360,13 @@ $('#addpageone2').click(function () {
 //console.log(eval.length<1);
 //console.log(frame==="");
 //console.log(window==="");
-    if(ename.length<1||etypeid===""||eloid===""||eval.length<1||frame===""||window===""||waitv.length<1||waitid===""){
+    if(ename.length<1||eloid===""||eval.length<1||frame===""||window===""||waitv.length<1||waitid===""){
         alertf('请输入完整信息');
     }else{
         $.post('/addele',{
             item:tid,
             elename:ename,
-            eletype:etypeid,
+           // eletype:etypeid,
             type:ass1,
             elelo:eloid,
             elevalue:eval,
@@ -2366,7 +2374,9 @@ $('#addpageone2').click(function () {
             topage:window,
             toframe:frame,
             waitid:waitid,
-            waitv:waitv
+            waitv:waitv,
+            isframe:chisfr,
+            num:num
 
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
@@ -3517,10 +3527,11 @@ $('#melement').click(function () {
         var re =base( "<th style=\"width: 40px\">#</th>\n" +
             "                        <th style=\"width: 15%\">页面名称</th>" +
             "                        <th style=\"width: 15%\">元素名称</th>" +
-            "                        <th style=\"width: 80px\">类型</th>" +
+
             "                        <th style=\"width: 80px\">定位方式</th>" +
             "                        <th style=\"min-width: 30em;\">定位值</th>" +
             "                        <th style=\"width: 80px\">关联页面</th>" +
+            "                        <th style=\"width: 80px\">Frame</th>" +
 
             "                        <th style=\"width: 80px\">操作</th>" ,8,'topage()','跳转至页面','eleid');
 
@@ -3676,10 +3687,11 @@ function lookelement(a) {
 
     var re =base( "<th style=\"width: 40px\"><button class=\"ui right floated circular basic icon button\"  onclick='returnpage()'  title=\"返回页面\"><i class=\"reply icon\"></i></button></th>\n" +
     "                        <th style=\"width: 15%\">元素名称</th>" +
-    "                        <th style=\"width: 80px\">类型</th>" +
+
     "                        <th style=\"width: 80px\">定位方式</th>" +
     "                        <th style=\"min-width: 30em;\">定位值</th>" +
     "                        <th style=\"width: 80px\">关联页面</th>" +
+        "                        <th style=\"width: 80px\">Frame</th>" +
 
     "                        <th style=\"width: 80px\">操作</th>" ,7,'addele()','添加元素','eleid');
 
@@ -3737,7 +3749,14 @@ function  updateele(a) {
     $('#ename').val(elements1[nn].name);
     $('#eval').val(elements1[nn].value);
     $('#elo').dropdown('set selected',elements1[nn].locationMethod);
-    $('#etype').dropdown('set selected',elements1[nn].type);
+   // $('#etype').dropdown('set selected',elements1[nn].type);
+    if(elements1[nn].isframe=="1"){
+            $('#chisfr').checkbox('check');
+    }
+    if(elements1[nn].num!="0"){
+        $('#enum').val(elements1[nn].num);
+    }
+
     if(elements1[nn].toframe!="-1"){
         $('#chfr').click();
         $('#sefr').dropdown('set selected',elements1[nn].toframe);
@@ -3767,10 +3786,11 @@ function  in2st4type(a) {
         case "2": return "勾选框";
         case "3": return "提示框";
         case "4": return "单选";
-        case "5": return "下拉框";
+        //case "5": return "下拉框";
         case "6": return "文本";
         case "7": return "上传";
         case "8": return "frame";
+        case "9": return "输入框";
        // case "9": return "跳转";
     }
 
@@ -3799,7 +3819,7 @@ function  in2act4type(a) {
         case "5": return "8,9,10";
         case "6": return "11,3";
         case "7": return "12";
-       // case "9": return "14,15";
+        case "9": return "14,15";
 
     }
 
@@ -3811,7 +3831,7 @@ function  in2en4type(a) {
         case "2": return "checkbox";
         case "3": return "dialog";
         case "4": return "radio";
-        case "5": return "select";
+       // case "5": return "select";
         case "6": return "text";
         case "7": return "upload";
         case "8": return "frame";
@@ -3836,10 +3856,11 @@ function  in2st4action(a) {
         case "11": return "输入值";
         case "12": return "上传按钮";
         case "13": return "是否存在";
-        case "14":return "跳转";
-        case "15":return "回退";
+        // case "14":return "跳转";
+        // case "15":return "回退";
         case "16":return "获取属性";
         case "17":return "获取文本";
+        case "18":return "获取输入值";
 
     }
 

@@ -14,7 +14,57 @@ public class Element {
         this.id = id;
     }
     private String id;
-    private String type;
+    private String num;
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append("\"id\":\"")
+                .append(id).append('\"');
+        sb.append(",\"num\":\"")
+                .append(num).append('\"');
+        sb.append(",\"isframe\":\"")
+                .append(isframe).append('\"');
+        sb.append(",\"locationMethod\":\"")
+                .append(locationMethod).append('\"');
+        sb.append(",\"value\":\"")
+                .append(value).append('\"');
+        sb.append(",\"name\":\"")
+                .append(name).append('\"');
+        sb.append(",\"topage\":\"")
+                .append(topage).append('\"');
+        sb.append(",\"toframe\":\"")
+                .append(toframe).append('\"');
+        sb.append(",\"waitid\":\"")
+                .append(waitid).append('\"');
+        sb.append(",\"waitvalue\":\"")
+                .append(waitvalue).append('\"');
+        sb.append(",\"pid\":\"")
+                .append(pid).append('\"');
+        sb.append(",\"pagename\":\"")
+                .append(pagename).append('\"');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public String getNum() {
+        return num;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
+    }
+
+    public String getIsframe() {
+        return isframe;
+    }
+
+    public void setIsframe(String isframe) {
+        this.isframe = isframe;
+    }
+
+    private String isframe;
+
     private String locationMethod;
     private String value;
     private String name;
@@ -39,35 +89,6 @@ public class Element {
 
     public void setPid(String pid) {
         this.pid = pid;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("{");
-        sb.append("\"id\":\"")
-                .append(id).append('\"');
-        sb.append(",\"type\":\"")
-                .append(type).append('\"');
-        sb.append(",\"locationMethod\":\"")
-                .append(locationMethod).append('\"');
-        sb.append(",\"value\":\"")
-                .append(value).append('\"');
-        sb.append(",\"name\":\"")
-                .append(name).append('\"');
-        sb.append(",\"topage\":\"")
-                .append(topage).append('\"');
-        sb.append(",\"toframe\":\"")
-                .append(toframe).append('\"');
-        sb.append(",\"waitid\":\"")
-                .append(waitid).append('\"');
-        sb.append(",\"pagename\":\"")
-                .append(pagename).append('\"');
-        sb.append(",\"pid\":\"")
-                .append(pid).append('\"');
-        sb.append(",\"waitvalue\":\"")
-                .append(waitvalue).append('\"');
-        sb.append('}');
-        return sb.toString();
     }
 
     public String getWaitid() {
@@ -146,13 +167,7 @@ public class Element {
         return re;
     }
 
-    public String getType() {
-        return type;
-    }
 
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getLocationMethod() {
         return locationMethod;

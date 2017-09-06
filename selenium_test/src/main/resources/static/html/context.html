@@ -498,45 +498,54 @@
         *元素*
     </div>
     <div class="content ui form">
-        <div class="field">
-            <label>元素名称</label>
-            <div class="ui right labeled input">
-                <input type="text" placeholder="元素名称" id="ename">
-                <select class="ui dropdown " id="etype">
+        <div class="fields">
+            <div class="thirteen wide field">
+                <label>名称</label>
+                <input type="text"  id="ename" placeholder="元素名称">
+            </div>
+            <div class="one wide field"></div>
+            <div class="two wide field">
+                <label>frame?</label>
+                <div class="ui checkbox" style="margin-top: 12px" id="chisfr">
+                    <input type="checkbox" title="是否frame" >
+                    <label>是</label>
+                </div>
 
-                    <option value="">元素类型...</option>
-                    <option value="6">文本</option>
-                    <option value="1">按钮</option>
-                    <option value="2">勾选框</option>
-                    <option value="3">提示框</option>
-                    <option value="4">单选框</option>
-                    <!--<option value="5">下拉框</option>-->
 
-                    <option value="7">上传</option>
-                    <option value="8">Frame</option>
-
-                </select>
             </div>
         </div>
-        <div class="field">
-            <label>元素定位</label>
-            <div class="ui left labeled input" >
-                <select class="ui dropdown" id="elo">
-                    <option value="">定位方式...</option>
-                    <option value="1">id</option>
-                    <option value="6">xpath</option>
-                    <option value="5">classname</option>
-                    <option value="4">linktext</option>
-                    <option value="7">css</option>
-                    <option value="2">name</option>
-                    <option value="3">tagname</option>
+        <div class="fields">
+            <div class="three wide field">
+                <label>定位方式</label>
+                <select class="ui fluid dropdown" id="elo">
+                <option value="">定位方式...</option>
+                <option value="1">id</option>
+                <option value="6">xpath</option>
+                <option value="5">classname</option>
+                <option value="4">linktext</option>
+                <option value="7">css</option>
+                <option value="2">name</option>
+                <option value="3">tagname</option>
 
 
                 </select>
+
+
+            </div>
+            <div class="two wide field">
+                <label>定位序号</label>
+                <input type="text" placeholder="1" id="enum">
+
+            </div>
+
+            <div class="eleven wide field">
+                <label>定位值</label>
                 <input type="text" placeholder="元素定位" id="eval">
 
+
             </div>
         </div>
+
 
         <div class="ui accordion field" id="acc2">
 

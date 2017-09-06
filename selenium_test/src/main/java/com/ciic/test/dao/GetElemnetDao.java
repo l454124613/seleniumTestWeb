@@ -39,7 +39,7 @@ public class GetElemnetDao  implements GetElementService{
 
     @Override
     public WebElement getElement(Element element) {
-            By by=controlElemnet(element.getType(),element.getValue());
+            By by=controlElemnet(element.getLocationMethod(),element.getValue());
             if(by==null){
 //                ((JavascriptExecutor) driver).executeScript("var script=document.createElement(\"script\");script.type=\"text/javascript\";  \n" +
 //                        "script.src=\"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js\";document.getElementsByTagName('head')[0].appendChild(script);  ");
@@ -61,7 +61,7 @@ public class GetElemnetDao  implements GetElementService{
             if(by==null){
 //TODO
             }else {
-                map.put(k.getName()+"1a0a1"+k.getType(),driver.findElement(by));
+                map.put(k.getName()+"1a0a1",driver.findElement(by));
             }
 
         });
