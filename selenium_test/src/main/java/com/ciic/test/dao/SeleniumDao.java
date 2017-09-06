@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -65,7 +66,7 @@ private String picPath;
             updateCaseListStatus("1",caseListId);//准备
          //  String pre=getpre(caseid);
             WebDriver[] driver={null};
-            //TODO
+
 //            try {
 //
 //                runPre(pre,tid);
@@ -204,6 +205,55 @@ private String picPath;
 
     }
 
+    private void  checkSql(String sid,String resid) throws Exception {
+        List<tmp3> lt=jdbcTemplate.query("select a value1 ,b value2,c value3 from exp where sid="+sid,new BeanPropertyRowMapper<>(tmp3.class));
+if(lt.size()==1){
+    String iscon=configService.connectDatasource(lt.get(0).getValue1());
+    if(iscon.equals("连接成功")){
+        ResultSet rs= configService.selectData(lt.get(0).getValue2());
+        String[] st2=lt.get(0).getValue3().split("、");
+        boolean isok=true;
+        String text="";
+        if(rs.next()){
+            for (String s2:st2){
+                String[] s3=s2.split("=");
+                String rs2=rs.getString(s3[0]);
+               if(rs2.equals(s3[1])){
+                   text+=s2+" ";
+               }else {
+                   text+="期望："+s2+",实际为:"+rs2;
+                   isok=false;
+               }
+            }
+
+
+        }
+        if(isok){
+            updateCaseresRes("1",text,resid);
+
+        }else {
+            updateCaseresRes("2",text,resid);
+            throw new MyException(text);
+
+        }
+
+
+
+
+    }else {
+        throw new Exception(iscon);
+    }
+
+
+
+
+}else {
+    throw new Exception("没有找到期望结果。");
+}
+
+
+    }
+
     private String runSql(String resid){
         List<tmp> lt=jdbcTemplate.query("SELECT a value ,b value2 from precondition where type=2 and cid =(SELECT cid from caseres where id="+resid+")",new BeanPropertyRowMapper<>(tmp.class));
         if(lt.size()==1){
@@ -229,6 +279,7 @@ if(iscon.equals("连接成功")){
 
         }
     }
+
 if(isok){
     updateCaseresRes("1",re,resid);
         return "";
@@ -264,15 +315,9 @@ if(isok){
             if(type.equals("3")){
                 //System.out.println(caseid);
               //  System.out.println(nowCaseresid[0]);
-                String res=runHttpCase(nowCaseresid[0],2);//1,预置条件2,用例3，
+                runHttpCase(nowCaseresid[0],2);//1,预置条件2,用例3，
 
-                if(res.equals("2")){
-                    throw new MyException("校验错误");
-                }else {
-                    if(res.equals("3")){
-                        throw new Exception("运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤");
-                    }
-                }
+
 
             }else {
                 if(type.equals("1")){
@@ -293,7 +338,54 @@ if(isok){
                     }
                     updateCaseListRunnum((j + 1) + "", caseListId);
                     if (!step.getExpid().equals("0")) {
-                        System.out.println("exp");
+                        List<Expected> le=jdbcTemplate.query("select * from exp where sid="+step.getId(),new BeanPropertyRowMapper<>(Expected.class));
+                       int a12=jdbcTemplate.update("INSERT INTO \"caseres\" (\"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\", \"type\") VALUES ( "+caseid+", "+sid+", '', '预期结果', -1, -1, '"+LocalDate.now()+" "+LocalTime.now()+"', "+caseListId+", 6)");
+                       if(a12!=1){
+                           throw new  Exception("创建期望结果失败。");
+                       }
+                      List<tmp> lt6= jdbcTemplate.query("select id value from caseres where listid="+caseListId+" and type=6 and sid="+sid,new BeanPropertyRowMapper<>(tmp.class));
+                       if(lt6.size()==0){
+                           throw new  Exception("创建期望结果失败!");
+                       }
+                       if(le.size()==1){
+
+                            switch (le.get(0).getType()){
+                                case "1": Element element2 = getElement(le.get(0).getB().split(":")[0]);WebElement webElement2 = element2Web(element, driver[0]);screenShot(driver[0], lt6.get(0).getValue(), seriesid, caseListId, webElement2, false); Object o1=action(webElement2, le.get(0).getC(), driver[0], "");
+                                boolean res=false;
+                                 String act=   getOneAction(le.get(0).getC());
+                                    String eq="";
+                                    String t1="";
+                                if(o1 instanceof Boolean){
+                                    if(((Boolean) o1).booleanValue()){
+                                        res=true;
+                                    }
+                                }else {
+                                 t1=((String) o1);
+
+
+                                    switch (le.get(0).getD()){
+                                        case "1":if(t1.equals(le.get(0).getE()))res=true;eq="等于";break;
+                                        case "2":if(!t1.equals(le.get(0).getE()))res=true;eq="不等于";break;
+                                        case "3":if(t1.contains(le.get(0).getE()))res=true;eq="包含";break;
+                                        case "4":if(!t1.contains(le.get(0).getE()))res=true;eq="不包含";break;}
+
+                                }
+                                if(res){
+                                    updateCaseresRes("1",act+eq+t1,lt6.get(0).getValue());
+                                }else {
+                                    updateCaseresRes("2",act+eq+t1,lt6.get(0).getValue());
+                                    throw new MyException("");
+                                }
+
+                                break;
+                                case  "2":checkSql(sid,lt6.get(0).getValue());break;
+                                case  "3":runHttpCase(lt6.get(0).getValue(),4);break;
+                                case  "4":jdbcTemplate.update("DELETE from caseres where id="+lt6.get(0).getValue());break;
+                            }
+                        }else {
+                            throw new Exception("未找到预期结果。");
+                        }
+                       // System.out.println("exp");
                     }
                     updateCaseresRes("1","运行成功",nowCaseresid[0]);
                 }else if(type.equals("2")){
@@ -306,15 +398,8 @@ if(isok){
 
                 }else if(type.equals("4")){
 
-                            String res=runHttpCase(nowCaseresid[0],3);//1,预置条件2,用例3，
+                            runHttpCase(nowCaseresid[0],3);//1,预置条件2,用例3，
 
-                            if(res.equals("2")){
-                                throw new MyException("校验错误");
-                            }else {
-                                if(res.equals("3")){
-                                    throw new Exception("运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤");
-                                }
-                            }
 
 
 
@@ -322,15 +407,9 @@ if(isok){
 
 
                     }else if(type.equals("5")){
-                    String res=runHttpCase(nowCaseresid[0],1);//1,预置条件2,用例3，
+                    runHttpCase(nowCaseresid[0],1);//1,预置条件2,用例3，
 
-                    if(res.equals("2")){
-                        throw new MyException("校验错误");
-                    }else {
-                        if(res.equals("3")){
-                            throw new Exception("运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤");
-                        }
-                    }
+
 
                 } else {
                         throw new Exception("no case!");
@@ -461,7 +540,7 @@ private Header[] getheaders(String head){
 
 }
 
-    private String runHttpCase(String resid,int type)  {
+    private void  runHttpCase(String resid,int type) throws Exception {
     //jdbcTemplate.query("select word value from ")
         List<HttpCase> lh=null;
         if (type==2) {
@@ -470,10 +549,12 @@ private Header[] getheaders(String head){
 
             lh = jdbcTemplate.query("select * from httpcase where cid=(select a from  precondition where cid=( SELECT cid from caseres where id="+resid+"))",new BeanPropertyRowMapper<>(HttpCase.class));
 
-        }else {
+        }else if(type==1){
             lh = jdbcTemplate.query("SELECT a type,b url,c con, '5' eq ,'' value from precondition where cid=(SELECT cid from caseres where id="+resid+" )",new BeanPropertyRowMapper<>(HttpCase.class));
 
 
+        }else if(type==4){
+            lh=jdbcTemplate.query("SELECT a type,b url,c con, d eq ,e value from exp where sid=(select sid from caseres where id="+resid+")",new BeanPropertyRowMapper<>(HttpCase.class));
         }
 
         if(lh.size()>0) {
@@ -505,18 +586,18 @@ private Header[] getheaders(String head){
                 if (isok){
                      if(res.split("\\$\\$\\$666").length>3){
                          updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
-                         return "1";
+
                      }else {
 
                          updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
-                         return "2";
+                         throw  new MyException("");
 
                      }
 
 
                 }else {
                     updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
-                    return "2";
+                    throw  new MyException("");
 
                 }
 
@@ -550,15 +631,15 @@ private Header[] getheaders(String head){
                  if (isok){
                      if(res.split("$$$666").length>4){
                          updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
-                         return "1";
+
                      }else {
                          updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
-                         return "2";
+                         throw  new MyException("");
                      }
 
                  }else {
                      updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
-                     return "2";
+                     throw  new MyException("");
 
                  }
 
@@ -568,7 +649,7 @@ private Header[] getheaders(String head){
 
 
              // updateCaseresRes("3","运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤",resid);
-              return "3";
+             throw new Exception("运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤");
 
       }
         //CloseableHttpClient client = HttpClients.createDefault();
@@ -754,13 +835,28 @@ throw new NoSuchElementException("元素等不到");
                 //case "9": webElement.click();return true;
                // case "10": webElement.click();return true;
                 case "11": webElement.sendKeys(value);return 0;
-                case "12": webElement.sendKeys(value);return true;
+                case "12": webElement.sendKeys(value);return 0;
                 case "13": return exist(webElement);
                 case "14": driver.navigate().to(value);return 0;
                 case "15": driver.navigate().back();return 0;
                 case "17": return driver.switchTo().alert().getText();
+                case "18": return webElement.getAttribute("value");
                 default:return 0;
             }
+  }
+
+  private String getOneAction(String catid){
+      switch (catid){
+          case "2":return "是否可用";
+          case "4":return "是否选中";
+          case "5":return "获得文本";
+          case "13":return "是否存在";
+          case "17":return "获得文本";
+          case "18":return "获得输入值";
+
+          default:return "操作";
+
+      }
   }
 
 private void click(WebDriver driver,WebElement elemnet){

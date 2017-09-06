@@ -3,6 +3,8 @@ package com.ciic.test.service;
 import com.ciic.test.bean.Datasource;
 import com.ciic.test.bean.Label;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -17,6 +19,7 @@ public interface ConfigService {
     List<Datasource> getDatasource(String tid);
     String connectDatasource(String did);
     String[] updateDate(String data);
+    ResultSet selectData(String sql) throws SQLException;
 
     int clearisused();
 

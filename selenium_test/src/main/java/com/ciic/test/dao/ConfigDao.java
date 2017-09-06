@@ -12,6 +12,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -75,6 +77,12 @@ public class ConfigDao implements ConfigService {
             return new String[]{a+"",e1};
 
         }
+    }
+
+    @Override
+    public ResultSet selectData(String sql) throws SQLException {
+         return   con.createStatement().executeQuery(sql);
+
     }
 
     @Override
