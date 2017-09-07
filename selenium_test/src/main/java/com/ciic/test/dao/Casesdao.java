@@ -225,7 +225,11 @@ return "0";
 
     @Override
     public List<Precondition> getPrecondition(String cid) {
-        return jdbcTemplate.query("select * from precondition where isused=1 and cid=?",mycode.prase(new Object[]{cid}),new BeanPropertyRowMapper<Precondition>(Precondition.class));
+        List<Precondition> lp= jdbcTemplate.query("select * from precondition where isused=1 and cid=?",mycode.prase(new Object[]{cid}),new BeanPropertyRowMapper<Precondition>(Precondition.class));
+        Precondition p =lp.get(0);
+        p.setC(p.getC().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"));
+        lp.set(0,p);
+        return lp;
     }
 
     @Override
@@ -238,7 +242,7 @@ return "0";
         }
 
 
-        return jdbcTemplate.update("UPDATE \"precondition\" SET  \"type\"=?, \"a\"=?, \"b\"=?, \"c\"=?  WHERE (\"cid\" = ?)",mycode.prase3(new Object[]{type,a,b,c,cid}));
+        return jdbcTemplate.update("UPDATE \"precondition\" SET  \"type\"=?, \"a\"=?, \"b\"=?, \"c\"=?  WHERE (\"cid\" = ?)",new Object[]{type,a,b,c,cid});
     }
 
 //    @Override
@@ -425,12 +429,17 @@ return thread;
 
     @Override
     public int updateHttpCase(String type, String url, String con, String eq, String value, String cid) {
-        return jdbcTemplate.update("UPDATE \"httpcase\" SET \"type\"=?, \"url\"=?, \"con\"=?, \"eq\"=?, \"value\"=? WHERE (\"cid\"=?)",mycode.prase2(new Object[]{type,url,con,eq,value,cid}));
+        return jdbcTemplate.update("UPDATE \"httpcase\" SET \"type\"=?, \"url\"=?, \"con\"=?, \"eq\"=?, \"value\"=? WHERE (\"cid\"=?)",new Object[]{type,url,con,eq,value,cid});
     }
 
     @Override
     public List<HttpCase> getHttpCase(String cid) {
-        return jdbcTemplate.query("select * from httpcase where cid=?",new Object[]{cid},new BeanPropertyRowMapper(HttpCase.class));
+        List<HttpCase> lh= jdbcTemplate.query("select * from httpcase where cid=?",new Object[]{cid},new BeanPropertyRowMapper(HttpCase.class));
+        HttpCase httpCase=lh.get(0);
+        httpCase.setCon(httpCase.getCon() .replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"));
+httpCase.setValue(httpCase.getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"));
+        lh.set(0,httpCase);
+        return lh;
     }
 
     @Override

@@ -846,7 +846,7 @@ if(pres.length==0){
             $('#yu22').checkbox('check');
         }else {
             if(pres[0].type==3){
-                pretmp={a:pres[0].a,b:pres[0].b,c:pres[0].c,type:pres[0].type};
+                pretmp={a:pres[0].a,b:pres[0].b,c:pres[0].c.replace(/<br\/>/g,"\n").replace(/&quot;/g,"\"").replace(/&apos;/g,"'").replace(/&dakuohao1/g,"{").replace(/&dakuohao2/g,"}").replace(/&fanxiegang/g,"\\"),type:pres[0].type};
                 $('#yu33').checkbox('check');
             }else {
                 pretmp={a:-1,b:-1,c:-1,type:4};
@@ -3623,12 +3623,12 @@ if(b){
            if(cs.length==1&&cs[0].type!='-1'){
                $('#sehttp').dropdown('set selected',cs[0].type);
                $('#setype3').dropdown('set selected',cs[0].eq);
-               $('#areaid').val(cs[0].con.toString().replace(/<br\/>/g,"\n"));
+               $('#areaid').val(cs[0].con.toString().replace(/<br\/>/g,"\n").replace(/&quot;/g,"\"").replace(/&apos;/g,"'").replace(/&dakuohao1/g,"{").replace(/&dakuohao2/g,"}").replace(/&fanxiegang/g,"\\"));
                $('#urlv').val(cs[0].url);
                $('#inputv3').val(cs[0].value);
            }
 
-
+       // .replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang")
 
         }});
 

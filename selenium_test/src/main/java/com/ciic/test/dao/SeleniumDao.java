@@ -516,7 +516,7 @@ private String getHttpCon(String url, Header[] head, String type, String con){
             //stringBuffer.append("--------------------------------------------------\n");
         }
     } catch (Exception e) {
-       stringBuffer.append(e.getCause().getLocalizedMessage());
+       stringBuffer.append(e.getCause().getLocalizedMessage()==null?e.getLocalizedMessage():e.getCause().getLocalizedMessage());
     } finally {
         try {
             client.close();
@@ -620,7 +620,7 @@ private Header[] getheaders(String head){
 
 
                  }
-                 String con = lh.get(0).getCon().replace(head, "").replace("HEAD{}", "").replace("<br/>","").replace("&amp;","&").replace("&lt;","<").replace("&gt;",">").replace("&quot;","\"").replace("&apos;","'");
+                 String con = lh.get(0).getCon().replace(head, "").replace("HEAD{}", "").replace("<br/>","").replace("&amp;","&").replace("&lt;","<").replace("&gt;",">").replace("&quot;","\"").replace("&apos;","'").replace("\n","");
                  String res = getHttpCon(lh.get(0).getUrl(), headers, "post", con);
                  boolean isok=false;
                  String eq="";
@@ -629,10 +629,11 @@ private Header[] getheaders(String head){
                      case "2":if(!res.equals(lh.get(0).getValue()))isok=true;eq="不等于";break;
                      case "3":if(res.contains(lh.get(0).getValue()))isok=true;eq="包含";break;
                      case "4":if(!res.contains(lh.get(0).getValue()))isok=true;eq="不包含";break;
+                     case "5":isok=true;break;
                      default: isok=false;
                  }
                  if (isok){
-                     if(res.split("$$$666").length>4){
+                     if(res.split("\\$\\$\\$666").length>4){
                          updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
 
                      }else {
