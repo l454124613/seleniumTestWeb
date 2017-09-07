@@ -13,6 +13,7 @@ public interface ItemService {
     List<item> getAllItem();
     List<Page> getPage(String tid);
     List<Page> getOnePage(String tid,String title);
+    List<Page> getOnePageById(String id);
     List<Element> getele4page(String pid);
     int addItem(String name,String url);
     int removeItem(String tid);
@@ -25,6 +26,7 @@ public interface ItemService {
     List<user> getItemUser(String id);
     int addtitle(String title);
     String gerTitle(String id);
+
 
 
     String getItemUrl(String tid);

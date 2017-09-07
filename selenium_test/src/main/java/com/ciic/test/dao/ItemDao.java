@@ -55,6 +55,11 @@ public class ItemDao implements ItemService{
     }
 
     @Override
+    public List<Page> getOnePageById(String id) {
+        return jdbcTemplate.query("select * from page where id="+id,new BeanPropertyRowMapper<>(Page.class));
+    }
+
+    @Override
     public List<Element> getele4page(String pid) {
 
         return  jdbcTemplate.query("select * from element where pid= ? and isused=1",mycode.prase(new Object[]{pid}),new BeanPropertyRowMapper<Element>(Element.class));
@@ -162,7 +167,7 @@ public class ItemDao implements ItemService{
 
     @Override
     public int addStep(String step, String type, String catid, String cid, String value, String eid, String ename) {
-     int a=    jdbcTemplate.update("INSERT INTO \"step\" ( \"type\", \"step\", \"catid\",  \"cid\", \"value\", \"eid\", \"ename\") VALUES (?,?,?,?,?,?,?);",mycode.prase(new Object[]{type,step,catid,cid,value,eid,ename}));
+     int a=    jdbcTemplate.update("INSERT INTO \"step\" ( \"pagename\", \"step\", \"catid\",  \"cid\", \"value\", \"eid\", \"ename\") VALUES (?,?,?,?,?,?,?);",mycode.prase(new Object[]{type,step,catid,cid,value,eid,ename}));
         if(a==1){
               return jdbcTemplate.update("INSERT INTO \"exp\" (\"type\", \"a\", \"b\", \"c\", \"d\", \"e\",  \"sid\") VALUES (4, -1, -1, -1, -1, -1, (SELECT max(id) from step where isused=1 and cid=?) )",mycode.prase(new Object[]{cid}));
 
@@ -174,7 +179,7 @@ public class ItemDao implements ItemService{
 
     @Override
     public int updateStep(String id, String type, String catid, String value, String eid, String ename) {
-         return jdbcTemplate.update("UPDATE \"step\" SET  \"type\"=?, \"catid\"=?,   \"value\"=?, \"eid\"=?, \"ename\"=? WHERE (\"id\"=?)",mycode.prase(new Object[]{type,catid,value,eid,ename,id}));
+         return jdbcTemplate.update("UPDATE \"step\" SET  \"pagename\"=?, \"catid\"=?,   \"value\"=?, \"eid\"=?, \"ename\"=? WHERE (\"id\"=?)",mycode.prase(new Object[]{type,catid,value,eid,ename,id}));
 
     }
 }

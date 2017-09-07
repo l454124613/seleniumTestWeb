@@ -801,14 +801,14 @@ int num=configService.clearisused();
 
                }
            }else {
-               return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"page\":{\"id\":\"" + a + "\"},\"eles\":"+itemService.getele4page(a)+"}";
+               return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"page\":"+itemService.getOnePageById(a).get(0)+",\"eles\":"+itemService.getele4page(a)+"}";
 
            }
 
 
 
         }else {
-            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"page\":{\"id\":\""+id+"\"},\"eles\":"+getPageService.get(id)+"}";
+            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"page\":"+itemService.getOnePageById(id).get(0)+",\"eles\":"+getPageService.get(id)+"}";
 
         }
 
@@ -818,13 +818,13 @@ int num=configService.clearisused();
     }
 
     @RequestMapping("/addstep")
-    String addstep( String step,String type,String catid,String cid,String value,String eid,String ename){
-if(step.isEmpty()||type.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmpty()||ename.isEmpty()){
+    String addstep( String step,String pagename,String catid,String cid,String value,String eid,String ename){
+if(step.isEmpty()||pagename.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmpty()||ename.isEmpty()){
     return "{\"isok\":1,\"msg\":\"参数获取不全\",\"to\":\"/\"}";
 }else {
 
 
-    int  a   =  itemService.addStep(step,type,catid,cid,value,eid,ename);
+    int  a   =  itemService.addStep(step,pagename,catid,cid,value,eid,ename);
     new Thread(new Runnable() {
         @Override
         public void run() {
@@ -845,13 +845,13 @@ if(step.isEmpty()||type.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmpty()
 
 
     @RequestMapping("/fixstep")
-    String fixstep( String id,String type,String catid,String value,String eid,String ename){
-        if(id.isEmpty()||type.isEmpty()||catid.isEmpty()||eid.isEmpty()||ename.isEmpty()){
+    String fixstep( String id,String pagename,String catid,String value,String eid,String ename){
+        if(id.isEmpty()||pagename.isEmpty()||catid.isEmpty()||eid.isEmpty()||ename.isEmpty()){
             return "{\"isok\":1,\"msg\":\"参数获取不全\",\"to\":\"/\"}";
         }else {
 
 
-            int  a   =  itemService.updateStep(id,type,catid,value,eid,ename);
+            int  a   =  itemService.updateStep(id,pagename,catid,value,eid,ename);
 
 
 

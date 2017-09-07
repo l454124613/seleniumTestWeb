@@ -5,13 +5,22 @@ package com.ciic.test.bean;
  */
 public class Step {
     private String id;
-    private String type;
+    private String pagename;
     private String catid;
     private String catname;
     private String value;
     private String eid;
     private String ename;
     private String expid;
+
+    public String getPagename() {
+        return pagename;
+    }
+
+    public void setPagename(String pagename) {
+        this.pagename = pagename;
+    }
+
     private String step;
 
     @Override
@@ -19,8 +28,8 @@ public class Step {
         final StringBuilder sb = new StringBuilder("{");
         sb.append("\"id\":\"")
                 .append(id).append('\"');
-        sb.append(",\"type\":\"")
-                .append(type).append('\"');
+        sb.append(",\"pagename\":\"")
+                .append(pagename).append('\"');
         sb.append(",\"catid\":\"")
                 .append(catid).append('\"');
         sb.append(",\"catname\":\"")
@@ -55,13 +64,7 @@ public class Step {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
-    }
 
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getCatid() {
         return catid;

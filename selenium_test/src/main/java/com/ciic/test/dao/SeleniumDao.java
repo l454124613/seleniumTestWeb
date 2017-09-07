@@ -822,25 +822,31 @@ throw new NoSuchElementException("元素等不到");
 
   }
 
+
   private Object action(WebElement webElement,String catid,WebDriver driver,String value){
             switch (catid){
                 case "1": click(driver,webElement);return 0;
-                case "2": return webElement.isEnabled();
+                case "2": webElement.clear();webElement.sendKeys(value);return 0;
+
                 case "3": webElement.clear();return 0;
-                case "4": return webElement.isSelected();
-                case "5": return webElement.getText();
-                case "6": driver.switchTo().alert().accept();return 0;
-                case "7": driver.switchTo().alert().dismiss();return 0;
+                case "4": webElement.sendKeys(value);return 0;
+
+                case "5": driver.switchTo().alert().accept();return 0;
+                case "6": driver.switchTo().alert().dismiss();return 0;
                // case "8": return driver.switchTo().alert().getText();
                 //case "9": webElement.click();return true;
                // case "10": webElement.click();return true;
-                case "11": webElement.sendKeys(value);return 0;
-                case "12": webElement.sendKeys(value);return 0;
-                case "13": return exist(webElement);
-                case "14": driver.navigate().to(value);return 0;
-                case "15": driver.navigate().back();return 0;
-                case "17": return driver.switchTo().alert().getText();
-                case "18": return webElement.getAttribute("value");
+
+
+                case "7": return exist(webElement);
+                case "8": return webElement.getText();
+//                case "14": driver.navigate().to(value);return 0;
+//                case "15": driver.navigate().back();return 0;
+                case "9": return webElement.getAttribute("value");
+                case "10": return driver.switchTo().alert().getText();
+
+                case "11": return webElement.isEnabled();
+                case "12": return webElement.isSelected();
                 default:return 0;
             }
   }

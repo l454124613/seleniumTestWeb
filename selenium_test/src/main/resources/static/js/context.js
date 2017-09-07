@@ -368,6 +368,13 @@ function changeyan1() {
         "                        <i class=\"dropdown icon\"></i>\n"+
         "                        <div class=\"default text\">选择操作...</div>\n"+
         "                        <div class=\"menu\" id='addact2'>\n"+
+        "                                <div class=\"item\" data-value=\"7\">存在</div>\n"+
+        "                                <div class=\"item\" data-value=\"8\">获取文本</div>\n"+
+        "                                <div class=\"item\" data-value=\"9\">获取输入值</div>\n"+
+        "                                <div class=\"item\" data-value=\"10\">获取文本（alert）</div>\n"+
+        "                                <div class=\"item\" data-value=\"11\">可用</div>\n"+
+        "                                <div class=\"item\" data-value=\"12\">被选中</div>\n"+
+
 
         "                        </div>\n"+
         "                    </div>\n"+
@@ -448,7 +455,7 @@ function changepage2(a) {
             var eles2=o.elements;
             var re="";
             for(var i=0;i<eles2.length;i++){
-                re+= "<div class=\"item\" data-value=\""+eles2[i].id+":"+eles2[i].type+"\">"+eles2[i].name+"</div>\n"
+                re+= "<div class=\"item\" data-value=\""+eles2[i].id+"\">"+eles2[i].name+"</div>\n"
 
 
             }
@@ -469,19 +476,17 @@ function changeele2(a) {
     var va=$(a).val();
     $('#seact2').removeClass('disabled');
     if(va!=""){
-        var re=va.split(":");
-        var re2=in2act4typeandcheck(re[1]);
-        var re3=re2.split(",");
-        var  re4="";
-        for(var i=0;i<re3.length;i++){
-            re4+="<div class=\"item\" data-value=\""+re3[i]+"\">"+in2st4action(re3[i])+"</div>\n"
-        }
-        $('#addact2').html(re4);
+
+
+
+
+
+
 
         if(exptmp.c!=-1){
             $('#seact2').dropdown();
             $('#seact2').dropdown('set selected',exptmp.c);
-            if(exptmp.c=="5"){
+            if(exptmp.c=="8"||exptmp.c=="9"||exptmp.c=="10"){
                 $('#setype2').dropdown();
                 $('#setype2').dropdown('set selected',exptmp.d);
                 $('#inputv2').val(exptmp.e);
@@ -500,7 +505,7 @@ function changeact2(a) {
     $('#setype2').dropdown('clear');
     $('#inputv2').val('');
     var va=$(a).val();
-    if(va=="5"){
+    if(va=="8"||va=="9"||va=="10"){
         $('#setype2').removeClass('disabled');
         $('#input2').removeClass('disabled');
     }else {
@@ -748,7 +753,7 @@ function shuastep() {
                    re2 += "                    <tr>\n" +
                        "\n" +
                        "                        <td  >" + (i + 1) + "</td>\n" +
-                       "                        <td  >" + in2st4type(users1[i].type) + "</td>\n" +
+                       "                        <td  >"+users1[i].pagename+"</td>\n" +
                        "                        <td  >" + users1[i].ename + "</td>\n" +
                        "                        <td  >" + in2st4action(users1[i].catid) + "</td>\n" +
                        "                        <td  >" + (users1[i].value == 'null' ? '' : users1[i].value) + "</td>\n" +
@@ -767,16 +772,10 @@ function shuastep() {
                 re2="                    <tr>\n" +
                     "\n" +
                     "                        <td  >" + 1 + "</td>\n" +
-                    "                        <td  ><div class=\"ui selection dropdown\" id='setype' style='min-width: 7em'>\n"+
-                    "  <input type=\"hidden\" onchange='changetype(this)' id='typev' name=\"type\" >\n"+
-                    "  <div class=\"default text\">类型</div>\n"+
-                    "  <i class=\"dropdown icon\"></i>\n"+
-                    "  <div class=\"menu\" id='typeg'>\n"+
-
-                    "  </div>\n"+
-                    "</div></td>\n" +
+                    "                        <td  ><div id='pagename2'></div>"+
+                    "</td>\n" +
                     "                        <td  ><div class=\"ui selection dropdown\" id='seele'>\n"+
-                    "  <input type=\"hidden\" onchange='changeele(this)'  id='elev' name=\"ele\">\n"+
+                    "  <input type=\"hidden\"  id='elev' name=\"ele\">\n"+
                     "  <div class=\"default text\">元素</div>\n"+
                     "  <i class=\"dropdown icon\"></i>\n"+
                     "  <div class=\"menu\" id='eleg'>\n"+
@@ -784,11 +783,20 @@ function shuastep() {
 
                     "  </div>\n"+
                     "</div></td>\n" +
-                    " <td  ><div class=\"ui selection dropdown disabled\" id='actid' style='min-width: 9em'>\n"+
+                    " <td  ><div class=\"ui selection dropdown \" id='actid' style='min-width: 9em'>\n"+
                     "  <input type=\"hidden\" onchange='changeact(this)' id='actv' name=\"act\">\n"+
                     "  <div class=\"default text\">操作</div>\n"+
                     "  <i class=\"dropdown icon\"></i>\n"+
                     "  <div class=\"menu\" id='actg'>\n"+
+
+
+                    "    <div class=\"item\" data-value=\"1\">点击</div>\n"+
+                    "    <div class=\"item\" data-value=\"2\">输入内容</div>\n"+
+                    "    <div class=\"item\" data-value=\"3\">清除</div>\n"+
+                    "    <div class=\"item\" data-value=\"4\">上传文件</div>\n"+
+                    "    <div class=\"item\" data-value=\"5\">确认（alert）</div>\n"+
+                    "    <div class=\"item\" data-value=\"6\">取消（alert）</div>\n"+
+
 
                     "  </div>\n"+
                     "</div></td>\n" +
@@ -796,7 +804,7 @@ function shuastep() {
                "  <input type=\"text\" placeholder=\"输入值\" id='inputv2'>\n"+
                "</div></td>\n" +
                     "                        <td  ><button class=\"ui circular basic icon button disabled\" title=\"设置期望结果\"><i class=\"align justify icon\"></i></button></td>\n" +
-                    "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"addstep(1,"+pid+")\" title=\"确认\"><i class=\"checkmark icon green\"></i></button>"+
+                    "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"addstep(1)\" title=\"确认\"><i class=\"checkmark icon green\"></i></button>"+
                     // "<button class=\"ui  circular basic icon button \" style='display: none' onclick=\"\" title=\"修改用户\"><i class=\"paint brush icon\"></i></button>\n" +
                      //"                            <button class=\"ui circular basic icon button \"  onclick='' title=\"取消\"><i class=\"remove circle icon red\"></i></button>" +
                     "</td>\n" +
@@ -1053,16 +1061,9 @@ $('.addstep1').addClass('disabled');
                 var re="                    <tr>\n" +
                     "\n" +
                     "                        <td  >+</td>\n" +
-                    "                        <td  ><div class=\"ui selection dropdown\" id='setype' style='min-width: 7em'>\n"+
-                    "  <input type=\"hidden\" onchange='changetype(this)' id='typev' name=\"type\" >\n"+
-                    "  <div class=\"default text\">类型</div>\n"+
-                    "  <i class=\"dropdown icon\"></i>\n"+
-                    "  <div class=\"menu\" id='typeg'>\n"+
-
-                    "  </div>\n"+
-                    "</div></td>\n" +
+                    "                        <td  ><div id='pagename2'></div></td>\n" +
                     "                        <td  ><div class=\"ui selection dropdown\" id='seele'>\n"+
-                    "  <input type=\"hidden\" onchange='changeele(this)'  id='elev' name=\"ele\">\n"+
+                    "  <input type=\"hidden\"  id='elev' name=\"ele\">\n"+
                     "  <div class=\"default text\">元素</div>\n"+
                     "  <i class=\"dropdown icon\"></i>\n"+
                     "  <div class=\"menu\" id='eleg'>\n"+
@@ -1070,11 +1071,17 @@ $('.addstep1').addClass('disabled');
 
                     "  </div>\n"+
                     "</div></td>\n" +
-                    " <td  ><div class=\"ui selection dropdown disabled\" id='actid' style='min-width: 9em'>\n"+
+                    " <td  ><div class=\"ui selection dropdown \" id='actid' style='min-width: 9em'>\n"+
                     "  <input type=\"hidden\" onchange='changeact(this)' id='actv' name=\"act\">\n"+
                     "  <div class=\"default text\">操作</div>\n"+
                     "  <i class=\"dropdown icon\"></i>\n"+
                     "  <div class=\"menu\" id='actg'>\n"+
+                    "    <div class=\"item\" data-value=\"1\">点击</div>\n"+
+                    "    <div class=\"item\" data-value=\"2\">输入内容</div>\n"+
+                    "    <div class=\"item\" data-value=\"3\">清除</div>\n"+
+                    "    <div class=\"item\" data-value=\"4\">上传文件</div>\n"+
+                    "    <div class=\"item\" data-value=\"5\">确认（alert）</div>\n"+
+                    "    <div class=\"item\" data-value=\"6\">取消（alert）</div>\n"+
 
                     "  </div>\n"+
                     "</div></td>\n" +
@@ -1082,7 +1089,7 @@ $('.addstep1').addClass('disabled');
                     "  <input type=\"text\" placeholder=\"输入值\" id='inputv2'>\n"+
                     "</div></td>\n" +
                     "                        <td  ><button class=\"ui circular basic icon button disabled\" title=\"设置期望结果\"><i class=\"align justify icon\"></i></button></td>\n" +
-                    "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"addstep("+(d+1)+","+pid+")\" title=\"确认\"><i class=\"checkmark icon green\"></i></button>"+
+                    "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"addstep("+(d+1)+")\" title=\"确认\"><i class=\"checkmark icon green\"></i></button>"+
                     // "<button class=\"ui  circular basic icon button \" style='display: none' onclick=\"\" title=\"修改用户\"><i class=\"paint brush icon\"></i></button>\n" +
                     "                            <button class=\"ui circular basic icon button \"  onclick='closeUpdateStep("+pid+")' title=\"取消\"><i class=\"remove circle icon red\"></i></button>" +
                     "</td>\n" +
@@ -1127,16 +1134,9 @@ function  updatestep(a,b,c,d,e,f) {
     //console.log($(a).parent());
     var re2=
         "                        <td  >" + c + "</td>\n" +
-        "                        <td  ><div class=\"ui selection dropdown\" id='setype' style='min-width: 7em'>\n"+
-        "  <input type=\"hidden\" onchange='changetype(this)' id='typev' name=\"type\" >\n"+
-        "  <div class=\"default text\">类型</div>\n"+
-        "  <i class=\"dropdown icon\"></i>\n"+
-        "  <div class=\"menu\" id='typeg'>\n"+
-
-        "  </div>\n"+
-        "</div></td>\n" +
+        "                        <td  ><div id=\"pagename2\"></div></td>\n" +
         "                        <td  ><div class=\"ui selection dropdown\" id='seele'>\n"+
-        "  <input type=\"hidden\" onchange='changeele(this)'  id='elev' name=\"ele\">\n"+
+        "  <input type=\"hidden\"  id='elev' name=\"ele\">\n"+
         "  <div class=\"default text\">元素</div>\n"+
         "  <i class=\"dropdown icon\"></i>\n"+
         "  <div class=\"menu\" id='eleg'>\n"+
@@ -1144,11 +1144,18 @@ function  updatestep(a,b,c,d,e,f) {
 
         "  </div>\n"+
         "</div></td>\n" +
-        " <td  ><div class=\"ui selection dropdown disabled\" id='actid' style='min-width: 9em'>\n"+
+        " <td  ><div class=\"ui selection dropdown \" id='actid' style='min-width: 9em'>\n"+
         "  <input type=\"hidden\" onchange='changeact(this)' id='actv' name=\"act\">\n"+
         "  <div class=\"default text\">操作</div>\n"+
         "  <i class=\"dropdown icon\"></i>\n"+
         "  <div class=\"menu\" id='actg'>\n"+
+        "    <div class=\"item\" data-value=\"1\">点击</div>\n"+
+        "    <div class=\"item\" data-value=\"2\">输入内容</div>\n"+
+        "    <div class=\"item\" data-value=\"3\">清除</div>\n"+
+        "    <div class=\"item\" data-value=\"4\">上传文件</div>\n"+
+        "    <div class=\"item\" data-value=\"5\">确认（alert）</div>\n"+
+        "    <div class=\"item\" data-value=\"6\">取消（alert）</div>\n"+
+
 
         "  </div>\n"+
         "</div></td>\n" +
@@ -1164,6 +1171,7 @@ function  updatestep(a,b,c,d,e,f) {
     $(a).parent().parent().html(re2)
    // console.log(b);
   //  ttmp=a;
+    $('#actid').dropdown('set selected',e);
     $.get('/getpid/'+b,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
@@ -1256,7 +1264,7 @@ function removestep(a) {
 
 function fixstep(a) {
 
-    var tv=$('#typev').val();
+    var tv=$('#pagename2').text();
 
     var ev=$('#elev').val();
     var evn=$('#seele').dropdown('get text')
@@ -1270,7 +1278,7 @@ function fixstep(a) {
     }else {
         $.post('/fixstep',{
             id:a,
-            type:tv,
+            pagename:tv,
             catid:av,
 
             value:inv=="no"?"":inv,
@@ -1290,8 +1298,8 @@ function fixstep(a) {
 }
 
 
-function addstep(a,b) {
-    var tv=$('#typev').val();
+function addstep(a) {
+    var tv=$('#pagename2').text();
 
     var ev=$('#elev').val();
     var evn=$('#seele').dropdown('get text')
@@ -1305,7 +1313,7 @@ function addstep(a,b) {
     }else {
         $.post('/addstep',{
             step:a,
-            type:tv,
+            pagename:tv,
             catid:av,
             cid:cid,
             value:inv=="no"?"":inv,
@@ -1331,42 +1339,42 @@ function wancheng() {
     $('#mcase').click();
 }
 
-function changeele(a) {
-    var re1="";
-    if($(a).val()!=''){
-        var vv=eval('eles2['+$(a).val()+']');
-        $('#setype').dropdown('set selected',vv);
-        $('#actid').removeClass('disabled');
-
-        var re2=in2act4type(vv);
-        var re3=re2.split(',');
-        for(var i=0;i<re3.length;i++){
-            re1+="    <div class=\"item\" data-value=\""+re3[i]+"\">"+in2st4action(re3[i])+"</div>\n";
-        }
-        $('#actg').html(re1);
-     //   alertf(acttionnum);
-        $('#actid').dropdown();
-        if(acttionnum!='0'){
-       //    alertf(acttionnum);
-            $('#actid').dropdown('set selected',acttionnum);
-            acttionnum=0;
-        }else {
-            $('#actid').dropdown('clear');
-        }
-
-
-
-    }
-
-}
-
+// function changeele(a) {
+//     var re1="";
+//     if($(a).val()!=''){
+//         var vv=eval('eles2['+$(a).val()+']');
+//         $('#setype').dropdown('set selected',vv);
+//         $('#actid').removeClass('disabled');
+//
+//         var re2=in2act4type(vv);
+//         var re3=re2.split(',');
+//         for(var i=0;i<re3.length;i++){
+//             re1+="    <div class=\"item\" data-value=\""+re3[i]+"\">"+in2st4action(re3[i])+"</div>\n";
+//         }
+//         $('#actg').html(re1);
+//      //   alertf(acttionnum);
+//         $('#actid').dropdown();
+//         if(acttionnum!='0'){
+//        //    alertf(acttionnum);
+//             $('#actid').dropdown('set selected',acttionnum);
+//             acttionnum=0;
+//         }else {
+//             $('#actid').dropdown('clear');
+//         }
+//
+//
+//
+//     }
+//
+// }
+//
 function changeact(a) {
     var re=$(a).val();
 
     if(re!=''){
 
 
-        if(re=='8'||re=='9'||re=='11'||re=='12'||re=='14'){
+        if(re=='2'||re=='4'){
             $('#inputv').removeClass('disabled');
         }else {
             $('#inputv').addClass('disabled');
@@ -1422,64 +1430,37 @@ function shuapageinfo(d,e,f) {
   var re1=o.eles;
   pid=o.page.id;
 
-  eles={button:[],checkbox:[],dialog:[],radio:[],select:[],text:[],upload:[],link:[]};
+
             re3="";
             eles2={};
   re1.forEach(function (val) {
-      switch (val.type){
-          case "1": eles.button.push(val.id+'a=a='+val.name);break;
-          case "2": eles.checkbox.push(val.id+'a=a='+val.name);break;
-          case "3": eles.dialog.push(val.id+'a=a='+val.name);break;
-          case "4": eles.radio.push(val.id+'a=a='+val.name);break;
-          case "5": eles.select.push(val.id+'a=a='+val.name);break;
-          case "6": eles.text.push(val.id+'a=a='+val.name);break;
-          case "7":eles.upload.push(val.id+'a=a='+val.name); break;
-         // case "9":eles.link.push('0a=a=URL');break;
-
-      }
-
-
-re3+="    <div class=\"item\" data-value=\""+val.id+"\">"+val.name+"</div>\n";
-eles2[val.id]=val.type;
-
+      re3+="    <div class=\"item\" data-value=\""+val.id+"\">"+val.name+"</div>\n";
   });
-            eles.link.push('0a=a=URL');
-            re3+="    <div class=\"item\" data-value=\""+0+"\">"+'URL'+"</div>\n";
-            eles2[0]="9";
+//       switch (val.type){
+//           case "1": eles.button.push(val.id+'a=a='+val.name);break;
+//           case "2": eles.checkbox.push(val.id+'a=a='+val.name);break;
+//           case "3": eles.dialog.push(val.id+'a=a='+val.name);break;
+//           case "4": eles.radio.push(val.id+'a=a='+val.name);break;
+//           case "5": eles.select.push(val.id+'a=a='+val.name);break;
+//           case "6": eles.text.push(val.id+'a=a='+val.name);break;
+//           case "7":eles.upload.push(val.id+'a=a='+val.name); break;
+//          // case "9":eles.link.push('0a=a=URL');break;
+//
+//       }
+//
+//
+// re3+="    <div class=\"item\" data-value=\""+val.id+"\">"+val.name+"</div>\n";
+// eles2[val.id]=val.type;
+//
+//   });
+
+            //re3+="    <div class=\"item\" data-value=\""+0+"\">"+'URL'+"</div>\n";
+
 $('#eleg').html(re3);
+console.log(o.page.pagename);
+$('#pagename2').text(o.page.pagename);
 
-var re4="";
-            if(eles.button.length>0){
 
-            re4+="    <div class=\"item\" data-value=\"1\">按钮</div>\n";
-            }
-            if(eles.checkbox.length>0){
-
-                re4+="    <div class=\"item\" data-value=\"2\">勾选框</div>\n";
-            }
-            if(eles.dialog.length>0){
-
-                re4+="    <div class=\"item\" data-value=\"3\">提示框</div>\n";
-            }
-            if(eles.radio.length>0){
-
-                re4+="    <div class=\"item\" data-value=\"4\">单选框</div>\n";
-            }
-            if(eles.select.length>0){
-
-                re4+="    <div class=\"item\" data-value=\"5\">下拉框</div>\n";
-            }
-            if(eles.text.length>0){
-
-                re4+="    <div class=\"item\" data-value=\"6\">文本</div>\n";
-            }
-            if(eles.upload.length>0){
-
-                re4+="    <div class=\"item\" data-value=\"7\">上传</div>\n";
-            }
-           // re4+="<div class=\"item\" data-value=\"9\">跳转</div>";
-
-            $('#typeg').html(re4);
             $('.ui.dropdown').dropdown();
 
             if(d!=""){
@@ -1968,7 +1949,7 @@ $('#chfr').click(function () {
         $('#sefr').parent().removeClass('disabled');
         var re="<option value=\"\">Frame...</option>";
         for(var i=0;i<elements1.length;i++){
-            if(elements1[i].type=="7"){
+            if(elements1[i].isframe=="1"){
                 re+="<option value=\""+elements1[i].id+"\">"+elements1[i].name+"</option>";
             }
         }
@@ -3550,9 +3531,9 @@ function lookstep(a,b) {
 cid=a;
 if(b){
     var re=base("                        <th style=\"width: 60px\">步骤</th>\n" +
-        "                        <th  style=\"width: 80px\">元素类型</th>\n" +
+        "                        <th  style=\"width: 80px\">所属页面</th>\n" +
         "                        <th  style=\"width: 15%\" >页面元素</th>\n" +
-        "                        <th  style=\"width: 80px\" >操作</th>\n" +
+        "                        <th  style=\"width: 150px\" >操作</th>\n" +
         "                        <th style=\"min-width:100px\">输入值</th>\n" +
         "                        <th style=\"width:80px\">期望值</th>\n" +
         "                        <th style=\"width: 120px\">操作</th>\n",7,'wancheng()','完成','stepid','2a2');
@@ -3841,26 +3822,47 @@ function  in2en4type(a) {
 }
 
 function  in2st4action(a) {
+    // "    <div class=\"item\" data-value=\"1\">点击</div>\n"+
+    // "    <div class=\"item\" data-value=\"2\">输入内容</div>\n"+
+    // "    <div class=\"item\" data-value=\"3\">清除</div>\n"+
+    // "    <div class=\"item\" data-value=\"4\">上传文件</div>\n"+
+    // "    <div class=\"item\" data-value=\"5\">确认（alert）</div>\n"+
+    // "    <div class=\"item\" data-value=\"6\">取消（alert）</div>\n"+
     switch (a){
+        case "1" :return "点击";
+        case "2" :return "输入内容";
+        case "3" :return "清除";
+        case "4" :return "上传文件";
+        case "5" :return "确认（alert）";
+        case "6" :return "取消（alert）";
 
-        case "1": return "点击";
-        case "2": return "是否可用";
-        case "3": return "清除";
-        case "4": return "是否被选中";
-        case "5": return "获取文本";
-        case "6": return "确认按钮";
-        case "7": return "取消按钮";
-        case "8": return "选择文字";
-        case "9": return "选择值";
-        case "10": return "清除选项";
-        case "11": return "输入值";
-        case "12": return "上传按钮";
-        case "13": return "是否存在";
-        // case "14":return "跳转";
-        // case "15":return "回退";
-        case "16":return "获取属性";
-        case "17":return "获取文本";
-        case "18":return "获取输入值";
+
+        case "7" :return "存在";
+        case "8" :return "获取文本";
+        case "9" :return "获取输入值";
+        case "10" :return "获取文本（alert）";
+        case "11" :return "可用";
+        case "12" :return "被选中";
+
+
+        // case "1": return "点击";
+        // case "2": return "是否可用";
+        // case "3": return "清除";
+        // case "4": return "是否被选中";
+        // case "5": return "获取文本";
+        // case "6": return "确认按钮";
+        // case "7": return "取消按钮";
+        // case "8": return "选择文字";
+        // case "9": return "选择值";
+        // case "10": return "清除选项";
+        // case "11": return "输入值";
+        // case "12": return "上传按钮";
+        // case "13": return "是否存在";
+        // // case "14":return "跳转";
+        // // case "15":return "回退";
+        // case "16":return "获取属性";
+        // case "17":return "获取文本";
+        // case "18":return "获取输入值";
 
     }
 
