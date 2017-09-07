@@ -350,7 +350,10 @@ if(isok){
                        if(le.size()==1){
 
                             switch (le.get(0).getType()){
-                                case "1": Element element2 = getElement(le.get(0).getB().split(":")[0]);WebElement webElement2 = element2Web(element, driver[0]);screenShot(driver[0], lt6.get(0).getValue(), seriesid, caseListId, webElement2, false); Object o1=action(webElement2, le.get(0).getC(), driver[0], "");
+                                case "1": Element element2 = getElement(le.get(0).getB().split(":")[0]);
+                                WebElement webElement2 = element2Web(element2, driver[0]);
+                                screenShot(driver[0], lt6.get(0).getValue(), seriesid, caseListId, webElement2, false);
+                                Object o1=action(webElement2, le.get(0).getC(), driver[0], "");
                                 boolean res=false;
                                  String act=   getOneAction(le.get(0).getC());
                                     String eq="";
@@ -617,7 +620,7 @@ private Header[] getheaders(String head){
 
 
                  }
-                 String con = lh.get(0).getCon().replace(head, "").replace("HEAD{}", "");
+                 String con = lh.get(0).getCon().replace(head, "").replace("HEAD{}", "").replace("<br/>","").replace("&amp;","&").replace("&lt;","<").replace("&gt;",">").replace("&quot;","\"").replace("&apos;","'");
                  String res = getHttpCon(lh.get(0).getUrl(), headers, "post", con);
                  boolean isok=false;
                  String eq="";
@@ -770,16 +773,33 @@ throw new NoSuchElementException("元素等不到");
         }
         //0:id;1:name;2:tagname;3:linktext;4:classname;5:xpath;6:css;
         WebElement webElement=null;
-        switch (element.getLocationMethod()){
-            case "1" :webElement=driver.findElement(By.id(element.getValue()));waitTime(element,webElement);break;
-            case "2" :webElement=driver.findElement(By.name(element.getValue()));waitTime(element,webElement);break;
-            case "3" :webElement=driver.findElement(By.tagName(element.getValue()));waitTime(element,webElement);break;
-            case "4" :webElement=driver.findElement(By.linkText(element.getValue()));waitTime(element,webElement);break;
-            case "5" :webElement=driver.findElement(By.className(element.getValue()));waitTime(element,webElement);break;
-            case "6" :webElement=driver.findElement(By.xpath(element.getValue()));waitTime(element,webElement);break;
-            case "7" :webElement=driver.findElement(By.cssSelector(element.getValue()));waitTime(element,webElement);break;
+        if(element.getNum().equals("0")){
+            switch (element.getLocationMethod()){
+                case "1" :webElement=driver.findElement(By.id(element.getValue()));waitTime(element,webElement);break;
+                case "2" :webElement=driver.findElement(By.name(element.getValue()));waitTime(element,webElement);break;
+                case "3" :webElement=driver.findElement(By.tagName(element.getValue()));waitTime(element,webElement);break;
+                case "4" :webElement=driver.findElement(By.linkText(element.getValue()));waitTime(element,webElement);break;
+                case "5" :webElement=driver.findElement(By.className(element.getValue()));waitTime(element,webElement);break;
+                case "6" :webElement=driver.findElement(By.xpath(element.getValue()));waitTime(element,webElement);break;
+                case "7" :webElement=driver.findElement(By.cssSelector(element.getValue()));waitTime(element,webElement);break;
+
+            }
+        }else {
+            int nu=Integer.parseInt(element.getNum());
+            switch (element.getLocationMethod()){
+                case "1" :webElement=driver.findElements(By.id(element.getValue())).get(nu);waitTime(element,webElement);break;
+                case "2" :webElement=driver.findElements(By.name(element.getValue())).get(nu);waitTime(element,webElement);break;
+                case "3" :webElement=driver.findElements(By.tagName(element.getValue())).get(nu);waitTime(element,webElement);break;
+                case "4" :webElement=driver.findElements(By.linkText(element.getValue())).get(nu);waitTime(element,webElement);break;
+                case "5" :webElement=driver.findElements(By.className(element.getValue())).get(nu);waitTime(element,webElement);break;
+                case "6" :webElement=driver.findElements(By.xpath(element.getValue())).get(nu);waitTime(element,webElement);break;
+                case "7" :webElement=driver.findElements(By.cssSelector(element.getValue())).get(nu);waitTime(element,webElement);break;
+
+            }
 
         }
+
+
         if (webElement!=null){
             return webElement;
         }else {
@@ -853,12 +873,26 @@ throw new NoSuchElementException("元素等不到");
 
   private String getOneAction(String catid){
       switch (catid){
-          case "2":return "是否可用";
-          case "4":return "是否选中";
-          case "5":return "获得文本";
-          case "13":return "是否存在";
-          case "17":return "获得文本";
-          case "18":return "获得输入值";
+//          case "2":return "是否可用";
+//          case "4":return "是否选中";
+//          case "5":return "获得文本";
+//          case "13":return "是否存在";
+//          case "17":return "获得文本";
+//          case "18":return "获得输入值";
+          case "1" :return "点击";
+          case "2" :return "输入内容";
+          case "3" :return "清除";
+          case "4" :return "上传文件";
+          case "5" :return "确认（alert）";
+          case "6" :return "取消（alert）";
+
+
+          case "7" :return "存在";
+          case "8" :return "获取文本";
+          case "9" :return "获取输入值";
+          case "10" :return "获取文本（alert）";
+          case "11" :return "可用";
+          case "12" :return "被选中";
 
           default:return "操作";
 
@@ -869,11 +903,16 @@ private void click(WebDriver driver,WebElement elemnet){
     ((JavascriptExecutor) driver).executeScript("arguments[0].click();",elemnet);
 }
     private void setYellow(WebDriver driver,WebElement elemnet){
-        ((JavascriptExecutor) driver).executeScript("   var rgb=arguments[0].style.backgroundColor;" +
 
-                "if(rgb=='yellow'){arguments[0].style.backgroundColor =''}else{arguments[0].style.backgroundColor = \"yellow\";}" +
+        try {
+            ((JavascriptExecutor) driver).executeScript("   var rgb=arguments[0].style.backgroundColor;" +
 
-                "",elemnet);
+                    "if(rgb=='yellow'){arguments[0].style.backgroundColor =''}else{arguments[0].style.backgroundColor = \"yellow\";}" +
+
+                    "",elemnet);
+        } catch (Exception e) {
+
+        }
     }
 
 

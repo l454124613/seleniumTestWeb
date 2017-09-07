@@ -139,7 +139,7 @@ return list;
 
     @Override
     public void zhengliStep(String cid) {
-       List<Step> ls= jdbcTemplate.query("select * from step where cid=? order by step",mycode.prase(new Object[]{cid}),new BeanPropertyRowMapper<Step>(Step.class));
+       List<Step> ls= jdbcTemplate.query("select * from step where cid=? and isused=1 order by step",mycode.prase(new Object[]{cid}),new BeanPropertyRowMapper<Step>(Step.class));
        for (int i=0;i<ls.size();i++){
            jdbcTemplate.update("update step set step="+((i+1)*2)+" where id="+ls.get(i).getId());
 
@@ -318,7 +318,7 @@ return "0";
 
     @Override
     public List<Caseres> getCaseres(String seriesid) {
-        return jdbcTemplate.query("select * from caseres where listid in (SELECT id from casereslist where seriesid=?)",new Object[]{seriesid},new BeanPropertyRowMapper<>(Caseres.class));
+        return jdbcTemplate.query("select * from caseres where listid in (SELECT id from casereslist where seriesid=?) order by listid,sid",new Object[]{seriesid},new BeanPropertyRowMapper<>(Caseres.class));
     }
 
     @Override
@@ -650,7 +650,7 @@ void addCase2res(String cid,String seriesid,String[] precids) throws Exception {
                 }
 
             }
-            jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\" ,type)  SELECT cid,step.id sid,'' pic,''''||ename||''''||cat.name||value word,'-1' res ,'-1' restext ,'' time ,"+lt.get(0).getValue()+" listid,'1' type from step join cat on cat.id=step.catid where cid="+cid+" ORDER BY step");
+            jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\" ,type)  SELECT cid,step.id sid,'' pic,''''||ename||''''||cat.name||value word,'-1' res ,'-1' restext ,'' time ,"+lt.get(0).getValue()+" listid,'1' type from step join cat on cat.id=step.catid where  isused=1 and cid="+cid+" ORDER BY sid");
 
 
 
