@@ -1,9 +1,6 @@
 package com.ciic.test.dao;
 
-import com.ciic.test.bean.Datasource;
-import com.ciic.test.bean.Label;
-import com.ciic.test.bean.Log;
-import com.ciic.test.bean.tmp;
+import com.ciic.test.bean.*;
 import com.ciic.test.service.ConfigService;
 import com.ciic.test.tools.mycode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -148,13 +147,39 @@ public class ConfigDao implements ConfigService {
 
     @Override
     public List<Log> getActLog() {
-        return jdbcTemplate.query("SELECT log.id id ,log.user user, log,time,name  from log join user on uid=user.id where type=2 ",new BeanPropertyRowMapper<>(Log.class));
+        return jdbcTemplate.query("SELECT log.id id ,log.user user, log,time,name  from log join user on uid=user.id where type=2 order by id desc ",new BeanPropertyRowMapper<>(Log.class));
     }
 
     @Override
     public List<Log> getsLog() {
-        return jdbcTemplate.query("SELECT log.id id ,log.user user, log,time,name  from log join user on uid=user.id where type=1 ",new BeanPropertyRowMapper<>(Log.class));
+        return jdbcTemplate.query("SELECT log.id id ,log.user user, log,time,name,log.status status  from log join user on uid=user.id where type=1 order by id desc",new BeanPropertyRowMapper<>(Log.class));
 
+    }
+
+    @Override
+    public int updateLogStatus(String lid) {
+        return jdbcTemplate.update("UPDATE log set status=2 where id=?",new Object[]{lid});
+    }
+
+    @Override
+    public List<FileInfo> getfile(String tid) {
+        return jdbcTemplate.query("select file.id,file.name name,size,user.name user ,file.time time   from file join user on user.id=file.uid where  file.isused=1 and user.isused =1 and tid =?",new Object[]{tid},new BeanPropertyRowMapper<>(FileInfo.class));
+    }
+
+    @Override
+    public int addFile(String name, String size, String uid, String path, String tid) {
+        return jdbcTemplate.update("INSERT INTO \"file\" ( \"name\", \"size\", \"uid\", \"path\", \"isused\", \"tid\", \"time\") VALUES (?, ?, ?, ?, 1, ?,'"+ LocalDate.now()+ " "+ LocalTime.now()+"')",
+                mycode.prase(new Object[]{name,size,uid,path,tid}));
+    }
+
+    @Override
+    public int updateFile(String name, String size, String uid, String path, String id) {
+        return jdbcTemplate.update("UPDATE \"file\" SET  \"name\"=?, \"size\"=?, \"uid\"=?, \"path\"=? ,time='"+LocalDate.now()+ " "+ LocalTime.now()+"' WHERE (\"id\" = ?)",mycode.prase(new Object[]{name,size,uid,path,id}));
+    }
+
+    @Override
+    public int reomveFile(String id) {
+        return jdbcTemplate.update("update file set isused=0 where id=?",new Object[]{id});
     }
 
     private String set2String(Set set){

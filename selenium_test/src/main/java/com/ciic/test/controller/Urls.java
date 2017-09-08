@@ -5,14 +5,13 @@ import com.ciic.test.service.*;
 import com.ciic.test.tools.mycode;
 import com.sun.net.httpserver.HttpsConfigurator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLDecoder;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -37,6 +36,9 @@ private GetPageService getPageService;
 private CaseService caseService;
 @Autowired
 private ConfigService configService;
+
+@Value("${test.file.path}")
+private String filePath;
 
 private Map<String,Thread> map4thread=new HashMap();
 
@@ -247,6 +249,51 @@ private Map<String,Thread> map4thread=new HashMap();
 
     }
 
+    @RequestMapping(value = "/upload/{uid}/{tid}", method = RequestMethod.POST)
+    @ResponseBody
+    public String upload(@RequestParam("file") MultipartFile file,HttpSession session,@PathVariable String uid,@PathVariable String tid) {
+        File file1=new File(filePath+file.getOriginalFilename());
+        if (!file.isEmpty()) {
+            try {
+
+if(file1.exists()){
+    file1=new File(filePath+file.getOriginalFilename()+"_"+Math.random());
+}
+                BufferedOutputStream out = new BufferedOutputStream(
+                        new FileOutputStream(file1));
+                out.write(file.getBytes());
+                out.flush();
+                out.close();
+            } catch (FileNotFoundException e) {
+
+
+                return "{\"isok\":1,\"msg\":\"上传失败，文件未找到\",\"to\":\"/\"}";
+            } catch (IOException e) {
+
+                return "{\"isok\":1,\"msg\":\"上传失败，因为文件传输不正确\",\"to\":\"/\"}";
+            }
+            String name =file.getOriginalFilename();
+            String size=file.getSize()+"";
+            String userid=session.getAttributeNames().nextElement();
+            String path=file1.getAbsolutePath();
+            int aa=0;
+            if(uid.equals("0")){
+              aa=  configService.addFile(name,size,userid,path,tid);
+            }else {
+             aa=   configService.updateFile(name,size,userid,path,uid);
+            }
+            if(aa==1){
+                return "{\"isok\":0,\"msg\":\"上传成功\",\"to\":\"/\"}";
+            }else {
+                return "{\"isok\":1,\"msg\":\"上传失败\",\"to\":\"/\"}";
+            }
+
+        } else {
+            return "{\"isok\":1,\"msg\":\"上传失败，因为文件是空的.\",\"to\":\"/\"}";
+
+        }
+    }
+
     @RequestMapping("/getlog")
     String getLog(HttpSession session){
         if(userService.isManager(session.getAttributeNames().nextElement())){
@@ -290,6 +337,37 @@ private Map<String,Thread> map4thread=new HashMap();
         }else {
             return "{\"isok\":1,\"msg\":\"信息不匹配\",\"to\":\"/\"}";
 
+        }
+
+
+
+    }
+
+    @RequestMapping("/getfile/{item}")
+    String getfile(@PathVariable String item,HttpSession session){
+        String uid=session.getAttributeNames().nextElement();
+        if(itemService.isOwnItem(uid,item)){
+
+            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"files\":"+configService.getfile(item)+"}";
+
+        }else {
+            return "{\"isok\":1,\"msg\":\"信息不匹配\",\"to\":\"/\"}";
+
+        }
+
+
+
+    }
+    @RequestMapping("/updatelid/{lid}")
+    String updateLogStatus(@PathVariable String lid){
+          int a=  configService.updateLogStatus(lid);
+
+
+
+        if(a==1){
+            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"修改成功\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"修改失败\",\"to\":\"/\"}";
         }
 
 
@@ -659,6 +737,23 @@ String getcase(@PathVariable String tid){
     @RequestMapping("/removecasehome/{chid}")
     String removeCaseHome( @PathVariable String chid){
         int n=  caseService.removeCaseHome(chid);
+
+
+        if(n==1){
+
+
+            return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+        }
+
+
+
+    }
+
+    @RequestMapping("/removefile/{id}")
+    String removeFile( @PathVariable String id){
+        int n=  configService.reomveFile(id);
 
 
         if(n==1){

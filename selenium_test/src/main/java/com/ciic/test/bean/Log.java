@@ -20,11 +20,23 @@ public class Log {
                 .append(name).append('\"');
         sb.append(",\"log\":\"")
                 .append(log).append('\"');
+        sb.append(",\"status\":\"")
+                .append(status).append('\"');
         sb.append(",\"time\":\"")
                 .append(time).append('\"');
         sb.append('}');
         return sb.toString();
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    private String status;
 
     public String getId() {
         return id;

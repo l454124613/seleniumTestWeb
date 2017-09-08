@@ -1,6 +1,7 @@
 package com.ciic.test.service;
 
 import com.ciic.test.bean.Datasource;
+import com.ciic.test.bean.FileInfo;
 import com.ciic.test.bean.Label;
 import com.ciic.test.bean.Log;
 
@@ -36,5 +37,11 @@ public interface ConfigService {
 
     List<Log> getActLog();
     List<Log> getsLog();
+    int updateLogStatus(String lid);
+
+    List<FileInfo> getfile(String tid);
+    int addFile(String name,String size,String uid,String path,String tid);
+    int updateFile(String name,String size,String uid,String path,String id);
+    int reomveFile(String id);
 
 }

@@ -12,7 +12,7 @@ var pages1={};
 var user1={};
 var isshuaitem=true;
 var cid=0;
-var eles={button:[],checkbox:[],dialog:[],radio:[],select:[],text:[],upload:[],link:[]};
+
 var eles2={};
 var acttionnum=0;
 var adddatasource=0;
@@ -27,6 +27,7 @@ var seriesold=[];
 var int2;
 var caseresold=[];
 var labelid=0;
+var fileid=0;
 
 
 
@@ -210,7 +211,7 @@ function base( table,num,addmethod,addname,tableid,ss) {
         "                        <th colspan=\""+num+"\">\n" +
 
 
-        "                            <div class=\"ui right floated small primary labeled icon button\" onclick='"+addmethod+"' ><i class=\""+(ss==='2a2'?'radio icon':'plus icon')+"\"></i>"+addname+"</div>\n" +
+        "                            <div class=\"ui right floated small primary labeled icon button\" id='myaddbutton' onclick='"+addmethod+"' ><i class=\""+(ss==='2a2'?'radio icon':'plus icon')+"\"></i>"+addname+"</div>\n" +
         "                          \n" +
         "                        </th>\n" +
         "                    </tr>\n" +
@@ -703,6 +704,109 @@ function clicklog() {
         "                        <th style=\"width: 80px\">数据库id</th>\n",6,'up()',"回到顶部",'tlog',"2a2");
     $('#context').html(log1);
     shualog();
+
+}
+
+function clickfile() {
+    if(tid<1){
+        alertf("请先选择项目~")
+    }else{
+        forfirstfun();
+        var log1=base("                        <th style=\"width: 40px\">#</th>\n" +
+            "                        <th >文件名称</th>\n" +
+            "                        <th >文件大小</th>\n" +
+            "                        <th >上传人</th>\n" +
+            "                        <th >上传时间</th>\n" +
+            "                        <th style=\"width: 80px\">操作</th>\n" ,6,'addfile(0)',"添加文件",'tfile');
+        $('#context').html(log1+"<input type='file' id='fileupload' onchange='changefile()' style='display: none'>");
+        shuafile();
+    }
+
+
+}
+function changefile(){
+    var formData = new FormData();
+    formData.append("file",$('#fileupload').get(0).files[0]);
+    $.ajax({
+        url:  "/upload/"+fileid+"/"+tid,
+        type: 'POST',
+        cache: false,
+        data: formData,
+        processData: false,
+        contentType: false,
+
+        beforeSend: function(){
+           $('#myaddbutton').addClass('loading');
+        },
+        success : function(data,st) {
+            if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+            $('#myaddbutton').removeClass('loading');
+            alertf(o.msg);
+            shuafile();
+
+
+
+        }
+    });
+
+
+}
+
+function addfile(a) {
+    fileid=a;
+    $('#fileupload').click();
+    
+}
+
+function shuafile() {
+
+    $.get('/getfile/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+        if(o.isok!=0){
+            alertf(o.msg);
+        }else{
+            var users1=o.files;
+
+            var re2="";
+            if(users1.length>0){
+                for(var i=0;i<users1.length;i++){
+
+                    re2+= "                    <tr>\n" +
+                        "\n" +
+                        "                        <td  >"+(i+1)+"</td>\n" +
+                        "                        <td  >"+users1[i].name+"</td>\n" +
+                        "                        <td  >"+(users1[i].size)/1000+"k</td>\n" +
+                        "                        <td  >"+users1[i].user+"</td>\n" +
+                        "                        <td  >"+users1[i].time+"</td>\n" +
+                        "                        <td  ><button class=\"ui  circular basic  icon button\" onclick=\"downloadfile("+users1[i].id+")\" title=\"下载文件\"><i class=\"download icon\"></i></button>" +
+                        "<button class=\"ui  circular basic  icon button\" onclick=\"addfile("+users1[i].id+")\" title=\"修改文件\"><i class=\"paint brush icon\"></i></button>\n" +
+                        "                            <button class=\"ui circular basic icon button \" onclick='removefile("+users1[i].id+")' title=\"删除文件\"><i class=\"remove circle icon red\"></i></button></td>\n" +
+
+
+                        "                    </tr>\n";
+
+                }
+                $('#tfile').html(re2);
+
+                $('table').tablesort();
+
+            }else{
+                $('#tfile').html('无相关信息');
+            }
+        }
+
+    });
+}
+
+
+function removefile(a) {
+    if (confirm("你确定要删除吗？")) {  $.get('/removefile/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+        alertf(o.msg);
+        shuafile();
+    });}
+
     
 }
 function clickslog() {
@@ -712,7 +816,8 @@ function clickslog() {
         "                        <th >用户邮箱</th>\n" +
         "                        <th >操作时间</th>\n" +
         "                        <th >操作内容</th>\n" +
-        "                        <th style=\"width: 80px\">数据库id</th>\n",6,'up()',"回到顶部",'tlog',"2a2");
+        "                        <th style=\"width: 80px\">数据库id</th>\n"+
+    "                        <th style=\"width: 80px\">当前状态</th>\n",7,'up()',"回到顶部",'tlog',"2a2");
     $('#context').html(log1);
     shuaslog();
 
@@ -898,6 +1003,11 @@ function shuaslog() {
             var re2="";
             if(users1.length>0){
                 for(var i=0;i<users1.length;i++){
+                    rr2="";
+                    switch (users1[i].status){
+                        case "1":rr2="<div  title='点击修改状态' style='color: red' onclick='changedo("+users1[i].id+")'>未处理</div>";break;
+                        case "2":rr2="<div style='color: green'>已处理</div>";break;
+                    }
 
                     re2+= "                    <tr>\n" +
                         "\n" +
@@ -907,6 +1017,7 @@ function shuaslog() {
                         "                        <td  >"+users1[i].time+"</td>\n" +
                         "                        <td  >"+users1[i].log+"</td>\n" +
                         "                        <td  >"+users1[i].id+"</td>\n" +
+                        "                        <td  >"+rr2+"</td>\n" +
 
                         "                    </tr>\n";
 
@@ -924,6 +1035,22 @@ function shuaslog() {
 
 }
 
+function changedo(a) {
+    $.get('/updatelid/'+a,function (data,st) {
+        if (st == "success") {
+        } else {
+            alertf("网站出错，请联系管理员");
+        }
+        var o = $.parseJSON(data);
+        if (o.isok == "3") {
+            location.href = '/';
+            return false;
+        }
+        alertf(o.msg);
+        shuaslog();
+
+    });
+}
 function shwomenu() {
     $('#menu1').css('display','block');
     $('#showmenu').css('display','none');

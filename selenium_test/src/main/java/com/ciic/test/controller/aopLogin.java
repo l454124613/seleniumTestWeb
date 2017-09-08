@@ -145,6 +145,9 @@ public class aopLogin {
                     case "pauseSeries":aa="暂停用例系列";break;
                     case "removeDatasource":aa="删除数据库";break;
                     case "removestep":aa="删除操作步骤";break;
+                    case "getfile":aa="查看上传文件";break;
+                    case "upload":aa="上传文件";break;
+                    case "removeFile":aa="删除文件";break;
 
                 }
 
@@ -168,8 +171,8 @@ public class aopLogin {
 
 
                 long t1=System.currentTimeMillis()-time1;
-                jdbcTemplate.update("INSERT INTO \"log\" ( \"user\",\"uid\", \"type\", \"log\", \"time\", \"data\", \"usingtime\") VALUES ('"+user+"',"+uid+", 1, '"+aa+" 出错信息"+"', '"+ LocalDate.now()+" "+ LocalTime.now()+"',?,'"+t1+"毫秒' )",new  Object[]{rr});
-islog=true;
+                jdbcTemplate.update("INSERT INTO \"log\" ( \"user\",\"uid\", \"type\", \"log\", \"time\", \"data\", \"usingtime\", \"status\") VALUES ('"+user+"',"+uid+", 1, '"+aa+" 出错信息"+"', '"+ LocalDate.now()+" "+ LocalTime.now()+"',?,'"+t1+"毫秒',1 )",new  Object[]{rr});
+                islog=true;
             }
             if(aa.length()>0&&!islog){
                 String rr="请求参数："+Arrays.asList(thisJoinPoint.getArgs());
