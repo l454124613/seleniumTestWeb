@@ -2,6 +2,7 @@ package com.ciic.test.service;
 
 import com.ciic.test.bean.Datasource;
 import com.ciic.test.bean.Label;
+import com.ciic.test.bean.Log;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,5 +31,10 @@ public interface ConfigService {
     int removeLabel(String id);
     List<Label> getLabel(String tid);
     List<Label> getUsedLabel(String tid);
+
+    //log
+
+    List<Log> getActLog();
+    List<Log> getsLog();
 
 }

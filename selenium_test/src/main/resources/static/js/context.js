@@ -43,6 +43,102 @@ $(document).ready(function () {
             alertf(o.msg);
             location.href=o.to;
         }else{
+            var cc=Cookies.get('user2');
+            var re="";
+            if(uncompileStr(cc)=="我是管理员"){
+                re="<div class=\"ui pointing vertical menu overlay\">\n"+
+                    "    <a class=\"item \"  id=\"manage\" onclick='clickmanage()'>管理 </a>\n"+
+                    "    <div class=\"item\">\n"+
+                    "        <b>操作</b>\n"+
+                    "\n"+
+                    "        <div class=\"ui accordion\">\n"+
+                    "            <div class=\"title\"><i class=\"dropdown icon\"></i> 基础数据 </div>\n"+
+                    "            <div class=\"content menu\">\n"+
+                    "                <a class=\"item\" id=\"mdatasource\" onclick='clickdatasource()'>数据库设置</a>\n"+
+                    "                <a class=\"item\" id=\"mlabel\" onclick='clicklabel()'>标签设置</a>\n"+
+                    "                <a class=\"item\" id=\"mfile\" onclick='clickfile()'>上传文件设置</a>\n"+
+                    "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
+                    "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
+                    "            </div>\n"+
+                    "            <div class=\"title\"><i class=\"dropdown icon\"></i> 用例数据</div>\n"+
+                    "            <div class=\"content  menu\">\n"+
+                    "                <a class=\"item\" id=\"mcasehome\" onclick='clickcasehome()'>管理用例库</a>\n"+
+                    "                <a class=\"item\" id=\"mcase\" onclick='clickcase()'>管理用例</a>\n"+
+                    "                <!--<a class=\"item\" onclick=\"alertf('尚未设计')\">管理操作</a>-->\n"+
+                    "                <a class=\"item\" id=\"mpage\" onclick='clickpage()'>管理页面</a>\n"+
+                    "                <a class=\"item\" id=\"melement\" onclick='clickelemnet()'>管理元素</a>\n"+
+                    "\n"+
+                    "\n"+
+                    "            </div>\n"+
+                    "\n"+
+                    "            <div class=\"title\"><i class=\"dropdown icon\"></i>执行操作</div>\n"+
+                    "            <div class=\"content menu\">\n"+
+                    "                <a class=\"item\" id=\"mtest\" onclick='clicktest()'>执行测试</a>\n"+
+                    "                <a class=\"item\" id=\"mlook\" onclick='clicklook()'>查看进度</a>\n"+
+                    "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
+                    "            </div>\n"+
+                    "            <div class=\"title\"><i class=\"dropdown icon\"></i>日志信息 </div>\n"+
+                    "            <div class=\"content menu\">\n"+
+                    "                <a class=\"item\" id=\"mlog\" onclick='clicklog()'>操作日志</a>\n"+
+                    "                <a class=\"item\" id=\"mslog\" onclick='clickslog()'>报错日志</a>\n"+
+                    "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
+                    "            </div>\n"+
+                    "        </div>\n"+
+                    "    </div>\n"+
+                    "    <div class=\"ui dropdown item\">其他操作 <i class=\"dropdown icon\"></i> <div class=\"menu\">\n"+
+                    "        <div class=\"item\" onclick=\"hidemenu()\">隐藏</div>\n"+
+                    "        <div class=\"item\" onclick=\"changealert()\">切换提示方式</div>\n"+
+                    "        <div class=\"item\">Choice 3</div>\n"+
+                    "    </div>\n"+
+                    "    </div>\n"+
+                    "</div>";
+            }else {
+                re="<div class=\"ui pointing vertical menu overlay\">\n"+
+
+                    "    <div class=\"item\">\n"+
+                    "        <b>操作</b>\n"+
+                    "\n"+
+                    "        <div class=\"ui accordion\">\n"+
+                    "            <div class=\"title\"><i class=\"dropdown icon\"></i> 基础数据 </div>\n"+
+                    "            <div class=\"content menu\">\n"+
+                    "                <a class=\"item\" id=\"mdatasource\" onclick='clickdatasource()'>数据库设置</a>\n"+
+                    "                <a class=\"item\" id=\"mlabel\" onclick='clicklabel()'>标签设置</a>\n"+
+                    "                <a class=\"item\" id=\"mfile\" onclick='clickfile()'>上传文件设置</a>\n"+
+                    "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
+                    "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
+                    "            </div>\n"+
+                    "            <div class=\"title\"><i class=\"dropdown icon\"></i> 用例数据</div>\n"+
+                    "            <div class=\"content  menu\">\n"+
+                    "                <a class=\"item\" id=\"mcasehome\" onclick='clickcasehome()'>管理用例库</a>\n"+
+                    "                <a class=\"item\" id=\"mcase\" onclick='clickcase()'>管理用例</a>\n"+
+                    "                <!--<a class=\"item\" onclick=\"alertf('尚未设计')\">管理操作</a>-->\n"+
+                    "                <a class=\"item\" id=\"mpage\" onclick='clickpage()'>管理页面</a>\n"+
+                    "                <a class=\"item\" id=\"melement\" onclick='clickelemnet()'>管理元素</a>\n"+
+                    "\n"+
+                    "\n"+
+                    "            </div>\n"+
+                    "\n"+
+                    "            <div class=\"title\"><i class=\"dropdown icon\"></i>执行操作</div>\n"+
+                    "            <div class=\"content menu\">\n"+
+                    "                <a class=\"item\" id=\"mtest\" onclick='clicktest()'>执行测试</a>\n"+
+                    "                <a class=\"item\" id=\"mlook\" onclick='clicklook()'>查看进度</a>\n"+
+                    "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
+                    "            </div>\n"+
+
+                    "        </div>\n"+
+                    "    </div>\n"+
+                    "    <div class=\"ui dropdown item\">其他操作 <i class=\"dropdown icon\"></i> <div class=\"menu\">\n"+
+                    "        <div class=\"item\" onclick=\"hidemenu()\">隐藏</div>\n"+
+                    "        <div class=\"item\" onclick=\"changealert()\">切换提示方式</div>\n"+
+                    "        <div class=\"item\">Choice 3</div>\n"+
+                    "    </div>\n"+
+                    "    </div>\n"+
+                    "</div>";
+
+            }
+            $('#menu1').html(re);
+
+
             $('.ui.modal').modal();
             $('.ui.accordion').accordion();
             $('.ui.dropdown').dropdown();
@@ -305,13 +401,13 @@ function shualabel() {
                 $('#labelid').html(re);
                 $('table').tablesort();
             }else{
-                $('#labelid').html('');
+                $('#labelid').html('无相关信息');
             }
         }
     });
 }
-$('#mlabel').click(
-    function () {
+
+    function clicklabel() {
         if(tid<1){
             alertf("请先选择项目~")
 
@@ -333,7 +429,7 @@ $('#mlabel').click(
 
         }
 
-});
+};
 
 function changeyan1() {
     var re=   " <div class=\"ui segment\"><div class=\"ui form\">\n"+
@@ -593,9 +689,37 @@ function forfirstfun(a) {
 
 }
 
-$('#manage').click(function () {
-var cc=Cookies.get('user2');
-if(uncompileStr(cc)=="我是管理员"){
+function up() {
+    $("html,body").animate({scrollTop:0}, 500);
+}
+
+function clicklog() {
+    forfirstfun();
+    var log1=base("                        <th style=\"width: 40px\">#</th>\n" +
+        "                        <th >用户名称</th>\n" +
+        "                        <th >用户邮箱</th>\n" +
+        "                        <th >操作时间</th>\n" +
+        "                        <th >操作内容</th>\n" +
+        "                        <th style=\"width: 80px\">数据库id</th>\n",6,'up()',"回到顶部",'tlog',"2a2");
+    $('#context').html(log1);
+    shualog();
+    
+}
+function clickslog() {
+    forfirstfun();
+    var log1=base("                        <th style=\"width: 40px\">#</th>\n" +
+        "                        <th >用户名称</th>\n" +
+        "                        <th >用户邮箱</th>\n" +
+        "                        <th >操作时间</th>\n" +
+        "                        <th >操作内容</th>\n" +
+        "                        <th style=\"width: 80px\">数据库id</th>\n",6,'up()',"回到顶部",'tlog',"2a2");
+    $('#context').html(log1);
+    shuaslog();
+
+}
+
+function clickmanage() {
+
     forfirstfun();
 
     var user1=base("                        <th style=\"width: 40px\">#</th>\n" +
@@ -604,8 +728,6 @@ if(uncompileStr(cc)=="我是管理员"){
         "                        <th style=\"width: 200px\">最后登录时间</th>\n" +
         "                        <th style=\"width: 80px\">是否管理员</th>\n" +
         "                        <th style=\"width: 80px\">是否禁用</th>\n" +
-
-
         "                        <th style=\"width: 80px\">操作</th>\n",7,'adduser()',"添加用户",'tuser');
     var re="<div id='mett' class=\"ui top attached tabular menu\">\n" +
         "  <a class=\"active item\" onclick='shuauser()' data-tab=\"first\">用户管理</a>\n" +
@@ -650,10 +772,8 @@ if(uncompileStr(cc)=="我是管理员"){
     shuauser();
 
     
-}else{
-    alertf('抱歉，你不是管理员。');
+
 }
-});
 
 function clearIsused() {
     $.post('/clearisused',{mimi:compileStr(Date.parse(new Date())/1000+'')},function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
@@ -720,12 +840,88 @@ function shuauser() {
                 $('table').tablesort();
 
             }else{
-                $('#tuser').html('');
+                $('#tuser').html('无相关信息');
             }
         }
 
     });
     
+}
+
+function shualog() {
+
+    $.get('/getlog',function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+        if(o.isok!=0){
+            alertf(o.msg);
+        }else{
+            var users1=o.logs;
+
+            var re2="";
+            if(users1.length>0){
+                for(var i=0;i<users1.length;i++){
+
+                    re2+= "                    <tr>\n" +
+                        "\n" +
+                        "                        <td  >"+(i+1)+"</td>\n" +
+                        "                        <td  >"+users1[i].name+"</td>\n" +
+                        "                        <td  >"+users1[i].user+"</td>\n" +
+                        "                        <td  >"+users1[i].time+"</td>\n" +
+                        "                        <td  >"+users1[i].log+"</td>\n" +
+                        "                        <td  >"+users1[i].id+"</td>\n" +
+
+                        "                    </tr>\n";
+
+                }
+                $('#tlog').html(re2);
+
+                $('table').tablesort();
+
+            }else{
+                $('#tlog').html('无相关信息');
+            }
+        }
+
+    });
+
+}
+
+function shuaslog() {
+
+    $.get('/getslog',function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+        if(o.isok!=0){
+            alertf(o.msg);
+        }else{
+            var users1=o.logs;
+
+            var re2="";
+            if(users1.length>0){
+                for(var i=0;i<users1.length;i++){
+
+                    re2+= "                    <tr>\n" +
+                        "\n" +
+                        "                        <td  >"+(i+1)+"</td>\n" +
+                        "                        <td  >"+users1[i].name+"</td>\n" +
+                        "                        <td  >"+users1[i].user+"</td>\n" +
+                        "                        <td  >"+users1[i].time+"</td>\n" +
+                        "                        <td  >"+users1[i].log+"</td>\n" +
+                        "                        <td  >"+users1[i].id+"</td>\n" +
+
+                        "                    </tr>\n";
+
+                }
+                $('#tlog').html(re2);
+
+                $('table').tablesort();
+
+            }else{
+                $('#tlog').html('无相关信息');
+            }
+        }
+
+    });
+
 }
 
 function shwomenu() {
@@ -819,7 +1015,7 @@ function shuastep() {
 
            }
           //  }else{
-         //       $('#stepid').html('');
+         //       $('#stepid').html('无相关信息');
           //  }
         }
 
@@ -1509,7 +1705,7 @@ function shuapage() {
                 $('table').tablesort();
 
             }else{
-                $('#tpageid').html('');
+                $('#tpageid').html('无相关信息');
             }
         }
 
@@ -1564,7 +1760,7 @@ function shuaDatasource() {
                 $('table').tablesort();
 
             }else{
-                $('#datasourceid').html('');
+                $('#datasourceid').html('无相关信息');
             }
         }
 
@@ -1603,7 +1799,7 @@ function  shuaele() {
                 $('table').tablesort();
 
             }else{
-                $('#eleid').html('');
+                $('#eleid').html('无相关信息');
             }
         }
     });
@@ -1646,7 +1842,7 @@ function  shuaeleall() {
                 $('table').tablesort();
 
             }else{
-                $('#eleid').html('');
+                $('#eleid').html('无相关信息');
             }
         }
     });
@@ -1698,7 +1894,7 @@ function  shuaitem() {
 
                     $('#seuser').html(re);
                 }else{
-                    $('#titem').html('');
+                    $('#titem').html('无相关信息');
                 }
             }
 
@@ -1808,7 +2004,7 @@ var allmatch=false;
             $('#caseid').html(rex+re);
           //  $('table').tablesort();
         }else{
-            $('#caseid').html('');
+            $('#caseid').html('无相关信息');
         }
 
     }
@@ -2671,8 +2867,9 @@ function searchcase() {
 
             
         }
-$('#mcase').click(
-  function () {
+
+  function clickcase()
+  {
       if(tid<1){
           alertf("请先选择项目~")
       }else{
@@ -2708,10 +2905,10 @@ $('#mcase').click(
 
       }
   }  
-);
 
-$('#mcasehome').click(
-    function () {
+
+    function clickcasehome()
+    {
         if(tid<1){
             alertf("请先选择项目~")
 
@@ -2732,7 +2929,7 @@ $('#mcasehome').click(
 
         }
     }
-);
+
 
 function addcasehome() {
     homeid=0;
@@ -2775,14 +2972,14 @@ var cid2="\'"+ccs[i].cids+"\',"+ccs[i].id;
                 $('#casehomeid').html(re);
                   $('table').tablesort();
             }else{
-                $('#casehomeid').html('');
+                $('#casehomeid').html('无相关信息');
             }
         }
     });
 }
 
-$('#mdatasource').click(
-    function () {
+
+    function clickdatasource() {
         if(tid<1){
             alertf("请先选择项目~")
         }else{
@@ -2809,12 +3006,12 @@ $('#mdatasource').click(
 
         }
     }
-);
 
 
 
-$('#mpage').click(
-    function () {
+
+
+    function clickpage() {
         if(tid<1){
             alertf("请先选择项目~")
         }else {
@@ -2835,7 +3032,7 @@ $('#mpage').click(
 
 
     }
-);
+
 
 function showlabel(a) {
     var ls=$('.labelz');
@@ -2948,8 +3145,8 @@ function addcids(b) {
 }
 
 
-$('#mtest').click(
-  function () {
+
+  function clicktest() {
       if(tid<1){
           alertf("请先选择项目~")
       }else {
@@ -3028,7 +3225,7 @@ $('#mtest').click(
 
               }
   }  
-);
+
 
 function changecasehome(a) {
     $('#casehomeid2').html(base( "                        <th style=\"width: 40px\">#</th>\n" +
@@ -3040,8 +3237,8 @@ function changecasehome(a) {
 
 
 }
-$('#mlook').click(
-    function () {
+
+    function clicklook() {
         if(tid<1){
             alertf("请先选择项目~")
         }else {
@@ -3073,7 +3270,7 @@ shuaseries();
 
         }
     }
-);
+
 
 function removeseries(a) {
     if (confirm("你确定要删除吗？")) {
@@ -3413,7 +3610,7 @@ function shuatestcase(type,a) {
 
 
                 }else{
-                    $('#testcaseid').html('');
+                    $('#testcaseid').html('无相关信息');
                 }
 
             }
@@ -3463,7 +3660,7 @@ function shuatestcase(type,a) {
                     $('.test.checkbox').checkbox('attach events', '.check.button', 'check');
                     $('.test.checkbox').checkbox('attach events', '.uncheck.button', 'uncheck');
                 }else{
-                    $('#testcaseid').html('');
+                    $('#testcaseid').html('无相关信息');
                 }
 
             }
@@ -3499,7 +3696,7 @@ function addtestcase() {
 
 }
 
-$('#melement').click(function () {
+function clickelemnet() {
     if(tid<1){
         alertf("请先选择项目~")
     }else{
@@ -3525,7 +3722,7 @@ $('#melement').click(function () {
 
     }
 
-});
+}
 
 function lookstep(a,b) {
 cid=a;

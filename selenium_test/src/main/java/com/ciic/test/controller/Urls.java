@@ -217,7 +217,7 @@ private Map<String,Thread> map4thread=new HashMap();
 
     @RequestMapping("/test" )
     String test(String cid){
-caseService.test(cid);
+//caseService.test(cid);
 
         return "ok";
     }
@@ -247,6 +247,28 @@ caseService.test(cid);
 
     }
 
+    @RequestMapping("/getlog")
+    String getLog(HttpSession session){
+        if(userService.isManager(session.getAttributeNames().nextElement())){
+
+            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"操作成功\",\"logs\":"+configService.getActLog()+"}";
+        }else {
+
+            return "{\"isok\":1,\"msg\":\"信息不对称\",\"to\":\"/\"}";
+        }
+
+    }
+    @RequestMapping("/getslog")
+    String getsLog(HttpSession session){
+        if(userService.isManager(session.getAttributeNames().nextElement())){
+
+            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"操作成功\",\"logs\":"+configService.getsLog()+"}";
+        }else {
+
+            return "{\"isok\":1,\"msg\":\"信息不对称\",\"to\":\"/\"}";
+        }
+
+    }
     @RequestMapping("/gitema")
     String getAllItem(HttpSession session){
         if(userService.isManager(session.getAttributeNames().nextElement())){
@@ -256,12 +278,6 @@ caseService.test(cid);
 
             return "{\"isok\":1,\"msg\":\"信息不对称\",\"to\":\"/\"}";
         }
-
-
-
-
-
-
 
     }
 

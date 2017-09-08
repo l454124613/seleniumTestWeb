@@ -2,6 +2,7 @@ package com.ciic.test.dao;
 
 import com.ciic.test.bean.Datasource;
 import com.ciic.test.bean.Label;
+import com.ciic.test.bean.Log;
 import com.ciic.test.bean.tmp;
 import com.ciic.test.service.ConfigService;
 import com.ciic.test.tools.mycode;
@@ -142,6 +143,17 @@ public class ConfigDao implements ConfigService {
         }
 
 
+
+    }
+
+    @Override
+    public List<Log> getActLog() {
+        return jdbcTemplate.query("SELECT log.id id ,log.user user, log,time,name  from log join user on uid=user.id where type=2 ",new BeanPropertyRowMapper<>(Log.class));
+    }
+
+    @Override
+    public List<Log> getsLog() {
+        return jdbcTemplate.query("SELECT log.id id ,log.user user, log,time,name  from log join user on uid=user.id where type=1 ",new BeanPropertyRowMapper<>(Log.class));
 
     }
 
