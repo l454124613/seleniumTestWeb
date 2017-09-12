@@ -850,7 +850,9 @@ throw new NoSuchElementException("元素等不到");
                 case "2": webElement.clear();webElement.sendKeys(value);return 0;
 
                 case "3": webElement.clear();return 0;
-                case "4": webElement.sendKeys(value);return 0;
+                case "4":List<tmp> lt= jdbcTemplate.query("select path value from file where id="+value,new BeanPropertyRowMapper<>(tmp.class));
+
+                    webElement.sendKeys(lt.get(0).getValue());return 0;
 
                 case "5": driver.switchTo().alert().accept();return 0;
                 case "6": driver.switchTo().alert().dismiss();return 0;

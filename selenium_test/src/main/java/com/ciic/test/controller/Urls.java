@@ -4,17 +4,24 @@ import com.ciic.test.bean.*;
 import com.ciic.test.service.*;
 import com.ciic.test.tools.mycode;
 import com.sun.net.httpserver.HttpsConfigurator;
+import org.apache.tomcat.util.http.fileupload.FileUploadBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +48,8 @@ private ConfigService configService;
 private String filePath;
 
 private Map<String,Thread> map4thread=new HashMap();
+
+
 
     @RequestMapping("/login" )
     String login(HttpSession session,String user) throws UnsupportedEncodingException {
@@ -216,6 +225,51 @@ private Map<String,Thread> map4thread=new HashMap();
     }
 
 
+    @RequestMapping(value = "/Download/{id}/{name}/{ddf}", method = RequestMethod.GET)
+     void testDownload(HttpServletResponse res,@PathVariable String id,@PathVariable String name,@PathVariable String ddf) {
+        List<tmp> lt=configService.getOneFile(id,name);
+        if(lt.size()==1&&ddf.equals("filename")){
+            res.setHeader("content-type", "application/octet-stream");
+            res.setContentType("application/octet-stream");
+            try {
+                res.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(name,"UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            byte[] buff = new byte[1024];
+            BufferedInputStream bis = null;
+            OutputStream os = null;
+            try {
+                os = res.getOutputStream();
+                bis = new BufferedInputStream(new FileInputStream(new File(lt.get(0).getValue())));
+                int i = bis.read(buff);
+                while (i != -1) {
+                    os.write(buff, 0, buff.length);
+                    os.flush();
+                    i = bis.read(buff);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (bis != null) {
+                    try {
+                        bis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+           // return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+
+
+        }else {
+           // return "{\"isok\":1,\"msg\":\"文件信息错误\",\"to\":\"/\"}";
+        }
+
+
+    }
+
+
 
     @RequestMapping("/test" )
     String test(String cid){
@@ -252,12 +306,19 @@ private Map<String,Thread> map4thread=new HashMap();
     @RequestMapping(value = "/upload/{uid}/{tid}", method = RequestMethod.POST)
     @ResponseBody
     public String upload(@RequestParam("file") MultipartFile file,HttpSession session,@PathVariable String uid,@PathVariable String tid) {
-        File file1=new File(filePath+file.getOriginalFilename());
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH )+1;
+        File file2=new File(filePath+year+"_"+month+"/");
+        if(!file2.exists()){
+            file2.mkdirs();
+        }
+        File file1=new File(filePath+year+"_"+month+"/"+file.getOriginalFilename());
         if (!file.isEmpty()) {
             try {
 
 if(file1.exists()){
-    file1=new File(filePath+file.getOriginalFilename()+"_"+Math.random());
+    file1=new File(filePath+year+"_"+month+"/"+file.getOriginalFilename()+"_"+Math.random());
 }
                 BufferedOutputStream out = new BufferedOutputStream(
                         new FileOutputStream(file1));

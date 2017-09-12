@@ -162,7 +162,8 @@ public class ItemDao implements ItemService{
 
     @Override
     public List<Step> getStep(String cid) {
-     return   jdbcTemplate.query("SELECT * from step where isused=1 and cid=? order by step",mycode.prase(new Object[]{cid}),new BeanPropertyRowMapper<Step>(Step.class));
+       return jdbcTemplate.query("SELECT * from (SELECT * from step  where catid!=4 and isused=1 and cid=? UNION SELECT step.id ,pagename,step,catid,catname,cid, file.name value ,eid,ename, step.isused isused ,expid from step  join file on step.catid=4 and value=file.id   where catid=4 and step.isused=1 and cid=?) ORDER BY step",mycode.prase(new Object[]{cid,cid}),new BeanPropertyRowMapper<Step>(Step.class));
+
     }
 
     @Override

@@ -718,15 +718,21 @@ function clickfile() {
             "                        <th >上传人</th>\n" +
             "                        <th >上传时间</th>\n" +
             "                        <th style=\"width: 80px\">操作</th>\n" ,6,'addfile(0)',"添加文件",'tfile');
-        $('#context').html(log1+"<input type='file' id='fileupload' onchange='changefile()' style='display: none'>");
+        $('#context').html("(上传文件要求大小不大于10M，如果有大文件或者大量文件，请联系管理员)"+log1+"<input type='file' id='fileupload' onchange='changefile()' style='display: none'>");
         shuafile();
     }
 
 
 }
 function changefile(){
+    var f1=$('#fileupload').get(0).files[0];
+ if(f1.size>10485750){
+     alertf("文件过大，无法上传，请联系管理员处理");
+     return 0;
+ }
+
     var formData = new FormData();
-    formData.append("file",$('#fileupload').get(0).files[0]);
+    formData.append("file",f1);
     $.ajax({
         url:  "/upload/"+fileid+"/"+tid,
         type: 'POST',
@@ -770,16 +776,30 @@ function shuafile() {
 
             var re2="";
             if(users1.length>0){
+
+
                 for(var i=0;i<users1.length;i++){
+                    var si=users1[i].size;
+                   if(si>1023){
+                       if(si>1048575){
+                           si=(si/1024/1024).toFixed(2)+"MB";
+                       }else {
+                           si=(si/1024).toFixed(2)+"KB";
+
+                       }
+
+                   }else {
+                       si=si+'B';
+                   }
 
                     re2+= "                    <tr>\n" +
                         "\n" +
                         "                        <td  >"+(i+1)+"</td>\n" +
                         "                        <td  >"+users1[i].name+"</td>\n" +
-                        "                        <td  >"+(users1[i].size)/1000+"k</td>\n" +
+                        "                        <td  >"+si+"</td>\n" +
                         "                        <td  >"+users1[i].user+"</td>\n" +
                         "                        <td  >"+users1[i].time+"</td>\n" +
-                        "                        <td  ><button class=\"ui  circular basic  icon button\" onclick=\"downloadfile("+users1[i].id+")\" title=\"下载文件\"><i class=\"download icon\"></i></button>" +
+                        "                        <td  ><a class=\"ui  circular basic  icon button\" href=\"/Download/"+users1[i].id+"/"+users1[i].name+"/filename\"  title=\"下载文件\"><i class=\"download icon\"></i></a>" +
                         "<button class=\"ui  circular basic  icon button\" onclick=\"addfile("+users1[i].id+")\" title=\"修改文件\"><i class=\"paint brush icon\"></i></button>\n" +
                         "                            <button class=\"ui circular basic icon button \" onclick='removefile("+users1[i].id+")' title=\"删除文件\"><i class=\"remove circle icon red\"></i></button></td>\n" +
 
@@ -799,6 +819,17 @@ function shuafile() {
     });
 }
 
+
+function downloadfile(a,b) {
+     $.get('/Download/'+a+'/'+b+'/'+'filename',function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        // var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+        // if(o.isok=="1"){
+        //     alertf(o.msg);
+        // }
+
+
+    });
+}
 
 function removefile(a) {
     if (confirm("你确定要删除吗？")) {  $.get('/removefile/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
@@ -1123,8 +1154,9 @@ function shuastep() {
 
                     "  </div>\n"+
                     "</div></td>\n" +
-                    "                        <td  >  <div class=\"ui fluid input disabled\" id='inputv'>\n"+
-               "  <input type=\"text\" placeholder=\"输入值\" id='inputv2'>\n"+
+                    "                        <td  >  <div class=\"ui fluid input disabled  \" id='inputv'>\n"+
+             //  "  <input type=\"text\"  placeholder=\"输入值\" id='inputv2'>\n"+
+
                "</div></td>\n" +
                     "                        <td  ><button class=\"ui circular basic icon button disabled\" title=\"设置期望结果\"><i class=\"align justify icon\"></i></button></td>\n" +
                     "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"addstep(1)\" title=\"确认\"><i class=\"checkmark icon green\"></i></button>"+
@@ -1697,10 +1729,44 @@ function changeact(a) {
     if(re!=''){
 
 
-        if(re=='2'||re=='4'){
+        if(re=='2'){
             $('#inputv').removeClass('disabled');
+            $('#inputv').removeClass('selection');
+            $('#inputv').removeClass('dropdown');
+            $('#inputv').html("  <input type=\"text\"  placeholder=\"输入值\" id='inputv2'>");
         }else {
-            $('#inputv').addClass('disabled');
+            if(re=='4'){
+                $.get('/getfile/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+                    var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+                    if(o.isok!=0){
+                        alertf(o.msg);
+                    }else{
+                        var file1=o.files;
+                        var res=" <input type=\"hidden\"  id='inputv2' name=\"file\">\n"+
+                            "  <i class=\"dropdown icon\"></i>\n"+
+                            "  <div class=\"default text\">选择文件</div>\n"+
+                            "  <div class=\"menu\">\n";
+                        for(var i=0;i<file1.length;i++){
+                            res+="    <div class=\"item\" data-value=\""+file1[i].id+"\">"+file1[i].name+"</div>\n";
+
+                        }
+                        res+=    "  </div>";
+                        $('#inputv').addClass('dropdown');
+                        $('#inputv').addClass('selection');
+                        $('#inputv').removeClass('disabled');
+                        $('#inputv').html(res);
+                        $('#inputv').dropdown();
+
+                    }});
+
+
+
+            }else {
+                $('#inputv').addClass('disabled');
+                $('#inputv').html("");
+
+            }
+
 
         }
 
@@ -1780,7 +1846,7 @@ function shuapageinfo(d,e,f) {
             //re3+="    <div class=\"item\" data-value=\""+0+"\">"+'URL'+"</div>\n";
 
 $('#eleg').html(re3);
-console.log(o.page.pagename);
+//console.log(o.page.pagename);
 $('#pagename2').text(o.page.pagename);
 
 

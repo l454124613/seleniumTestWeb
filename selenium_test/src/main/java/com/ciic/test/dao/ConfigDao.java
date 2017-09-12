@@ -182,6 +182,11 @@ public class ConfigDao implements ConfigService {
         return jdbcTemplate.update("update file set isused=0 where id=?",new Object[]{id});
     }
 
+    @Override
+    public List<tmp> getOneFile(String id, String name) {
+        return jdbcTemplate.query("select path value from file where isused=1 and name = ? and id=?",new Object[]{name,id},new BeanPropertyRowMapper<>(tmp.class));
+    }
+
     private String set2String(Set set){
         final String[] a = {""};
         set.forEach(k->{

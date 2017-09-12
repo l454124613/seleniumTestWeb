@@ -1,9 +1,6 @@
 package com.ciic.test.service;
 
-import com.ciic.test.bean.Datasource;
-import com.ciic.test.bean.FileInfo;
-import com.ciic.test.bean.Label;
-import com.ciic.test.bean.Log;
+import com.ciic.test.bean.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,5 +40,7 @@ public interface ConfigService {
     int addFile(String name,String size,String uid,String path,String tid);
     int updateFile(String name,String size,String uid,String path,String id);
     int reomveFile(String id);
+
+    List<tmp> getOneFile(String id,String name);
 
 }
