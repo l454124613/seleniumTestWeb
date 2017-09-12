@@ -88,8 +88,8 @@ $(document).ready(function () {
                     "    </div>\n"+
                     "    <div class=\"ui dropdown item\">其他操作 <i class=\"dropdown icon\"></i> <div class=\"menu\">\n"+
                     "        <div class=\"item\" onclick=\"hidemenu()\">隐藏</div>\n"+
-                    "        <div class=\"item\" onclick=\"changealert()\">切换提示方式</div>\n"+
-                    "        <div class=\"item\">Choice 3</div>\n"+
+                    "        <div class=\"item\" id='al' onclick=\"changealert()\">切换到console提示</div>\n"+
+                    // "        <div class=\"item\">Choice 3</div>\n"+
                     "    </div>\n"+
                     "    </div>\n"+
                     "</div>";
@@ -130,8 +130,8 @@ $(document).ready(function () {
                     "    </div>\n"+
                     "    <div class=\"ui dropdown item\">其他操作 <i class=\"dropdown icon\"></i> <div class=\"menu\">\n"+
                     "        <div class=\"item\" onclick=\"hidemenu()\">隐藏</div>\n"+
-                    "        <div class=\"item\" onclick=\"changealert()\">切换提示方式</div>\n"+
-                    "        <div class=\"item\">Choice 3</div>\n"+
+                    "        <div class=\"item\" id='al' onclick=\"changealert()\">切换到console提示</div>\n"+
+                    // "        <div class=\"item\">Choice 3</div>\n"+
                     "    </div>\n"+
                     "    </div>\n"+
                     "</div>";
@@ -172,9 +172,11 @@ function ueswidth() {
 }
 function changealert() {
     if(alertftype==0){
+        $('#al').text('切换到alert提示');
         alertftype=1;
     }else {
         alertftype=0;
+        $('#al').text('切换到console提示');
     }
 
 }
