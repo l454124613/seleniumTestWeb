@@ -17,6 +17,8 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -516,7 +518,7 @@ private String getHttpCon(String url, Header[] head, String type, String con){
             //stringBuffer.append("--------------------------------------------------\n");
         }
     } catch (Exception e) {
-       stringBuffer.append(e.getCause().getLocalizedMessage()==null?e.getLocalizedMessage():e.getCause().getLocalizedMessage());
+       stringBuffer.append(e.getCause()==null?e.getLocalizedMessage():e.getCause().getLocalizedMessage());
     } finally {
         try {
             client.close();
@@ -709,14 +711,19 @@ if(ly.size()==0){
         jdbcTemplate.update("update caseres set pic='"+ pic+"' where id="+id);
     }
     private WebDriver startDriver(String tid ){
+        // 创建DesiredCapabilities类的一个对象实例
+        DesiredCapabilities cap=DesiredCapabilities.chrome();
+
+        // 设置变量ACCEPT_SSL_CERTS的值为True
+        cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
         System.setProperty("webdriver.chrome.driver", driverPath);
-        WebDriver driver = new ChromeDriver();
+
+        WebDriver driver = new ChromeDriver(cap);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
       tmp tmp= jdbcTemplate.query("select firstpageurl value from item where id ="+tid,new BeanPropertyRowMapper<>(tmp.class)).get(0);
       driver.get(tmp.getValue());
       return driver;
-
     }
     private  WebElement waitElementExist(WebElement element) throws NoSuchElementException {
         int i=0;

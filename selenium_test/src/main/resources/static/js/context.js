@@ -38,6 +38,14 @@ var fileid=0;
 
 $(document).ready(function () {
 
+
+//关闭右键菜单，很简单
+    window.onclick=function(e){
+
+//用户触发click事件就可以关闭了，因为绑定在window上，按事件冒泡处理，不会影响菜单的功能
+        document.querySelector('#menu3').style.width=0;
+    }
+
         $.get('/com',function (data,status) {
         var o=$.parseJSON(data);
         if(o.isok!=0){
@@ -47,13 +55,29 @@ $(document).ready(function () {
             var cc=Cookies.get('user2');
             var re="";
             if(uncompileStr(cc)=="我是管理员"){
+                window.oncontextmenu=function(e){
+//取消默认的浏览器自带右键 很重要！！
+
+                    e.preventDefault();
+
+//获取我们自定义的右键菜单
+                    var menu=document.querySelector("#menu3");
+
+//根据事件对象中鼠标点击的位置，进行定位
+                    // console.log(e)
+                    menu.style.left=(e.clientX+(document.documentElement.scrollLeft != 0 ? document.documentElement.scrollLeft : document.body.scrollLeft))+'px';
+                    menu.style.top=(e.clientY-document.body.clientHeight*0.115+(document.documentElement.scrollTop != 0 ? document.documentElement.scrollTop : document.body.scrollTop))+'px';
+
+//改变自定义菜单的宽，让它显示出来
+                    menu.style.width='125px';
+                }
                 re="<div class=\"ui pointing vertical menu overlay\">\n"+
                     "    <a class=\"item \"  id=\"manage\" onclick='clickmanage()'>管理 </a>\n"+
                     "    <div class=\"item\">\n"+
                     "        <b>操作</b>\n"+
                     "\n"+
                     "        <div class=\"ui accordion\">\n"+
-                    "            <div class=\"title\"><i class=\"dropdown icon\"></i> 基础数据 </div>\n"+
+                    "            <div class=\"title\"><i class=\"dropdown icon\"></i>基础数据 </div>\n"+
                     "            <div class=\"content menu\">\n"+
                     "                <a class=\"item\" id=\"mdatasource\" onclick='clickdatasource()'>数据库设置</a>\n"+
                     "                <a class=\"item\" id=\"mlabel\" onclick='clicklabel()'>标签设置</a>\n"+
@@ -61,7 +85,7 @@ $(document).ready(function () {
                     "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
                     "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
                     "            </div>\n"+
-                    "            <div class=\"title\"><i class=\"dropdown icon\"></i> 用例数据</div>\n"+
+                    "            <div class=\"title\"><i class=\"dropdown icon\"></i>用例数据</div>\n"+
                     "            <div class=\"content  menu\">\n"+
                     "                <a class=\"item\" id=\"mcasehome\" onclick='clickcasehome()'>管理用例库</a>\n"+
                     "                <a class=\"item\" id=\"mcase\" onclick='clickcase()'>管理用例</a>\n"+
@@ -89,18 +113,34 @@ $(document).ready(function () {
                     "    <div class=\"ui dropdown item\">其他操作 <i class=\"dropdown icon\"></i> <div class=\"menu\">\n"+
                     "        <div class=\"item\" onclick=\"hidemenu()\">隐藏</div>\n"+
                     "        <div class=\"item\" id='al' onclick=\"changealert()\">切换到console提示</div>\n"+
-                    // "        <div class=\"item\">Choice 3</div>\n"+
+                    "        <div class=\"item\" onclick='showhelp(1)'>帮助文档</div>\n"+
+                    "        <div class=\"item\" onclick='showidea(1)'>大家的建议</div>\n"+
                     "    </div>\n"+
                     "    </div>\n"+
                     "</div>";
-            }else {
+            }else { window.oncontextmenu=function(e){
+//取消默认的浏览器自带右键 很重要！！
+
+                e.preventDefault();
+
+//获取我们自定义的右键菜单
+                var menu=document.querySelector("#menu3");
+
+//根据事件对象中鼠标点击的位置，进行定位
+                // console.log(e)
+                menu.style.left=(e.clientX+(document.documentElement.scrollLeft != 0 ? document.documentElement.scrollLeft : document.body.scrollLeft))+'px';
+                menu.style.top=(e.clientY-document.body.clientHeight*0.09+(document.documentElement.scrollTop != 0 ? document.documentElement.scrollTop : document.body.scrollTop))+'px';
+
+//改变自定义菜单的宽，让它显示出来
+                menu.style.width='125px';
+            }
                 re="<div class=\"ui pointing vertical menu overlay\">\n"+
 
                     "    <div class=\"item\">\n"+
                     "        <b>操作</b>\n"+
                     "\n"+
                     "        <div class=\"ui accordion\">\n"+
-                    "            <div class=\"title\"><i class=\"dropdown icon\"></i> 基础数据 </div>\n"+
+                    "            <div class=\"title\"><i class=\"dropdown icon\"></i>基础数据 </div>\n"+
                     "            <div class=\"content menu\">\n"+
                     "                <a class=\"item\" id=\"mdatasource\" onclick='clickdatasource()'>数据库设置</a>\n"+
                     "                <a class=\"item\" id=\"mlabel\" onclick='clicklabel()'>标签设置</a>\n"+
@@ -108,7 +148,7 @@ $(document).ready(function () {
                     "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
                     "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
                     "            </div>\n"+
-                    "            <div class=\"title\"><i class=\"dropdown icon\"></i> 用例数据</div>\n"+
+                    "            <div class=\"title\"><i class=\"dropdown icon\"></i>用例数据</div>\n"+
                     "            <div class=\"content  menu\">\n"+
                     "                <a class=\"item\" id=\"mcasehome\" onclick='clickcasehome()'>管理用例库</a>\n"+
                     "                <a class=\"item\" id=\"mcase\" onclick='clickcase()'>管理用例</a>\n"+
@@ -131,7 +171,8 @@ $(document).ready(function () {
                     "    <div class=\"ui dropdown item\">其他操作 <i class=\"dropdown icon\"></i> <div class=\"menu\">\n"+
                     "        <div class=\"item\" onclick=\"hidemenu()\">隐藏</div>\n"+
                     "        <div class=\"item\" id='al' onclick=\"changealert()\">切换到console提示</div>\n"+
-                    // "        <div class=\"item\">Choice 3</div>\n"+
+                    "        <div class=\"item\" onclick='showhelp(0)'>帮助文档</div>\n"+
+                    "        <div class=\"item\" onclick='showidea(0)'>我的建议</div>\n"+
                     "    </div>\n"+
                     "    </div>\n"+
                     "</div>";
@@ -163,6 +204,44 @@ $(document).ready(function () {
     });
 });
 
+function showidea(a) {
+    forfirstfun();
+    var rr=""
+    if(a=='1'){
+        rr=base("                        <th style=\"width: 40px\">#</th>\n" +
+            "                        <th >用户</th>\n" +
+            "                        <th >标题</th>\n" +
+            "                        <th >状态</th>\n" +
+            "                        <th >提交时间</th>\n" +
+            "                        <th >备注</th>\n" +
+            "                        <th >操作</th>\n"   ,7,'up()',"回到顶部",'tlog',"2a2");
+
+    }else {
+        rr=base("                        <th style=\"width: 40px\">#</th>\n" +
+            "                        <th >标题</th>\n" +
+            "                        <th >状态</th>\n" +
+            "                        <th >提交时间</th>\n" +
+            "                        <th >备注</th>\n" +
+            "                        <th >操作</th>\n",6,'up()',"回到顶部",'tlog',"2a2");
+    }
+
+    $('#context').html(rr);
+    $('#tlog').html('嘘~还没有写这个功能呢，等等');
+
+    //shualog();
+
+    
+}
+
+function showhelp(a) {
+    if(a=='1'){
+        window.open("/html/help.html");
+    }else {
+        window.open("/html/helpme.html");
+    }
+
+    
+}
 
 function ueswidth() {
     var marginwidth= ($('#context').outerWidth(true)-$('#context'). outerWidth())/2;
@@ -3181,7 +3260,7 @@ var cid2="\'"+ccs[i].cids+"\',"+ccs[i].id;
             forfirstfun();
             var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
                 "                        <th  style=\"width: 25%\">数据库名称</th>\n" +
-                "                        <th   style='min-width: 40px'>备注信息</th>\n" +
+                "                        <th   style='min-width: 40px'>描述</th>\n" +
                 "                        <th   style='width: 140px'>连接地址</th>\n" +
                 "                        <th   style='width: 100px'>数据库</th>\n" +
                 "                        <th style=\"width: 80px\">数据库类型</th>\n" +

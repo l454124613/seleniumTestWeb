@@ -147,6 +147,7 @@ public class aopLogin {
                     case "removestep":aa="删除操作步骤";break;
                     case "getfile":aa="查看上传文件";break;
                     case "upload":aa="上传文件";break;
+                    case "testDownload":aa="下载文件";break;
                     case "removeFile":aa="删除文件";break;
 
                 }
