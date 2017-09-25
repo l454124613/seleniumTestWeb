@@ -335,10 +335,11 @@ if(isok){
                         driver[0].switchTo().defaultContent();
                     }
                     if (!element.getTopage().equals("-1")) {
-                        toWindow(getTitle(element.getTopage()), driver[0]);
+                        toWindow( driver[0],element.getTopage());
 
                     }
                     updateCaseListRunnum((j + 1) + "", caseListId);
+                    updateCaseresRes("1","运行成功",nowCaseresid[0]);
                     if (!step.getExpid().equals("0")) {
                         List<Expected> le=jdbcTemplate.query("select * from exp where sid="+step.getId(),new BeanPropertyRowMapper<>(Expected.class));
                        int a12=jdbcTemplate.update("INSERT INTO \"caseres\" (\"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\", \"type\") VALUES ( "+caseid+", "+sid+", '', '预期结果', -1, -1, '"+LocalDate.now()+" "+LocalTime.now()+"', "+caseListId+", 6)");
@@ -350,7 +351,7 @@ if(isok){
                            throw new  Exception("创建期望结果失败!");
                        }
                        if(le.size()==1){
-
+                           nowCaseresid[0]= lt6.get(0).getValue();
                             switch (le.get(0).getType()){
                                 case "1": Element element2 = getElement(le.get(0).getB().split(":")[0]);
                                 WebElement webElement2 = element2Web(element2, driver[0]);
@@ -392,7 +393,7 @@ if(isok){
                         }
                        // System.out.println("exp");
                     }
-                    updateCaseresRes("1","运行成功",nowCaseresid[0]);
+
                 }else if(type.equals("2")){
                     String re2=runSql(nowCaseresid[0]);
                     if(re2.length()>0){
@@ -788,7 +789,7 @@ throw new NoSuchElementException("元素等不到");
                 case "3" :webElement=driver.findElement(By.tagName(element.getValue()));waitTime(element,webElement);break;
                 case "4" :webElement=driver.findElement(By.linkText(element.getValue()));waitTime(element,webElement);break;
                 case "5" :webElement=driver.findElement(By.className(element.getValue()));waitTime(element,webElement);break;
-                case "6" :webElement=driver.findElement(By.xpath(element.getValue()));waitTime(element,webElement);break;
+                case "6" :webElement=driver.findElement(By.xpath(element.getValue().replace("%78","\"")));waitTime(element,webElement);break;
                 case "7" :webElement=driver.findElement(By.cssSelector(element.getValue()));waitTime(element,webElement);break;
 
             }
@@ -935,11 +936,20 @@ private boolean exist(WebElement webElement){
     }
 }
 
-    public void toWindow(String title,WebDriver driver) {
+
+
+    public void toWindow(WebDriver driver,String topage) {
+        String title=getTitle(topage);
+//        if(title.substring(0,2).equals("..")||title.substring(0,2).equals("。。")){
+//            return;
+//        }
         Set<String> set= driver.getWindowHandles();
         final String[] aa = {driver.getWindowHandle()};
+
         set.forEach(k->{
-            if(driver.switchTo().window(k).getTitle().equalsIgnoreCase(title)){
+           WebDriver driver1= driver.switchTo().window(k);
+            System.out.println(driver1.getCurrentUrl());
+            if(driver1.getTitle().equalsIgnoreCase(title)){
                 aa[0] =k;
             }
 

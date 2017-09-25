@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+
+<html lang="en" style="height: 95%">
+
+<head >
+    
+<meta charset="UTF-8">
+    
+<title>编辑界面
+</title>
+    <style>
+        pre{
+
+            margin-top: 1px;
+            margin-bottom: 1px;
+
+        }
+        /*div{        cursor: text;        background: #f00;        width: 400px;        height: 200px;    }*/
+        /*@media \0screen\,screen\9 {!* 只支持IE6、7、8 *!*/
+            /*#shu{*/
+                /*background-color:#000000;*/
+                /*filter:Alpha(opacity=50);*/
+                /*position:static; !* IE6、7、8只能设置position:static(默认属性) ，否则会导致子元素继承Alpha值 *!*/
+                /**zoom:1; !* 激活IE6、7的haslayout属性，让它读懂Alpha *!*/
+            /*}*/
+
+        /*}*/
+    </style>
+
+</head>
+
+<body style="height: 100%;margin-top: 0px;">
+<div style="background-color: #00B5AD;position: fixed;width: 100%">我是功能框</div>
+<div  id='shu' style="position: fixed;background-color: rgba(0,0,0,0.0);font-size: small">|</div>
+<div style="position: fixed;margin-top: 30px;">
+    <div>
+        <div id="fen" style="float: left;border-right:1px dashed #000;width: auto;padding-right: 5px;margin-right: 5px;"><pre class="pre">1</pre><pre class="pre">2</pre><pre class="pre">223234</pre></div>
+        <div style="position: relative;float: left" >
+
+<pre  style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: -2;">&nbsp;
+</pre>
+            <pre>
+<span class="cm-variable">$</span>(<span class="cm-variable">document</span>).<span class="cm-property">ready</span>(<span class="cm-keyword">function</span>(){
+</pre>
+        </div>
+
+
+    </div>
+
+</div>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script>
+//    var e = event || window.event;
+////    return {'x':e.clientX,'y':clientY}
+//    console.log(e.clientX+','+e.clientY);
+var d=1;
+$(document).ready(function () {
+    setInterval(function () {
+        if(d=='1'){
+            $('#shu').css('display','none');
+            d=0;
+        }else {
+            $('#shu').css('display','block');
+            d=1;
+        }
+
+    },500);
+});
+$('body').on('click',function (e) {
+    //var e = event || window.event;
+    console.log(e.clientX+','+e.clientY);
+   // position: fixed;background-color: rgba(0,0,0,0.0);margin-top: 123px;margin-left: 111px;
+    var w=$("#fen").outerWidth(true);
+ //   alert(w);
+    var y1=e.clientY-16;
+    var x1=e.clientX-7;
+    var y2=Math.ceil((y1-30)/15);
+    var y3=y2*15+29;
+    var x2=Math.ceil((x1-w)/6.5);
+    var x3=x2*6.5+w-2;
+
+    $('#shu').css('margin-left',x3);
+    $('#shu').css('margin-top',y3);
+})
+</script>
+
+</body>
+
+</html>

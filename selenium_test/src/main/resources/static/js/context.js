@@ -2060,9 +2060,10 @@ function  shuaele() {
                         "                        <td  >"+re1[i].name+"</td>\n" +
                         // "                        <td  >"+in2st4type(re1[i].type)+"</td>\n" +
                         "                        <td  >"+in2st4lo(re1[i].locationMethod)+"</td>\n" +
-                        "                        <td  >"+re1[i].value+"</td>\n" +
-                        "                        <td  >"+(re1[i].isframe=="1")+"</td>\n" +
+                        "                        <td  >"+re1[i].value.replace(/%78/g,"\"")+"</td>\n" +
                         "                        <td  >"+(re1[i].topage!="-1")+"</td>\n" +
+                        "                        <td  >"+(re1[i].isframe=="1")+"</td>\n" +
+
                         "                        <td  ><button class=\"ui  circular basic icon button\" onclick='updateele("+re1[i].id+")' title=\"修改元素\"><i class=\"paint brush icon\"></i></button>\n" +
                         "                            <button class=\"ui circular basic icon button\" onclick='removeele("+re1[i].id+")' title=\"删除元素\"><i class=\"remove circle icon red\"></i></button></td>\n" +
 
@@ -2433,6 +2434,7 @@ $('#chfr').click(function () {
 
 
 $('#chwin').click(function () {
+
     if($('#addwinid').hasClass('disabled')){
         $('#addwinid').removeClass('disabled');
         $('#sewin').parent().removeClass('disabled');
@@ -3004,13 +3006,13 @@ function updatelabel(a,b,c) {
 }
 
 
-function updatepage(a,b) {
-
-    $('#pagenameadd').val(b.parentNode.parentNode.getElementsByTagName("td")[1].innerHTML);
-    $('#pagetitleadd').val(b.parentNode.parentNode.getElementsByTagName("td")[2].innerHTML);
-    $('#modal1').modal('show');
-
-}
+// function updatepage(a,b) {
+//
+//     $('#pagenameadd').val(b.parentNode.parentNode.getElementsByTagName("td")[1].innerHTML);
+//     $('#pagetitleadd').val(b.parentNode.parentNode.getElementsByTagName("td")[2].innerHTML);
+//     $('#modal1').modal('show');
+//
+// }
 function updateuser(a,b,c,d) {
 
     ass2=a;
@@ -4213,9 +4215,12 @@ function  updateele(a) {
         $('#chfr').click();
         $('#sefr').dropdown('set selected',elements1[nn].toframe);
     }
+
     if(elements1[nn].topage!="-1"){
         $('#chwin').click();
         $('#sewin').dropdown('set selected',elements1[nn].topage);
+
+
     }
     if(elements1[nn].waitid!="-1"){
         $('#sewait').dropdown('set selected',elements1[nn].waitid);

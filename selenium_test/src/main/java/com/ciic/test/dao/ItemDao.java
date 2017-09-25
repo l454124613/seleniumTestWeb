@@ -141,7 +141,7 @@ public class ItemDao implements ItemService{
     @Override
     public String gerTitle(String id) {
       List<tmp> ll=  jdbcTemplate.query("Select title value from item where isused=1 and id =?",mycode.prase(new Object[]{id}),new BeanPropertyRowMapper<tmp>(tmp.class));
-       if(ll.size()==1){
+       if(ll.size()>0){
            return ll.get(0).getValue();
        }else {
            return "err";

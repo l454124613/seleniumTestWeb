@@ -487,7 +487,7 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
             element.setName(elename);
             element.setTopage(topage);
 
-            element.setValue(elevalue);
+            element.setValue(elevalue.replace("\"","%78"));
             element.setToframe(toframe);
             element.setWaitid(waitid);
             element.setWaitvalue(waitv);
@@ -961,7 +961,7 @@ int num=configService.clearisused();
                    return "{\"isok\":1,\"msg\":\"项目首页链接出错,请检查。\",\"to\":\"/\"}";
                }else {
                    List<Page> lp=  itemService.getOnePage(tid,title);
-                   if(lp.size()==1){
+                   if(lp.size()>0){
                        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"page\":"+lp.get(0)+",\"eles\":"+itemService.getele4page(lp.get(0).getId())+"}";
 
                    }else {
@@ -997,12 +997,12 @@ if(step.isEmpty()||pagename.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmp
 
 
     int  a   =  itemService.addStep(step,pagename,catid,cid,value,eid,ename);
-    new Thread(new Runnable() {
-        @Override
-        public void run() {
-            caseService.zhengliStep(cid);
-        }
-    }).start();
+//    new Thread(new Runnable() {
+//        @Override
+//        public void run() {
+//            caseService.zhengliStep(cid);
+//        }
+//    }).start();
 
 
 
