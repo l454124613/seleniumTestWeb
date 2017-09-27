@@ -24,6 +24,7 @@ public class SocketProxy {
         System.out.println("listening port:"+listenPort+"……");
         System.out.println();
         System.out.println();
+        int aa=0;
 
         while (true) {
             Socket socket = null;
@@ -31,9 +32,10 @@ public class SocketProxy {
                 socket = serverSocket.accept();
                 socket.setKeepAlive(true);
                 //加入任务列表，等待处理
-                System.out.println(1);
-                tpe.execute(new ProxyTask(socket));
-
+                aa++;
+               tpe.execute(new ProxyTask(socket));
+             //   new Thread(new ProxyTask(socket)).start();
+                System.out.println(aa);
 
             } catch (Exception e) {
                 e.printStackTrace();

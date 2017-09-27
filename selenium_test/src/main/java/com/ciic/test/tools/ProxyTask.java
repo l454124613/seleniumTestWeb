@@ -1,6 +1,7 @@
 package com.ciic.test.tools;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -45,6 +46,7 @@ public class ProxyTask implements Runnable {
 
 
         StringBuilder builder=new StringBuilder();
+        String u1="";
         try {
             if(socketIn.getInetAddress().equals("/10.66.1.23")){
                 return;
@@ -65,6 +67,7 @@ public class ProxyTask implements Runnable {
             builder.append("\r\n").append("Request Port  ：" + header.getPort());
             builder.append("\r\n").append("Request url  ：" + header.getUrl());
             builder.append("\r\n").append("Request type  ：" + header.getType());
+            u1=header.getUrl();
            // builder.append("\r\n").append("header  ：" + header.toString());
 
             //如果没解析出请求请求地址和端口，则返回错误信息
@@ -75,8 +78,15 @@ public class ProxyTask implements Runnable {
             }
 
             // 查找主机和端口
+            if(header.getHost().endsWith("google.com")&&header.getPort().equals("443")){
+                Thread ot = new DataSendThread(null, osIn,false);
+                logRequestMsg("goo222");
+                return;
+            }
+
 
                 socketOut = new Socket(header.getHost(), Integer.parseInt(header.getPort()));
+
 
             socketOut.setKeepAlive(true);
             InputStream isOut = socketOut.getInputStream();
@@ -97,10 +107,28 @@ public class ProxyTask implements Runnable {
                 osOut.flush();
             }
             //读取客户端请求过来的数据转发给服务器
-            readForwardDate(isIn, osOut);
+            readForwardDate(isIn, osOut,header.getMethod().toLowerCase());
             //等待向客户端转发的线程结束
             ot.join();
-        } catch (Exception e) {
+        }catch (UnknownHostException e) {
+            logRequestMsg("err1:"+e.getLocalizedMessage());
+            if(!socketIn.isOutputShutdown()){
+                //如果还可以返回错误状态的话，返回内部错误
+                try {
+                    socketIn.getOutputStream().write(SERVERERROR.getBytes());
+                } catch (IOException e1) {}
+            }
+        }catch (ConnectException e){
+            logRequestMsg("err2:"+u1+"    "+e.getLocalizedMessage());
+            if(!socketIn.isOutputShutdown()){
+                //如果还可以返回错误状态的话，返回内部错误
+                try {
+                    socketIn.getOutputStream().write(SERVERERROR.getBytes());
+                } catch (IOException e1) {}
+            }
+        }
+        catch (Exception e) {
+            logRequestMsg("err3:"+u1+"    e:"+e.getLocalizedMessage());
             e.printStackTrace();
             if(!socketIn.isOutputShutdown()){
                 //如果还可以返回错误状态的话，返回内部错误
@@ -142,16 +170,45 @@ public class ProxyTask implements Runnable {
      * @param isIn
      * @param osOut
      */
-    private void readForwardDate(InputStream isIn, OutputStream osOut) {
+    private synchronized  void readForwardDate(InputStream isIn, OutputStream osOut,String type) {
         byte[] buffer = new byte[4096];
+        // 当前流中的最大可读数
+
+      //  int contentLength = isIn.available();
         try {
             int len;
+            int num=0;
+            String s2="";
             while ((len = isIn.read(buffer)) != -1) {
+
+
                 if (len > 0) {
+
+
                     osOut.write(buffer, 0, len);
                     osOut.flush();
+                     s2=new String(buffer,0,len);
+
+//                    System.out.println(s2);
+
+
+                 //   socketOut.shutdownOutput();
+
                 }
                 totalUpload+=len;
+                if(type.equals("post")){
+                    if(s2.contains("\r\n\r\n")){
+                        socketOut.shutdownOutput();
+                        break;
+                    }
+
+
+                } else  if(type.equals("get")){
+                    if(s2.endsWith("\r\n\r\n")){
+                        socketOut.shutdownOutput();
+                        break;
+                    }
+                }
                 if (socketIn.isClosed() || socketOut.isClosed()) {
                     break;
                 }
@@ -186,6 +243,11 @@ public class ProxyTask implements Runnable {
             try {
                 int len;
                 String re="";
+                if(isOut==null){
+                    osIn.write("HTTP/1.1 200 Connection established\r\n\r\n".getBytes());
+                    osIn.flush();
+                    return;
+                }
                 while ((len = isOut.read(buffer)) != -1) {
                     if (len > 0) {
                         // logData(buffer, 0, len);

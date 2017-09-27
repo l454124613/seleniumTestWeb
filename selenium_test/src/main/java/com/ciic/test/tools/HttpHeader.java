@@ -27,7 +27,7 @@ public final class HttpHeader {
     public static final String METHOD_POST="POST";
     public static final String METHOD_CONNECT="CONNECT";
 
-    private HttpHeader(){}
+    public HttpHeader(){}
 
     /**
      * 从数据流中读取请求头部信息，必须在放在流开启之后，任何数据读取之前
@@ -103,7 +103,7 @@ public final class HttpHeader {
            }else  if(typeT.length==1){
                type="noType";
            }else {
-               type=url;
+               type=typeT[typeT.length-1];
            }
 
 
@@ -129,7 +129,12 @@ public final class HttpHeader {
 //        if(urlt.length==)
 //      url=  [1];
 
-        url=str;
+        try {
+            url=urlt[1];
+        } catch (Exception e) {
+            //e.printStackTrace();
+            url="no_url";
+        }
 
         return method;
     }
