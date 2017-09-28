@@ -1,5 +1,6 @@
 package com.ciic.test;
 
+import com.ciic.test.tools.SocketProxy;
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.apache.tomcat.util.http.fileupload.FileUploadBase;
@@ -21,7 +22,14 @@ import javax.servlet.http.HttpServletRequest;
 public class SeleniumApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(SeleniumApplication.class, args);
+		//System.out.println(123123123);
+		try {
+			SocketProxy.main(new String[]{});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Bean

@@ -80,7 +80,7 @@ public class ProxyTask implements Runnable {
             // 查找主机和端口
             if(header.getHost().endsWith("google.com")&&header.getPort().equals("443")){
                 Thread ot = new DataSendThread(null, osIn,false);
-                logRequestMsg("goo222");
+              //  logRequestMsg("goo222");
                 return;
             }
 
@@ -152,7 +152,7 @@ public class ProxyTask implements Runnable {
             builder.append("\r\n").append("Down  Bytes  ：" + totalDownload);
             builder.append("\r\n").append("Closed Time  ：" + sdf.format(new Date()));
             builder.append("\r\n");
-            logRequestMsg(builder.toString());
+          //  logRequestMsg(builder.toString());
         }
     }
 

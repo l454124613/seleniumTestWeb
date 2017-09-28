@@ -44,6 +44,7 @@ public class SeleniumDao implements SeleniumService {
     private  List<tmp>  lt       =null;//所有用例
     private  List<tmp3> ls       =null;//所有step
     private String      seidStop ="0";
+    private String      isWin ="0";
 @Autowired
     private JdbcTemplate jdbcTemplate;
 @Autowired
@@ -88,6 +89,7 @@ private String picPath;
                 updateCaseListRes("1",caseListId);
 
             } catch (NoSuchElementException e) {
+                e.printStackTrace();
                 System.out.println("fail");
                 screenShot(driver[0],nowCaseresid[0],seriesid,caseListId,null,true);
                 updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
@@ -328,14 +330,22 @@ if(isok){
                     }
                     Step step = getStep(sid);
                     Element element = getElement(step.getEid());
-                    WebElement webElement = element2Web(element, driver[0]);//未修改提示框//TODO
+                    WebElement webElement ;//未修改提示框//TODO
+                    if(!isWin.equals("0")){
+
+                      webElement=  toWindow(driver[0],isWin,element);
+                        isWin="0";
+                    }else {
+                        webElement=element2Web(element, driver[0],false);
+                    }
                     screenShot(driver[0], nowCaseresid[0], seriesid, caseListId, webElement, false);                    //截图
                     action(webElement, step.getCatid(), driver[0], step.getValue());
                     if (!element.getToframe().equals("-1")) {
                         driver[0].switchTo().defaultContent();
                     }
                     if (!element.getTopage().equals("-1")) {
-                        toWindow( driver[0],element.getTopage());
+                       // toWindow( driver[0],element.getTopage());
+                        isWin=element.getTopage();
 
                     }
                     updateCaseListRunnum((j + 1) + "", caseListId);
@@ -354,7 +364,7 @@ if(isok){
                            nowCaseresid[0]= lt6.get(0).getValue();
                             switch (le.get(0).getType()){
                                 case "1": Element element2 = getElement(le.get(0).getB().split(":")[0]);
-                                WebElement webElement2 = element2Web(element2, driver[0]);
+                                WebElement webElement2 = element2Web(element2, driver[0],false);
                                 screenShot(driver[0], lt6.get(0).getValue(), seriesid, caseListId, webElement2, false);
                                 Object o1=action(webElement2, le.get(0).getC(), driver[0], "");
                                 boolean res=false;
@@ -714,14 +724,19 @@ if(ly.size()==0){
     private WebDriver startDriver(String tid ){
         // 创建DesiredCapabilities类的一个对象实例
         DesiredCapabilities cap=DesiredCapabilities.chrome();
+        Proxy proxy=new Proxy();
+        proxy.setHttpProxy("localhost:8102").setSslProxy("localhost:8102");
+        cap.setCapability(CapabilityType.ForSeleniumServer.AVOIDING_PROXY, true);
+        cap.setCapability(CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC, true);
 
         // 设置变量ACCEPT_SSL_CERTS的值为True
         cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
         System.setProperty("webdriver.chrome.driver", driverPath);
+        cap.setCapability(CapabilityType.PROXY, proxy);
 
         WebDriver driver = new ChromeDriver(cap);
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+       // driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
       tmp tmp= jdbcTemplate.query("select firstpageurl value from item where id ="+tid,new BeanPropertyRowMapper<>(tmp.class)).get(0);
       driver.get(tmp.getValue());
       return driver;
@@ -776,37 +791,26 @@ throw new NoSuchElementException("元素等不到");
 
     }
 
-    private WebElement element2Web(Element element,WebDriver driver) throws NoSuchElementException {
+    private WebElement element2Web(Element element,WebDriver driver,boolean isToWin) throws NoSuchElementException {
         if(!element.getToframe().equals("-1")){
-            driver.switchTo().frame(element2Web(getElement(element.getToframe()),driver));
+            driver.switchTo().frame(element2Web(getElement(element.getToframe()),driver,false));
         }
         //0:id;1:name;2:tagname;3:linktext;4:classname;5:xpath;6:css;
         WebElement webElement=null;
-        if(element.getNum().equals("0")){
+
+            By by=null;
             switch (element.getLocationMethod()){
-                case "1" :webElement=driver.findElement(By.id(element.getValue()));waitTime(element,webElement);break;
-                case "2" :webElement=driver.findElement(By.name(element.getValue()));waitTime(element,webElement);break;
-                case "3" :webElement=driver.findElement(By.tagName(element.getValue()));waitTime(element,webElement);break;
-                case "4" :webElement=driver.findElement(By.linkText(element.getValue()));waitTime(element,webElement);break;
-                case "5" :webElement=driver.findElement(By.className(element.getValue()));waitTime(element,webElement);break;
-                case "6" :webElement=driver.findElement(By.xpath(element.getValue().replace("%78","\"")));waitTime(element,webElement);break;
-                case "7" :webElement=driver.findElement(By.cssSelector(element.getValue()));waitTime(element,webElement);break;
+                case "1" :by=By.id(element.getValue());break;
+                case "2" :by=By.name(element.getValue());break;
+                case "3" :by=By.tagName(element.getValue());break;
+                case "4" :by=By.linkText(element.getValue());break;
+                case "5" :by=By.className(element.getValue());break;
+                case "6" :by=By.xpath(element.getValue().replace("%78","\""));break;
+                case "7" :by=By.cssSelector(element.getValue());break;
 
             }
-        }else {
-            int nu=Integer.parseInt(element.getNum());
-            switch (element.getLocationMethod()){
-                case "1" :webElement=driver.findElements(By.id(element.getValue())).get(nu);waitTime(element,webElement);break;
-                case "2" :webElement=driver.findElements(By.name(element.getValue())).get(nu);waitTime(element,webElement);break;
-                case "3" :webElement=driver.findElements(By.tagName(element.getValue())).get(nu);waitTime(element,webElement);break;
-                case "4" :webElement=driver.findElements(By.linkText(element.getValue())).get(nu);waitTime(element,webElement);break;
-                case "5" :webElement=driver.findElements(By.className(element.getValue())).get(nu);waitTime(element,webElement);break;
-                case "6" :webElement=driver.findElements(By.xpath(element.getValue())).get(nu);waitTime(element,webElement);break;
-                case "7" :webElement=driver.findElements(By.cssSelector(element.getValue())).get(nu);waitTime(element,webElement);break;
+            webElement=waitTime(element,by,element.getNum(),driver,isToWin);
 
-            }
-
-        }
 
 
         if (webElement!=null){
@@ -830,24 +834,77 @@ throw new NoSuchElementException("元素等不到");
 
     }
 
-  private void waitTime(Element element,WebElement webElement)   {
-        if(element.getWaitid().equals("-1")){
-            return;
-        }else {
-            if(element.getWaitid().equals("1")){
-                try {
-                    Thread.sleep(Integer.parseInt(element.getWaitvalue()));
-                } catch (InterruptedException e) {
-                    //e.printStackTrace();
-                    Thread.interrupted();
-                }
-            }else {
+  private WebElement waitTime(Element element,By by,String num,WebDriver driver,boolean isWin)   {
+        boolean isS=false;
+        int ne=0;
+        if(!num.equals("0")){
+            isS=true;
+        }
+        WebElement element1=null;
+        while (true){
+            try {
                 if(element.getWaitid().equals("2")){
-                    waitElementExist(webElement);
+
+                    if(isS){
+                        element1=   driver.findElements(by).get(Integer.parseInt(num));
+
+                    }else {
+                        element1=driver.findElement(by);
+                    }
+
+                    waitElementExist(element1);
+                    break;
+
+                }else {
+                    if (element.getWaitid().equals("1")){
+                        try {
+                            Thread.sleep(Integer.parseInt(element.getWaitvalue()));
+                        } catch (InterruptedException e) {
+                            //e.printStackTrace();
+                            Thread.interrupted();
+                        }
+                    }
+                    if(isS){
+                        element1=   driver.findElements(by).get(Integer.parseInt(num));
+
+                    }else {
+                        element1=driver.findElement(by);
+                    }
+                    break;
 
                 }
+            } catch (NumberFormatException e) {
+                break;
+
+            } catch (NoSuchElementException e) {
+                if(ne>30){
+                    throw new NoSuchElementException("no such element: Unable to locate element: {\"method\":\""+getActionName(element.getLocationMethod())+"\",\"selector\":\""+element.getValue()+"\"}");
+                }
+                ne++;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    //e1.printStackTrace();
+                }
+
+
+            }catch (StaleElementReferenceException e){
+                if(ne>30){
+                    throw new StaleElementReferenceException("stale element reference: {\"method\":\""+getActionName(element.getLocationMethod())+"\",\"selector\":\""+element.getValue()+"\"}");
+                }
+                ne++;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    //e1.printStackTrace();
+                }
             }
+
         }
+
+
+
+      return element1;
 
   }
 
@@ -938,23 +995,53 @@ private boolean exist(WebElement webElement){
 
 
 
-    public void toWindow(WebDriver driver,String topage) {
+    public WebElement toWindow(WebDriver driver,String topage,Element element) {
         String title=getTitle(topage);
-//        if(title.substring(0,2).equals("..")||title.substring(0,2).equals("。。")){
-//            return;
-//        }
-        Set<String> set= driver.getWindowHandles();
         final String[] aa = {driver.getWindowHandle()};
+        if(title.substring(0,2).equals("..")||title.substring(0,2).equals("。。")){
 
-        set.forEach(k->{
-           WebDriver driver1= driver.switchTo().window(k);
-            System.out.println(driver1.getCurrentUrl());
+            driver=  driver.switchTo().window(aa[0]);
+            return element2Web(element, driver,false);
+        }
+        Set<String> set= driver.getWindowHandles();
+
+        if(set.size()==1){
+            driver=  driver.switchTo().window(aa[0]);
+            return element2Web(element, driver,false);
+        }
+
+
+        for (String s1:set) {
+
+            WebDriver driver1= driver.switchTo().window(s1);
+            //System.out.println(driver1.getCurrentUrl());
             if(driver1.getTitle().equalsIgnoreCase(title)){
-                aa[0] =k;
+
+                if(exist(element2Web(element, driver1,true))){
+                    aa[0] =s1;
+                    break;
+
+                }
+
+            }else {
+
+                if(exist(element2Web(element, driver1,true))){
+                    aa[0] =s1;
+                    break;
+
+                }
             }
 
-        });
-        driver.switchTo().window(aa[0]);
+
+
+            
+        }
+
+
+
+      driver=  driver.switchTo().window(aa[0]);
+        return element2Web(element, driver,false);
+
     }
 
     public void closeDriver(WebDriver driver){

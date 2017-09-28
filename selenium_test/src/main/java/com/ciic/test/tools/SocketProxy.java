@@ -32,10 +32,10 @@ public class SocketProxy {
                 socket = serverSocket.accept();
                 socket.setKeepAlive(true);
                 //加入任务列表，等待处理
-                aa++;
+            //    aa++;
                tpe.execute(new ProxyTask(socket));
              //   new Thread(new ProxyTask(socket)).start();
-                System.out.println(aa);
+            //    System.out.println(aa);
 
             } catch (Exception e) {
                 e.printStackTrace();
