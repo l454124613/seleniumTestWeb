@@ -2779,7 +2779,7 @@ $('#addpageone2').click(function () {
     var eloval=$('#elo').find("option:selected").text();
     var eval=$.trim($('#eval').val());
     var chisfr=$('#chisfr').checkbox('is checked')?1:0;
-    var num=$.trim($('#enum').val())==""?"0":$.trim($('#enum').val());
+    var num=$.trim($('#enum').val())==""?"-1":$.trim($('#enum').val());
     var frame=-1;
     var window=-1;
     var waitid=-1;
@@ -4207,7 +4207,7 @@ function  updateele(a) {
     if(elements1[nn].isframe=="1"){
             $('#chisfr').checkbox('check');
     }
-    if(elements1[nn].num!="0"){
+    if(elements1[nn].num!="-1"){
         $('#enum').val(elements1[nn].num);
     }
 

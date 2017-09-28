@@ -21,6 +21,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -837,7 +838,7 @@ throw new NoSuchElementException("元素等不到");
   private WebElement waitTime(Element element,By by,String num,WebDriver driver,boolean isWin)   {
         boolean isS=false;
         int ne=0;
-        if(!num.equals("0")){
+        if(!num.equals("-1")){
             isS=true;
         }
         WebElement element1=null;
@@ -852,7 +853,11 @@ throw new NoSuchElementException("元素等不到");
                         element1=driver.findElement(by);
                     }
 
-                    waitElementExist(element1);
+                    try {
+                        waitElementExist(element1).clear();
+                    } catch (InvalidElementStateException e) {
+                        element1.getText();
+                    }
                     break;
 
                 }else {
@@ -870,6 +875,11 @@ throw new NoSuchElementException("元素等不到");
                     }else {
                         element1=driver.findElement(by);
                     }
+                    try {
+                        element1.clear();
+                    } catch (InvalidElementStateException e) {
+                        element1.getText();
+                    }
                     break;
 
                 }
@@ -878,9 +888,14 @@ throw new NoSuchElementException("元素等不到");
 
             } catch (NoSuchElementException e) {
                 if(ne>30){
-                    throw new NoSuchElementException("no such element: Unable to locate element: {\"method\":\""+getActionName(element.getLocationMethod())+"\",\"selector\":\""+element.getValue()+"\"}");
+                    throw new NoSuchElementException("no such element: Unable to locate element and wait for 30s: {\"method\":\""+getActionName(element.getLocationMethod())+"\",\"selector\":\""+element.getValue().replace("%78","\"")+"\"}");
+                }
+                if(isWin&&ne>3){
+                    throw new NoSuchElementException("no such element: Unable to locate element and wait for 3s: {\"method\":\""+getActionName(element.getLocationMethod())+"\",\"selector\":\""+element.getValue().replace("%78","\"")+"\"}");
+
                 }
                 ne++;
+                driver=driver.switchTo().window(driver.getWindowHandle());
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e1) {
@@ -890,8 +905,14 @@ throw new NoSuchElementException("元素等不到");
 
             }catch (StaleElementReferenceException e){
                 if(ne>30){
-                    throw new StaleElementReferenceException("stale element reference: {\"method\":\""+getActionName(element.getLocationMethod())+"\",\"selector\":\""+element.getValue()+"\"}");
+                    throw new StaleElementReferenceException("stale element reference and wait for 30s: {\"method\":\""+getActionName(element.getLocationMethod())+"\",\"selector\":\""+element.getValue().replace("%78","\"")+"\"}");
                 }
+                if(isWin&&ne>3){
+                    throw new StaleElementReferenceException("stale element reference and wait for 3s: {\"method\":\""+getActionName(element.getLocationMethod())+"\",\"selector\":\""+element.getValue().replace("%78","\"")+"\"}");
+
+                }
+                driver=driver.switchTo().window(driver.getWindowHandle());
+
                 ne++;
                 try {
                     Thread.sleep(1000);
@@ -910,33 +931,35 @@ throw new NoSuchElementException("元素等不到");
 
 
   private Object action(WebElement webElement,String catid,WebDriver driver,String value){
-            switch (catid){
-                case "1": click(driver,webElement);return 0;
-                case "2": webElement.clear();webElement.sendKeys(value);return 0;
 
-                case "3": webElement.clear();return 0;
-                case "4":List<tmp> lt= jdbcTemplate.query("select path value from file where id="+value,new BeanPropertyRowMapper<>(tmp.class));
+          switch (catid){
+              case "1": click(driver,webElement);return 0;
+              case "2": webElement.clear();webElement.sendKeys(value);return 0;
 
-                    webElement.sendKeys(lt.get(0).getValue());return 0;
+              case "3": webElement.clear();return 0;
+              case "4":List<tmp> lt= jdbcTemplate.query("select path value from file where id="+value,new BeanPropertyRowMapper<>(tmp.class));
 
-                case "5": driver.switchTo().alert().accept();return 0;
-                case "6": driver.switchTo().alert().dismiss();return 0;
-               // case "8": return driver.switchTo().alert().getText();
-                //case "9": webElement.click();return true;
-               // case "10": webElement.click();return true;
+                  webElement.sendKeys(lt.get(0).getValue());return 0;
+
+              case "5": driver.switchTo().alert().accept();return 0;
+              case "6": driver.switchTo().alert().dismiss();return 0;
+             // case "8": return driver.switchTo().alert().getText();
+              //case "9": webElement.click();return true;
+             // case "10": webElement.click();return true;
 
 
-                case "7": return exist(webElement);
-                case "8": return webElement.getText();
+              case "7": return exist(webElement);
+              case "8": return webElement.getText();
 //                case "14": driver.navigate().to(value);return 0;
 //                case "15": driver.navigate().back();return 0;
-                case "9": return webElement.getAttribute("value");
-                case "10": return driver.switchTo().alert().getText();
+              case "9": return webElement.getAttribute("value");
+              case "10": return driver.switchTo().alert().getText();
 
-                case "11": return webElement.isEnabled();
-                case "12": return webElement.isSelected();
-                default:return 0;
-            }
+              case "11": return webElement.isEnabled();
+              case "12": return webElement.isSelected();
+              default:return 0;
+          }
+
   }
 
   private String getOneAction(String catid){
@@ -997,6 +1020,11 @@ private boolean exist(WebElement webElement){
 
     public WebElement toWindow(WebDriver driver,String topage,Element element) {
         String title=getTitle(topage);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+
+        }
         final String[] aa = {driver.getWindowHandle()};
         if(title.substring(0,2).equals("..")||title.substring(0,2).equals("。。")){
 
@@ -1039,7 +1067,7 @@ private boolean exist(WebElement webElement){
 
 
 
-      driver=  driver.switchTo().window(aa[0]);
+             driver=  driver.switchTo().window(aa[0]);
         return element2Web(element, driver,false);
 
     }
