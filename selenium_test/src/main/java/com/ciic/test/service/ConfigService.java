@@ -43,4 +43,7 @@ public interface ConfigService {
 
     List<tmp> getOneFile(String id,String name);
 
+    //proxy
+    List<tmp> getUrls();
+
 }

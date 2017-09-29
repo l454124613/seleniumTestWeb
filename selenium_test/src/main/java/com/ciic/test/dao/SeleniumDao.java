@@ -3,6 +3,7 @@ package com.ciic.test.dao;
 import com.ciic.test.bean.*;
 import com.ciic.test.service.ConfigService;
 import com.ciic.test.service.SeleniumService;
+import com.ciic.test.tools.SocketProxy;
 import com.ciic.test.tools.mycode;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -84,6 +85,7 @@ private String picPath;
             updateCaseListStatus("2",caseListId);//正式运行
             String[] nowCaseresid={"0"};
             try {
+
                 getres(caseListId);
                 runStep(seriesid,driver,tid,caseListId,nowCaseresid,caseid);
 
@@ -313,6 +315,17 @@ if(isok){
             if(seidStop.equals(seriesid)){
                 throw new InterruptedException("运行被中断");
             }
+          //  System.out.println();
+            int nnu=0;
+            while (SocketProxy.getListnum()!=0){
+                Thread.sleep(1000);
+                nnu++;
+                System.out.println(SocketProxy.getList());
+                if(nnu>30){
+                    break;
+                }
+            }
+
             nowCaseresid[0]=    ls.get(j).getValue1();
             String sid=ls.get(j).getValue2();
             String type=ls.get(j).getValue3();

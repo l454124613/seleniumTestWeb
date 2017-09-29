@@ -187,6 +187,12 @@ public class ConfigDao implements ConfigService {
         return jdbcTemplate.query("select path value from file where isused=1 and name = ? and id=?",new Object[]{name,id},new BeanPropertyRowMapper<>(tmp.class));
     }
 
+    @Override
+    public List<tmp> getUrls() {
+        return  jdbcTemplate.query("select url value from excepturl where tid=11 and isused=1",new BeanPropertyRowMapper<>(tmp.class));
+
+    }
+
     private String set2String(Set set){
         final String[] a = {""};
         set.forEach(k->{

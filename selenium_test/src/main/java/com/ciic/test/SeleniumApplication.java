@@ -21,15 +21,17 @@ import javax.servlet.http.HttpServletRequest;
 @SpringBootApplication
 public class SeleniumApplication {
 
+
+
 	public static void main(String[] args) {
 
 		SpringApplication.run(SeleniumApplication.class, args);
 		//System.out.println(123123123);
-		try {
-			SocketProxy.main(new String[]{});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			new SocketProxy().run();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	@Bean

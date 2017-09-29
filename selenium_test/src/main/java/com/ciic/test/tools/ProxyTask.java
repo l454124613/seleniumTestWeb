@@ -1,11 +1,14 @@
 package com.ciic.test.tools;
 
+import com.ciic.test.bean.tmp;
+
 import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 将客户端发送过来的数据转发给请求的服务器端，并将服务器返回的数据转发给客户端
@@ -27,9 +30,14 @@ public class ProxyTask implements Runnable {
 
     private long totalUpload=0l;//总计上行比特数
     private long totalDownload=0l;//总计下行比特数
+    List a;
+    List b;
+    private  String url;
 
-    public ProxyTask(Socket socket) {
+    public ProxyTask(Socket socket,List a,List<tmp> b) {
         this.socketIn = socket;
+        this.a=a;
+        this.b=b;
     }
 
     private static final SimpleDateFormat sdf         =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -69,18 +77,20 @@ public class ProxyTask implements Runnable {
             builder.append("\r\n").append("Request type  ：" + header.getType());
             u1=header.getUrl();
            // builder.append("\r\n").append("header  ：" + header.toString());
-
+a.add(url=header.getUrl());
             //如果没解析出请求请求地址和端口，则返回错误信息
             if (header.getHost() == null || header.getPort() == null) {
                 osIn.write(SERVERERROR.getBytes());
                 osIn.flush();
+                a.remove(url);
                 return ;
             }
 
             // 查找主机和端口
             if(header.getHost().endsWith("google.com")&&header.getPort().equals("443")){
-                Thread ot = new DataSendThread(null, osIn,false);
+                Thread ot = new DataSendThread(null, osIn,false,a,header,b);
               //  logRequestMsg("goo222");
+                a.remove(url);
                 return;
             }
 
@@ -93,7 +103,7 @@ public class ProxyTask implements Runnable {
             OutputStream osOut = socketOut.getOutputStream();
             //新开一个线程将返回的数据转发给客户端,串行会出问题，尚没搞明白原因
 
-            Thread ot = new DataSendThread(isOut, osIn,header.getType().equals("noType"));
+            Thread ot = new DataSendThread(isOut, osIn,header.getType().equals("noType"),a,header,b);
             ot.start();
             if (header.getMethod().equals(HttpHeader.METHOD_CONNECT)) {
                 // 将已联通信号返回给请求页面
@@ -112,6 +122,7 @@ public class ProxyTask implements Runnable {
             ot.join();
         }catch (UnknownHostException e) {
             logRequestMsg("err1:"+e.getLocalizedMessage());
+            a.remove(url);
             if(!socketIn.isOutputShutdown()){
                 //如果还可以返回错误状态的话，返回内部错误
                 try {
@@ -119,6 +130,7 @@ public class ProxyTask implements Runnable {
                 } catch (IOException e1) {}
             }
         }catch (ConnectException e){
+            a.remove(url);
             logRequestMsg("err2:"+u1+"    "+e.getLocalizedMessage());
             if(!socketIn.isOutputShutdown()){
                 //如果还可以返回错误状态的话，返回内部错误
@@ -128,6 +140,7 @@ public class ProxyTask implements Runnable {
             }
         }
         catch (Exception e) {
+            a.remove(url);
             logRequestMsg("err3:"+u1+"    e:"+e.getLocalizedMessage());
             e.printStackTrace();
             if(!socketIn.isOutputShutdown()){
@@ -230,11 +243,21 @@ public class ProxyTask implements Runnable {
         private InputStream isOut;
         private OutputStream osIn;
         private boolean show;
+        private  HttpHeader header;
+        private boolean istype;
 
-        DataSendThread(InputStream isOut, OutputStream osIn,boolean isShow) {
+
+        DataSendThread(InputStream isOut, OutputStream osIn,boolean isShow,List a,HttpHeader header,List b) {
             this.isOut = isOut;
             this.osIn = osIn;
             this.show=isShow;
+            this.header=header;
+            if(header.getPort().equals("443")||!header.getType().equals("noType")||b.contains(header.getUrl())){
+                istype=true;
+            }else {
+                istype=false;
+            }
+
         }
 
         @Override
@@ -248,6 +271,10 @@ public class ProxyTask implements Runnable {
                     osIn.flush();
                     return;
                 }
+                if(istype){
+                    a.remove(url);
+                }
+
                 while ((len = isOut.read(buffer)) != -1) {
                     if (len > 0) {
                         // logData(buffer, 0, len);
@@ -263,7 +290,12 @@ public class ProxyTask implements Runnable {
                         break;
                     }
                 }
-                System.out.println(re);
+                if(!istype){
+                    a.remove(url);
+                }
+
+               // System.out.println(re);
+
             } catch (Exception e) {}
         }
     }
