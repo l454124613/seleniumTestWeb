@@ -4,6 +4,7 @@ import com.ciic.test.bean.*;
 import com.ciic.test.service.CaseService;
 import com.ciic.test.service.GetCase;
 
+import com.ciic.test.service.Proxy;
 import com.ciic.test.service.SeleniumService;
 import com.ciic.test.tools.mycode;
 import com.sun.corba.se.impl.ior.NewObjectKeyTemplateBase;
@@ -12,6 +13,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -30,6 +32,7 @@ public class Casesdao implements CaseService {
 private JdbcTemplate jdbcTemplate;
 @Autowired
 private SeleniumService seleniumService;
+
 
 private boolean iskeep=false;
 
@@ -363,7 +366,9 @@ return "0";
         isNowKeep(tid); //查看是否有等待运行
         Thread  thread=null;
         if(!isRuning(tid)&&iskeep){
+
               thread=new Thread(new Runnable() {
+
                 @Override
                 public void run() {
                     addCase4Run(tid);
@@ -595,6 +600,11 @@ if(lt3.size()==1){
     }
 
     void addCase4Run(String tid){
+
+
+
+
+
         //获得等待的系列
         List<Series> ls=   jdbcTemplate.query("SELECT * from series where isused=1 and status=1  and tid =? order by ordertime",new Object[]{tid},new BeanPropertyRowMapper<Series>(Series.class));
           //获得第一个
@@ -640,6 +650,7 @@ if(lt3.size()==1){
         if(!isRuning(tid)&&iskeep){
             addCase4Run(tid);
         }
+
     }
 
 void addCase2res(String cid,String seriesid,String[] precids) throws Exception {

@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * 将客户端发送过来的数据转发给请求的服务器端，并将服务器返回的数据转发给客户端
- *
+ *netty
  */
 public class ProxyTask implements Runnable {
     public void action(Socket socket) throws Exception {
@@ -87,7 +87,7 @@ a.add(url=header.getUrl());
             }
 
             // 查找主机和端口
-            if(header.getHost().endsWith("google.com")&&header.getPort().equals("443")){
+            if(header.getHost().endsWith("google.com")){
                 Thread ot = new DataSendThread(null, osIn,false,a,header,b);
               //  logRequestMsg("goo222");
                 a.remove(url);
@@ -184,7 +184,7 @@ a.add(url=header.getUrl());
      * @param osOut
      */
     private synchronized  void readForwardDate(InputStream isIn, OutputStream osOut,String type) {
-        byte[] buffer = new byte[4096];
+        byte[] buffer = new byte[40960];
         // 当前流中的最大可读数
 
       //  int contentLength = isIn.available();
@@ -192,8 +192,9 @@ a.add(url=header.getUrl());
             int len;
             int num=0;
             String s2="";
+            int nu1=0;
             while ((len = isIn.read(buffer)) != -1) {
-
+nu1++;
 
                 if (len > 0) {
 
@@ -226,6 +227,7 @@ a.add(url=header.getUrl());
                     break;
                 }
             }
+            System.out.println(nu1);
         } catch (Exception e) {
             try {
                 socketOut.close();// 尝试关闭远程服务器连接，中断转发线程的读阻塞状态
@@ -247,12 +249,20 @@ a.add(url=header.getUrl());
         private boolean istype;
 
 
-        DataSendThread(InputStream isOut, OutputStream osIn,boolean isShow,List a,HttpHeader header,List b) {
+        DataSendThread(InputStream isOut, OutputStream osIn,boolean isShow,List a,HttpHeader header,List<tmp> b) {
             this.isOut = isOut;
             this.osIn = osIn;
             this.show=isShow;
             this.header=header;
-            if(header.getPort().equals("443")||!header.getType().equals("noType")||b.contains(header.getUrl())){
+            boolean isu=false;
+            for(tmp t:b){
+                if(t.getValue().equals(header.getUrl())){
+                    isu=true;
+                }
+
+            }
+
+            if(header.getPort().equals("443")||!header.getType().equals("noType")||isu){
                 istype=true;
             }else {
                 istype=false;
@@ -296,7 +306,9 @@ a.add(url=header.getUrl());
 
                // System.out.println(re);
 
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                a.remove(url);
+            }
         }
     }
 

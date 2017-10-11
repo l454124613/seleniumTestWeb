@@ -1,7 +1,10 @@
 package com.ciic.test.tools;
 
 import com.ciic.test.bean.tmp;
+import com.ciic.test.dao.ConfigDao;
+import com.ciic.test.dao.ConnectDatasource;
 import com.ciic.test.service.ConfigService;
+import com.ciic.test.service.Proxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -26,12 +30,17 @@ import java.util.concurrent.Executors;
  */
 
 
-public class SocketProxy {
+public class SocketProxy   {
 
     static final int listenPort=8102;
     private static  List list=new ArrayList();
 @Autowired
-    private ConfigService configService;
+    private JdbcTemplate jdbcTemplate;
+
+private boolean isf=true;
+
+
+
 
 
     public SocketProxy() throws IOException {
@@ -75,17 +84,27 @@ public class SocketProxy {
 //        }
     }
 
-    public void  run() throws IOException {
+    public void  run()  {
+
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        ServerSocket serverSocket = new ServerSocket(listenPort);
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(listenPort);
+        } catch (IOException e) {
+           // e.printStackTrace();
+        }
+
         final ExecutorService tpe= Executors.newCachedThreadPool();
         System.out.println("Proxy Server Start At "+sdf.format(new Date()));
         System.out.println("listening port:"+listenPort+"……");
         System.out.println();
         System.out.println();
-        List<tmp> lt =configService.getUrls();
 
-        while (true) {
+List<tmp> lt=jdbcTemplate.query("select url value from excepturl where tid=11 and isused=1",new BeanPropertyRowMapper<>(tmp.class));
+
+isf=false;
+
+        while (!isf) {
             Socket socket = null;
             try {
                 socket = serverSocket.accept();
@@ -102,6 +121,13 @@ public class SocketProxy {
                 e.printStackTrace();
             }
         }
+    }
+
+
+    public void stop() {
+        isf=true;
+        System.out.println("close proxy......");
+
     }
 
 }

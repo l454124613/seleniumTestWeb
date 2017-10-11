@@ -2,6 +2,7 @@ package com.ciic.test.controller;
 
 import com.ciic.test.bean.*;
 import com.ciic.test.service.*;
+import com.ciic.test.tools.SocketProxy;
 import com.ciic.test.tools.mycode;
 import com.sun.net.httpserver.HttpsConfigurator;
 import org.apache.tomcat.util.http.fileupload.FileUploadBase;
@@ -43,6 +44,7 @@ private GetPageService getPageService;
 private CaseService caseService;
 @Autowired
 private ConfigService configService;
+
 
 @Value("${test.file.path}")
 private String filePath;

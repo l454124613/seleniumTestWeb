@@ -1,9 +1,11 @@
 package com.ciic.test;
 
+import com.ciic.test.service.Proxy;
 import com.ciic.test.tools.SocketProxy;
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.apache.tomcat.util.http.fileupload.FileUploadBase;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
@@ -17,15 +19,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @SpringBootApplication
 public class SeleniumApplication {
+@Autowired
+private Proxy proxy;
 
-
-
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		SpringApplication.run(SeleniumApplication.class, args);
+
+
 		//System.out.println(123123123);
 //		try {
 //			new SocketProxy().run();
@@ -43,7 +48,13 @@ public class SeleniumApplication {
 		factory.setMaxRequestSize("102400KB");
 		return factory.createMultipartConfig();
 	}
+@Bean
+public int proxy() throws IOException {
+		proxy.run();
 
+
+		return 1;
+}
 
 
 //	@Bean

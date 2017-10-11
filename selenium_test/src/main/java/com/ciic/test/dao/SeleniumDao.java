@@ -1,8 +1,7 @@
 package com.ciic.test.dao;
 
 import com.ciic.test.bean.*;
-import com.ciic.test.service.ConfigService;
-import com.ciic.test.service.SeleniumService;
+import com.ciic.test.service.*;
 import com.ciic.test.tools.SocketProxy;
 import com.ciic.test.tools.mycode;
 import org.apache.http.Header;
@@ -17,6 +16,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -51,6 +51,9 @@ public class SeleniumDao implements SeleniumService {
     private JdbcTemplate jdbcTemplate;
 @Autowired
 private ConfigService configService;
+
+@Autowired
+private com.ciic.test.service.Proxy proxy;
 
 @Value("${test.driver.path}")
 private String driverPath;
@@ -317,11 +320,12 @@ if(isok){
             }
           //  System.out.println();
             int nnu=0;
-            while (SocketProxy.getListnum()!=0){
+            while (proxy.getMap().size()!=0){
                 Thread.sleep(1000);
                 nnu++;
-                System.out.println(SocketProxy.getList());
+               // System.out.println(proxy.getMap());
                 if(nnu>30){
+                    proxy.getMap().clear();
                     break;
                 }
             }
