@@ -827,6 +827,28 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+    @RequestMapping("/addcase2all")
+    String addCase2All( String id,String ispass){
+        int n;
+        if (ispass.equals("1")) {
+            n = caseService.updateCanRunCase(id);
+        } else {
+            n=caseService.updateCantRunCase(id);
+        }
+
+
+        if(n==1){
+
+
+            return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+        }
+
+
+
+    }
+
 
 
     @RequestMapping("/removecasehome/{chid}")
@@ -992,6 +1014,34 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 int num=configService.clearisused();
 
                 return "{\"isok\":0,\"msg\":\"完成操作,删除"+num+"条数据。\",\"to\":\"/\"}";
+            }
+
+        }else {
+            return "{\"isok\":1,\"msg\":\"没有权限操作\",\"to\":\"/\"}";
+        }
+
+
+
+    }
+
+    @RequestMapping("/stoprunningcase")
+    String stopRunningCase(String mimi,HttpSession session){
+        if(userService.isManager(session.getAttributeNames().nextElement())){
+
+            long a=System.currentTimeMillis()/1000;
+            String b=mycode.decode(mimi);
+            long c= 0;
+            try {
+                c = Long.parseLong(b);
+            } catch (Exception e) {
+                return "{\"isok\":1,\"msg\":\"时间不对等，请不要修改url内容\",\"to\":\"/\"}";
+            }
+            if(Math.abs(a-c)>50){
+                return "{\"isok\":1,\"msg\":\"时间不对等，请不要修改url内容\",\"to\":\"/\"}";
+            }else {
+                int num=configService.stopRunCase();
+
+                return "{\"isok\":0,\"msg\":\"完成操作,处理"+num+"条数据。\",\"to\":\"/\"}";
             }
 
         }else {

@@ -11,6 +11,15 @@ public class CaseInfo {
     private String tid;
     private String type;
     private String label;
+    private String ispass;
+
+    public String getIspass() {
+        return ispass;
+    }
+
+    public void setIspass(String ispass) {
+        this.ispass = ispass;
+    }
 
     @Override
     public String toString() {
@@ -29,6 +38,8 @@ public class CaseInfo {
                 .append(type).append('\"');
         sb.append(",\"label\":\"")
                 .append(label).append('\"');
+        sb.append(",\"ispass\":\"")
+                .append(ispass).append('\"');
         sb.append('}');
         return sb.toString();
     }

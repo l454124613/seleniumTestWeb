@@ -1116,6 +1116,13 @@ function clickmanage() {
         "  </div>\n"+
         "  <div class=\"item\">\n"+
         "    <div class=\"right floated content\">\n"+
+        "      <div class=\"ui button\"  onclick='stoprunningcase()'>强制处理</div>\n"+
+        "    </div>\n"+
+
+        "   <div class=\"header\">解决运行卡住的问题</div>在运行用例和调试用例时，会出现无法退出，或强制退出后，无法再运行的问题，此处强制终止。会影响到其他正在运行的用，请确保无人在使用，才去点击。 "+
+        "  </div>\n"+
+        "  <div class=\"item\">\n"+
+        "    <div class=\"right floated content\">\n"+
         "      <div class=\"ui button disabled\">备用</div>\n"+
         "    </div>\n"+
 
@@ -1129,6 +1136,14 @@ function clickmanage() {
 
     
 
+}
+
+function stoprunningcase() {
+    $.post('/stoprunningcase',{mimi:compileStr(Date.parse(new Date())/1000+'')},function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+        alertf(o.msg);
+    });
+    
 }
 
 function clearIsused() {
@@ -2349,11 +2364,12 @@ if(cba==a){
         if(ccs.length>0){
             var re="";
             var rex="";
-var allmatch=false;
+            var allmatch=false;
             for(var i=0;i<ccs.length;i++){
                 var guodu=ccs[i].id+",'"+ccs[i].name+"'";
                 var aac=ccs[i].id+",'"+ccs[i].name+"','"+ccs[i].des+"',"+ccs[i].important+','+ccs[i].type;
                 var istype=ccs[i].type=='1';
+                var isp=ccs[i].ispass==1;
                 if(issearch){
                     var ismatch=false;
                     switch (b){
@@ -2374,11 +2390,15 @@ var allmatch=false;
                             "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookpre("+ccs[i].id+")' title=\"查看预置条件\"><i class=\"grid layout icon\"></i></button></td>\n" +
                             "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button>\n" +
                             "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
-                            "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" +
-                            //"<button class=\"ui circular basic icon button \" onclick='lookruncase("+ccs[i].id+")' title=\"查看日志\"><i class=\"record icon \"></i></button>" +
-                            "</td>\n" +
+                            "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" ;
+if(isp){
+    rex+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",2)\" title=\"从总库移除\"><i class=\" remove circle icon \"></i></button></td></tr>\n" ;
 
-                            "                    </tr>\n";
+}else {
+    rex+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",1)\" title=\"加入总库\"><i class=\" checkmark icon \"></i></button></td></tr>\n" ;
+
+}
+
                     }else {
                         re+= "                    <tr>\n" +
                             "                        <td  >N</td>\n" +
@@ -2389,11 +2409,14 @@ var allmatch=false;
                             "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookpre("+ccs[i].id+")' title=\"查看预置条件\"><i class=\"grid layout icon\"></i></button></td>\n" +
                             "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button>\n" +
                             "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
-                            "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" +
-                            //"<button class=\"ui circular basic icon button \" onclick='lookruncase("+ccs[i].id+")' title=\"查看日志\"><i class=\"record icon \"></i></button>" +
-                            "</td>\n" +
+                            "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" ;
+                        if(isp){
+                            re+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",2)\" title=\"从总库移除\"><i class=\" remove circle icon \"></i></button></td></tr>\n" ;
 
-                            "                    </tr>\n";
+                        }else {
+                            re+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",1)\" title=\"加入总库\"><i class=\" checkmark icon \"></i></button></td></tr>\n" ;
+
+                        }
                     }
 
                 }else {
@@ -2406,11 +2429,14 @@ var allmatch=false;
                         "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookpre("+ccs[i].id+")' title=\"查看预置条件\"><i class=\"grid layout icon\"></i></button></td>\n" +
                         "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button>\n" +
                         "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
-                        "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" +
-                        //"<button class=\"ui circular basic icon button \" onclick='lookruncase("+ccs[i].id+")' title=\"查看日志\"><i class=\"record icon \"></i></button>" +
-                        "</td>\n" +
+                        "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" ;
+                    if(isp){
+                        re+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",2)\" title=\"从总库移除\"><i class=\" remove circle icon \"></i></button></td></tr>\n" ;
 
-                        "                    </tr>\n";
+                    }else {
+                        re+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",1)\" title=\"加入总库\"><i class=\" checkmark icon \"></i></button></td></tr>\n" ;
+
+                    }
                 }
                 allmatch=true;
 
@@ -2426,6 +2452,24 @@ var allmatch=false;
 
     
 }
+
+function canruncase(a,b) {
+    if (confirm("你确定要这样操作吗？")) {
+        $.post('/addcase2all',{
+            id:a,
+
+            ispass:b
+        },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+
+            shuacaseinfo()
+            alertf(o.msg);
+
+        });
+
+    }
+
+    }
 
 function looklabel(a,b,c) {
 $('#labeltitle').html(b);

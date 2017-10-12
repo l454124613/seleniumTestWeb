@@ -98,9 +98,15 @@ public class ConfigDao implements ConfigService {
        int i= jdbcTemplate.update("DELETE from label where isused=0 ");
        int j= jdbcTemplate.update("DELETE FROM precondition where cid not in (SELECT id from caselist WHERE isused=1)");
        int k= jdbcTemplate.update("DELETE from series where isused =0");
+       int l= jdbcTemplate.update("DELETE from excepturl where isused =0");
 
 
-        return a+b+c+d+e+f+g+h+i+j+k;
+        return a+b+c+d+e+f+g+h+i+j+k+l;
+    }
+
+    @Override
+    public int stopRunCase() {
+        return jdbcTemplate.update("update series set status=3 where status=2");
     }
 
     @Override

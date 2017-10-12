@@ -152,6 +152,7 @@ public class aopLogin {
                     case "updateEurl":aa="修改排除的链接";
                     case "getExceptUrls":aa="获取排除的链接";
                     case "removeEurl":aa="删除排除的链接";
+                    case "addCase2All":aa="添加或移除总库用例";
 
                 }
 

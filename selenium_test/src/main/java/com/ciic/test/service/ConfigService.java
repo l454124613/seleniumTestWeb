@@ -19,8 +19,9 @@ public interface ConfigService {
     String connectDatasource(String did);
     String[] updateDate(String data);
     ResultSet selectData(String sql) throws SQLException;
-
+//con
     int clearisused();
+    int stopRunCase();
 
 //label
 

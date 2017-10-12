@@ -324,7 +324,7 @@ if(isok){
                 Thread.sleep(1000);
                 nnu++;
                // System.out.println(proxy.getMap());
-                if(nnu>30){
+                if(nnu>40){
                     proxy.getMap().clear();
                     break;
                 }
@@ -904,7 +904,7 @@ throw new NoSuchElementException("元素等不到");
                 break;
 
             } catch (NoSuchElementException e) {
-                if(ne>30){
+                if(ne>40){
                     throw new NoSuchElementException("no such element: Unable to locate element and wait for 30s: {\"method\":\""+getActionName(element.getLocationMethod())+"\",\"selector\":\""+element.getValue().replace("%78","\"")+"\"}");
                 }
                 if(isWin&&ne>3){
@@ -921,7 +921,7 @@ throw new NoSuchElementException("元素等不到");
 
 
             }catch (StaleElementReferenceException e){
-                if(ne>30){
+                if(ne>40){
                     throw new StaleElementReferenceException("stale element reference and wait for 30s: {\"method\":\""+getActionName(element.getLocationMethod())+"\",\"selector\":\""+element.getValue().replace("%78","\"")+"\"}");
                 }
                 if(isWin&&ne>3){
