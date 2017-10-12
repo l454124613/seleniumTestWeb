@@ -28,6 +28,7 @@ var int2;
 var caseresold=[];
 var labelid=0;
 var fileid=0;
+var isadd=0
 
 
 
@@ -55,22 +56,22 @@ $(document).ready(function () {
             var cc=Cookies.get('user2');
             var re="";
             if(uncompileStr(cc)=="我是管理员"){
-                window.oncontextmenu=function(e){
-//取消默认的浏览器自带右键 很重要！！
-
-                    e.preventDefault();
-
-//获取我们自定义的右键菜单
-                    var menu=document.querySelector("#menu3");
-
-//根据事件对象中鼠标点击的位置，进行定位
-                    // console.log(e)
-                    menu.style.left=(e.clientX+(document.documentElement.scrollLeft != 0 ? document.documentElement.scrollLeft : document.body.scrollLeft))+'px';
-                    menu.style.top=(e.clientY-document.body.clientHeight*0.115+(document.documentElement.scrollTop != 0 ? document.documentElement.scrollTop : document.body.scrollTop))+'px';
-
-//改变自定义菜单的宽，让它显示出来
-                    menu.style.width='125px';
-                }
+//                 window.oncontextmenu=function(e){
+// //取消默认的浏览器自带右键 很重要！！
+//
+//                     e.preventDefault();
+//
+// //获取我们自定义的右键菜单
+//                     var menu=document.querySelector("#menu3");
+//
+// //根据事件对象中鼠标点击的位置，进行定位
+//                     // console.log(e)
+//                     menu.style.left=(e.clientX+(document.documentElement.scrollLeft != 0 ? document.documentElement.scrollLeft : document.body.scrollLeft))+'px';
+//                     menu.style.top=(e.clientY-document.body.clientHeight*0.115+(document.documentElement.scrollTop != 0 ? document.documentElement.scrollTop : document.body.scrollTop))+'px';
+//
+// //改变自定义菜单的宽，让它显示出来
+//                     menu.style.width='125px';
+//                 }
                 re="<div class=\"ui pointing vertical menu overlay\">\n"+
                     "    <a class=\"item \"  id=\"manage\" onclick='clickmanage()'>管理 </a>\n"+
                     "    <div class=\"item\">\n"+
@@ -82,6 +83,7 @@ $(document).ready(function () {
                     "                <a class=\"item\" id=\"mdatasource\" onclick='clickdatasource()'>数据库设置</a>\n"+
                     "                <a class=\"item\" id=\"mlabel\" onclick='clicklabel()'>标签设置</a>\n"+
                     "                <a class=\"item\" id=\"mfile\" onclick='clickfile()'>上传文件设置</a>\n"+
+                    "                <a class=\"item\" id=\"mfile\" onclick='clickurl()'>排除URL设置</a>\n"+
                     "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
                     "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
                     "            </div>\n"+
@@ -118,22 +120,23 @@ $(document).ready(function () {
                     "    </div>\n"+
                     "    </div>\n"+
                     "</div>";
-            }else { window.oncontextmenu=function(e){
-//取消默认的浏览器自带右键 很重要！！
-
-                e.preventDefault();
-
-//获取我们自定义的右键菜单
-                var menu=document.querySelector("#menu3");
-
-//根据事件对象中鼠标点击的位置，进行定位
-                // console.log(e)
-                menu.style.left=(e.clientX+(document.documentElement.scrollLeft != 0 ? document.documentElement.scrollLeft : document.body.scrollLeft))+'px';
-                menu.style.top=(e.clientY-document.body.clientHeight*0.09+(document.documentElement.scrollTop != 0 ? document.documentElement.scrollTop : document.body.scrollTop))+'px';
-
-//改变自定义菜单的宽，让它显示出来
-                menu.style.width='125px';
-            }
+            }else {
+//                 window.oncontextmenu=function(e){
+// //取消默认的浏览器自带右键 很重要！！
+//
+//                 e.preventDefault();
+//
+// //获取我们自定义的右键菜单
+//                 var menu=document.querySelector("#menu3");
+//
+// //根据事件对象中鼠标点击的位置，进行定位
+//                 // console.log(e)
+//                 menu.style.left=(e.clientX+(document.documentElement.scrollLeft != 0 ? document.documentElement.scrollLeft : document.body.scrollLeft))+'px';
+//                 menu.style.top=(e.clientY-document.body.clientHeight*0.09+(document.documentElement.scrollTop != 0 ? document.documentElement.scrollTop : document.body.scrollTop))+'px';
+//
+// //改变自定义菜单的宽，让它显示出来
+//                 menu.style.width='125px';
+//             }
                 re="<div class=\"ui pointing vertical menu overlay\">\n"+
 
                     "    <div class=\"item\">\n"+
@@ -145,6 +148,7 @@ $(document).ready(function () {
                     "                <a class=\"item\" id=\"mdatasource\" onclick='clickdatasource()'>数据库设置</a>\n"+
                     "                <a class=\"item\" id=\"mlabel\" onclick='clicklabel()'>标签设置</a>\n"+
                     "                <a class=\"item\" id=\"mfile\" onclick='clickfile()'>上传文件设置</a>\n"+
+                    "                <a class=\"item\" id=\"mfile\" onclick='clickurl()'>排除URL设置</a>\n"+
                     "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
                     "                <!--<a class=\"item\">Subsection 1</a>-->\n"+
                     "            </div>\n"+
@@ -235,7 +239,8 @@ function showidea(a) {
 
 function showhelp(a) {
     if(a=='1'){
-        window.open("/html/help.html");
+        //TODO
+        window.open("/html/helpme.html");
     }else {
         window.open("/html/helpme.html");
     }
@@ -302,6 +307,140 @@ function base( table,num,addmethod,addname,tableid,ss) {
     // console.log(ss==='2a2');
     // console.log(ss);
     return re;
+    
+}
+
+
+function clickurl() {
+
+    if(tid<1){
+        alertf("请先选择项目~")
+
+    }else {
+        forfirstfun();
+
+        var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
+            "                        <th  >URL</th>\n" +
+
+
+            // "                        <th style=\"width: 60px\">查看用例</th>\n" +
+
+            "                        <th style=\"width: 80px\">操作按钮</th>",4,'addURL()','添加链接','urlid');
+
+
+        $('#context').html(re);
+        //    shuacasehome();
+        shuaurl();
+
+    }
+
+}
+
+function addURL() {
+    if(isadd!=0){
+        up();
+    }else {
+        $('#urlid').prepend("<tr><td>+</td><td><div class=\"ui input fluid\">\n"+
+            "  <input type=\"text\" id='inu' placeholder=\"Url\">\n"+
+            "</div></td><td><button class=\"ui  circular basic icon button\" onclick=\"updateeurl(-1)\" title=\"添加用例\"><i class=\"checkmark icon green\"></i></button>\n" +
+            "                            <button class=\"ui circular basic icon button \" onclick='shuaurl()' title=\"返回\"><i class=\"reply icon\"></i></button></td></tr>");
+        isadd=1;
+        up();
+    }
+
+
+
+
+    
+}
+function openupdateeurl(a,b) {
+    isadd=1;
+
+ var url=$(b).parent().prev().text();
+    $(b).parent().prev().html("<div class=\"ui input fluid\">\n"+
+        "  <input type=\"text\" id='inu' value='"+url+"' placeholder=\"Url\">\n"+
+        "</div>");
+    $(b).parent().html("<button class=\"ui  circular basic icon button\" onclick=\"updateeurl("+a+")\" title=\"添加用例\"><i class=\"checkmark icon green\"></i></button>\n" +
+        "                            <button class=\"ui circular basic icon button \" onclick='shuaurl()' title=\"返回\"><i class=\"reply icon\"></i></button>");
+
+
+
+}
+
+function removeeurl(a) {
+    if (confirm("你确定要删除吗？")) {  $.get('/removeeurl/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+        alertf(o.msg);
+        shuaurl();
+    });}
+
+
+}
+
+function updateeurl(a){
+    var inn=$.trim($('#inu').val());
+    if(inn!=""){
+        isadd=0;
+        if(a==-1){
+            a=0;
+
+        }
+        $.post('/updateeurl',{
+            url:inn,
+            tid:tid,
+            type:a
+        },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+
+            shuaurl();
+            alertf(o.msg);
+
+        });
+    }else {
+        alertf('输入信息不全，请检查');
+    }
+
+
+
+
+
+}
+
+function shuaurl() {
+    isadd=0;
+
+    $.get('/geurls/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+        if(o.isok!=0){
+            alertf(o.msg);
+        }else{
+            var ccs=o.urls;
+
+            if(ccs.length>0){
+                var re="";
+
+                for(var i=0;i<ccs.length;i++){
+
+                    re+= "                    <tr>\n" +
+                        "                        <td  >"+(i+1)+"</td>\n" +
+                        "                        <td  >"+ccs[i].value2+"</td>\n" +
+
+
+                        //  "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"choosecase("+cid2+")\" title=\"查看操作步骤\"><i class=\"indent icon\"></i></button></td>\n" +
+
+                        "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"openupdateeurl("+ccs[i].value+",this)\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button>\n" +
+                        "                            <button class=\"ui circular basic icon button \" onclick='removeeurl("+ccs[i].value+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
+
+
+                        "                    </tr>\n";
+                }
+                $('#urlid').html(re);
+                $('table').tablesort();
+            }else{
+                $('#urlid').html('无相关信息');
+            }
+        }
+    });
     
 }
 
@@ -1337,7 +1476,7 @@ function changeyu1() {
     $('#yuid').html(re);
 
 
-    $.get('/getcase/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/getcase/2/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         var cc=o.cases;
         var v1="";
@@ -2193,7 +2332,7 @@ function contains(a,b) {
 }
 
 function shuacaseinfo(a,b) {
-$.get('/getcase/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+$.get('/getcase/1/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
     var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
     if(o.isok!=0){
         alertf(o.msg);
@@ -2235,7 +2374,7 @@ var allmatch=false;
                             "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookpre("+ccs[i].id+")' title=\"查看预置条件\"><i class=\"grid layout icon\"></i></button></td>\n" +
                             "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button>\n" +
                             "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
-                            "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" +
+                            "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" +
                             //"<button class=\"ui circular basic icon button \" onclick='lookruncase("+ccs[i].id+")' title=\"查看日志\"><i class=\"record icon \"></i></button>" +
                             "</td>\n" +
 
@@ -3833,7 +3972,7 @@ function checkimp(a) {
 }
 function shuatestcase(type,a) {
     if(type==-1){
-        $.get('/getcase/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        $.get('/getcase/2/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             if(o.isok!=0){
                 alertf(o.msg);
@@ -3892,7 +4031,7 @@ function shuatestcase(type,a) {
             }
         });
     }else {
-        $.get('/getcase/t'+type,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        $.get('/getcase/2/t'+type,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             if(o.isok!=0){
                 alertf(o.msg);

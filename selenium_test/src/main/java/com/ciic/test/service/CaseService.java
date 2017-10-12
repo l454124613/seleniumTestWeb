@@ -10,7 +10,10 @@ import java.util.List;
 public interface CaseService {
     List<Thread> getCases();
 
-List<CaseInfo> getcase(String tid);
+List<CaseInfo> getcase(String tid,boolean isall);
+
+int updateCanRunCase(String id);
+int updateCantRunCase(String id);
 
 int updatecase(String id ,String name ,String des,String important);
 

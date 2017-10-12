@@ -46,4 +46,10 @@ public interface ConfigService {
     //proxy
     List<tmp> getUrls();
 
+    //URLS
+    List<tmp> getExceptUrls(String tid);
+    int addExceptUrl(String url,String tid);
+    int updateExceptUrl(String url,String id);
+    int removeExceptUrl(String id);
+
 }

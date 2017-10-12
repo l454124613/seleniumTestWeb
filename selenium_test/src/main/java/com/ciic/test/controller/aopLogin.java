@@ -148,7 +148,10 @@ public class aopLogin {
                     case "getfile":aa="查看上传文件";break;
                     case "upload":aa="上传文件";break;
                     case "testDownload":aa="下载文件";break;
-                    case "removeFile":aa="删除文件";break;
+                    case "removeFile":aa="删除文件";
+                    case "updateEurl":aa="修改排除的链接";
+                    case "getExceptUrls":aa="获取排除的链接";
+                    case "removeEurl":aa="删除排除的链接";
 
                 }
 

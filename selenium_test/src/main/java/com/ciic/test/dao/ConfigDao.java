@@ -193,6 +193,27 @@ public class ConfigDao implements ConfigService {
 
     }
 
+    @Override
+    public List<tmp> getExceptUrls(String tid) {
+        return jdbcTemplate.query("select id value,url value2 from excepturl where tid=? and isused=1",new Object[]{tid},new BeanPropertyRowMapper<>(tmp.class));
+    }
+
+    @Override
+    public int addExceptUrl(String url, String tid) {
+        return jdbcTemplate.update("INSERT INTO excepturl ( \"url\", \"tid\", \"isused\") VALUES ( ?, ?, 1)",mycode.prase2(new Object[]{url,tid}));
+
+    }
+
+    @Override
+    public int updateExceptUrl(String url, String id) {
+        return jdbcTemplate.update("UPDATE excepturl SET \"url\"=?   WHERE id=?",mycode.prase2(new Object[]{url,id}));
+    }
+
+    @Override
+    public int removeExceptUrl(String id) {
+        return jdbcTemplate.update("UPDATE excepturl SET  \"isused\"=0   WHERE id=?",new Object[]{id});
+    }
+
     private String set2String(Set set){
         final String[] a = {""};
         set.forEach(k->{

@@ -85,9 +85,6 @@ private Map<String,Thread> map4thread=new HashMap();
               }else {
                   return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
               }
-
-
-
     }
 
 
@@ -368,6 +365,7 @@ if(file1.exists()){
         }
 
     }
+
     @RequestMapping("/getslog")
     String getsLog(HttpSession session){
         if(userService.isManager(session.getAttributeNames().nextElement())){
@@ -406,6 +404,18 @@ if(file1.exists()){
 
     }
 
+    @RequestMapping("/geurls/{item}")
+    String getExceptUrls(@PathVariable String item){
+
+
+            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"urls\":"+configService.getExceptUrls(item)+"}";
+
+
+
+
+
+    }
+
     @RequestMapping("/getfile/{item}")
     String getfile(@PathVariable String item,HttpSession session){
         String uid=session.getAttributeNames().nextElement();
@@ -425,6 +435,28 @@ if(file1.exists()){
     String updateLogStatus(@PathVariable String lid){
           int a=  configService.updateLogStatus(lid);
 
+
+
+        if(a==1){
+            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"修改成功\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"修改失败\",\"to\":\"/\"}";
+        }
+
+
+
+    }
+
+    @RequestMapping("/updateeurl")
+    String updateEurl(String url,String tid,String type){
+
+        int a;
+        if (type.equals("0")) {
+            a=configService.addExceptUrl(url,tid);
+
+        } else {
+            a = configService.updateExceptUrl(url,type);
+        }
 
 
         if(a==1){
@@ -565,9 +597,9 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
     }
 
 
-    @RequestMapping("/getcase/{tid}")
-String getcase(@PathVariable String tid){
-        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"cases\":"+caseService.getcase(tid)+"}";
+    @RequestMapping("/getcase/{all}/{tid}")
+String getcase(@PathVariable String tid,@PathVariable String all){
+        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"cases\":"+caseService.getcase(tid,all.equals("1")?true:false)+"}";
     }
 
     @RequestMapping("/getcasereslist/{seriesid}")
@@ -800,6 +832,24 @@ String getcase(@PathVariable String tid){
     @RequestMapping("/removecasehome/{chid}")
     String removeCaseHome( @PathVariable String chid){
         int n=  caseService.removeCaseHome(chid);
+
+
+        if(n==1){
+
+
+            return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+        }
+
+
+
+    }
+
+
+    @RequestMapping("/removeeurl/{euid}")
+    String removeEurl( @PathVariable String euid){
+        int n=  configService.removeExceptUrl(euid);
 
 
         if(n==1){

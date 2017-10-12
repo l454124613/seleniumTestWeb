@@ -52,7 +52,7 @@ return list;
     }
 
     @Override
-    public List<CaseInfo> getcase(String tid) {
+    public List<CaseInfo> getcase(String tid,boolean isall) {
         if (tid.charAt(0)=='t'){
             String id=tid.replace("t","");
 
@@ -68,9 +68,25 @@ return list;
         }
 
         }else
+            if(isall){
+                return  jdbcTemplate.query("select * from caselist where tid=? and isused=1 " ,mycode.prase(new Object[]{tid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
 
-        return  jdbcTemplate.query("select * from caselist where tid=? and isused=1" ,mycode.prase(new Object[]{tid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
+            }else {
+                return  jdbcTemplate.query("select * from caselist where tid=? and isused=1 and ispass=1" ,mycode.prase(new Object[]{tid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
 
+            }
+
+
+    }
+
+    @Override
+    public int updateCanRunCase(String id) {
+        return jdbcTemplate.update("UPDATE caselist set ispass=1 where id=?",new Object[]{id});
+    }
+
+    @Override
+    public int updateCantRunCase(String id) {
+        return jdbcTemplate.update("UPDATE caselist set ispass=0 where id=?",new Object[]{id});
     }
 
     @Override
