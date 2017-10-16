@@ -619,18 +619,18 @@ private Header[] getheaders(String head){
                  }
                 if (isok){
                      if(res.split("\\$\\$\\$666").length>3){
-                         updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                         updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
 
                      }else {
 
-                         updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                         updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
                          throw  new MyException("");
 
                      }
 
 
                 }else {
-                    updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                    updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
                     throw  new MyException("");
 
                 }
@@ -665,15 +665,15 @@ private Header[] getheaders(String head){
                  }
                  if (isok){
                      if(res.split("\\$\\$\\$666").length>4){
-                         updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                         updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
 
                      }else {
-                         updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                         updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
                          throw  new MyException("");
                      }
 
                  }else {
-                     updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue(),resid);
+                     updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
                      throw  new MyException("");
 
                  }

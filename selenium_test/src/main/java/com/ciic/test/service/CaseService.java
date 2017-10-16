@@ -27,6 +27,8 @@ int removeStep(String id);
 String getPid(String sid);
 String getTopage(String sid);
 
+int copyCase(String mid,String yid);
+
 void zhengliStep(String cid);
 
 String getNowPage(String sid);

@@ -157,6 +157,36 @@ return list;
     }
 
     @Override
+    public int copyCase(String mid, String yid) {
+      List<CaseInfo> lc=  jdbcTemplate.query("select * from caselist where id=? and isused=1",new Object[]{yid},new BeanPropertyRowMapper<>(CaseInfo.class));
+        List<CaseInfo> lc2=  jdbcTemplate.query("select * from caselist where id=? and isused=1",new Object[]{mid},new BeanPropertyRowMapper<>(CaseInfo.class));
+
+
+        if(lc.size()==0||lc2.size()==0){
+          return 0;
+      }else {
+          if(lc.get(0).getType().equals("1")){
+              if(!lc2.get(0).getType().equals("1")){
+                  return 0;
+              }
+              jdbcTemplate.update("UPDATE step set isused=0 where cid=?",new Object[]{mid});
+           return    jdbcTemplate.update("INSERT INTO step ( \"pagename\", \"step\", \"catid\", \"catname\", \"cid\", \"value\", \"eid\", \"ename\", \"isused\", \"expid\") select  \"pagename\", \"step\", \"catid\", \"catname\", ?, \"value\", \"eid\", \"ename\", \"isused\", \"expid\" from step where cid =? and isused=1",new Object[]{mid,yid});
+
+          }else {
+              List<HttpCase> lh=jdbcTemplate.query("select * from httpcase where cid=?",new Object[]{yid},new BeanPropertyRowMapper<>(HttpCase.class));
+             if(lh.size()==0){
+                 return 0;
+             }else {
+                 HttpCase httpCase=lh.get(0);
+               return   jdbcTemplate.update("UPDATE httpcase SET \"type\"="+httpCase.getType()+", \"url\"='"+httpCase.getUrl()+"', \"con\"='"+httpCase.getCon()+"', \"eq\"="+httpCase.getEq()+", \"value\"='"+httpCase.getValue()+"'  WHERE cid=? ",new Object[]{mid});
+             }
+
+          }
+      }
+       // return jdbcTemplate.update("INSERT into step");
+    }
+
+    @Override
     public void zhengliStep(String cid) {
        List<Step> ls= jdbcTemplate.query("select * from step where cid=? and isused=1 order by step",mycode.prase(new Object[]{cid}),new BeanPropertyRowMapper<Step>(Step.class));
        for (int i=0;i<ls.size();i++){

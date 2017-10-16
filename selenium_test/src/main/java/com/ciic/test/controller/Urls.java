@@ -52,7 +52,13 @@ private String filePath;
 private Map<String,Thread> map4thread=new HashMap();
 
 
-
+    /**
+     *
+     * @param session
+     * @param user
+     * @return
+     * @throws UnsupportedEncodingException
+     */
     @RequestMapping("/login" )
     String login(HttpSession session,String user) throws UnsupportedEncodingException {
 
@@ -76,6 +82,11 @@ private Map<String,Thread> map4thread=new HashMap();
 
     }
 
+    /**
+     *
+     * @param session
+     * @return
+     */
     @RequestMapping("/getuser" )
     String getuser(HttpSession session){
       String u2=  session.getAttributeNames().nextElement();
@@ -87,7 +98,15 @@ private Map<String,Thread> map4thread=new HashMap();
               }
     }
 
-
+    /**
+     *
+     * @param session
+     * @param name
+     * @param url
+     * @param users
+     * @param type
+     * @return
+     */
     @RequestMapping("/additem" )
     String additem(HttpSession session,String name,String url,String users,String type){
         if(userService.isManager(session.getAttributeNames().nextElement()) &&!name.isEmpty()&&!url.isEmpty()&&!type.isEmpty()){
@@ -150,7 +169,16 @@ private Map<String,Thread> map4thread=new HashMap();
     }
 
 
-
+    /**
+     *
+     * @param session
+     * @param name
+     * @param email
+     * @param ismanager
+     * @param type
+     * @param ispass
+     * @return
+     */
     @RequestMapping("/adduser" )
     String adduser(HttpSession session,String name,String email,String ismanager,String type,String ispass){
         String u2=  session.getAttributeNames().nextElement();
@@ -182,6 +210,12 @@ private Map<String,Thread> map4thread=new HashMap();
         return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
     }
 
+    /**
+     *
+     * @param session
+     * @param id
+     * @return
+     */
     @RequestMapping("/removeuser/{id}" )
     String removeuser(HttpSession session,@PathVariable String id){
         String u2=  session.getAttributeNames().nextElement();
@@ -202,7 +236,12 @@ private Map<String,Thread> map4thread=new HashMap();
             return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
     }
 
-
+    /**
+     *
+     * @param session
+     * @param id
+     * @return
+     */
     @RequestMapping("/removeitem/{id}" )
     String removeitem(HttpSession session,@PathVariable String id){
         String u2=  session.getAttributeNames().nextElement();
@@ -223,7 +262,13 @@ private Map<String,Thread> map4thread=new HashMap();
             return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
     }
 
-
+    /**
+     *
+     * @param res
+     * @param id
+     * @param name
+     * @param ddf
+     */
     @RequestMapping(value = "/Download/{id}/{name}/{ddf}", method = RequestMethod.GET)
      void testDownload(HttpServletResponse res,@PathVariable String id,@PathVariable String name,@PathVariable String ddf) {
         List<tmp> lt=configService.getOneFile(id,name);
@@ -269,7 +314,11 @@ private Map<String,Thread> map4thread=new HashMap();
     }
 
 
-
+    /**
+     *
+     * @param cid
+     * @return
+     */
     @RequestMapping("/test" )
     String test(String cid){
 //caseService.test(cid);
@@ -277,6 +326,12 @@ private Map<String,Thread> map4thread=new HashMap();
         return "ok";
     }
 
+    /**
+     *
+     * @param session
+     * @return
+     * @throws IOException
+     */
     @RequestMapping("/logout")
     String logout(HttpSession session) throws IOException {
        // System.out.println(session.getAttributeNames().nextElement());
@@ -286,12 +341,23 @@ private Map<String,Thread> map4thread=new HashMap();
         return "{\"isok\":0,\"msg\":\"登出成功\",\"to\":\"/\"}";
 
     }
+
+    /**
+     *
+     * @return
+     */
     @RequestMapping("/com")
     String comment(){
 
 
         return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\"}";
     }
+
+    /**
+     *
+     * @param session
+     * @return
+     */
     @RequestMapping("/gitem")
     String getItem(HttpSession session){
 
@@ -302,6 +368,14 @@ private Map<String,Thread> map4thread=new HashMap();
 
     }
 
+    /**
+     *
+     * @param file
+     * @param session
+     * @param uid
+     * @param tid
+     * @return
+     */
     @RequestMapping(value = "/upload/{uid}/{tid}", method = RequestMethod.POST)
     @ResponseBody
     public String upload(@RequestParam("file") MultipartFile file,HttpSession session,@PathVariable String uid,@PathVariable String tid) {
@@ -354,6 +428,12 @@ if(file1.exists()){
         }
     }
 
+
+    /**
+     *
+     * @param session
+     * @return
+     */
     @RequestMapping("/getlog")
     String getLog(HttpSession session){
         if(userService.isManager(session.getAttributeNames().nextElement())){
@@ -366,6 +446,12 @@ if(file1.exists()){
 
     }
 
+
+    /**
+     *
+     * @param session
+     * @return
+     */
     @RequestMapping("/getslog")
     String getsLog(HttpSession session){
         if(userService.isManager(session.getAttributeNames().nextElement())){
@@ -377,6 +463,12 @@ if(file1.exists()){
         }
 
     }
+
+    /**
+     *
+     * @param session
+     * @return
+     */
     @RequestMapping("/gitema")
     String getAllItem(HttpSession session){
         if(userService.isManager(session.getAttributeNames().nextElement())){
@@ -389,6 +481,12 @@ if(file1.exists()){
 
     }
 
+    /**
+     *
+     * @param item
+     * @param session
+     * @return
+     */
     @RequestMapping("/gpage/{item}")
     String getPage(@PathVariable String item,HttpSession session){
         if(itemService.isOwnItem(session.getAttributeNames().nextElement(),item)){
@@ -404,6 +502,11 @@ if(file1.exists()){
 
     }
 
+    /**
+     *
+     * @param item
+     * @return
+     */
     @RequestMapping("/geurls/{item}")
     String getExceptUrls(@PathVariable String item){
 
@@ -416,6 +519,12 @@ if(file1.exists()){
 
     }
 
+    /**
+     *
+     * @param item
+     * @param session
+     * @return
+     */
     @RequestMapping("/getfile/{item}")
     String getfile(@PathVariable String item,HttpSession session){
         String uid=session.getAttributeNames().nextElement();
@@ -431,6 +540,12 @@ if(file1.exists()){
 
 
     }
+
+    /**
+     *
+     * @param lid
+     * @return
+     */
     @RequestMapping("/updatelid/{lid}")
     String updateLogStatus(@PathVariable String lid){
           int a=  configService.updateLogStatus(lid);
@@ -447,6 +562,13 @@ if(file1.exists()){
 
     }
 
+    /**
+     *
+     * @param url
+     * @param tid
+     * @param type
+     * @return
+     */
     @RequestMapping("/updateeurl")
     String updateEurl(String url,String tid,String type){
 
@@ -469,7 +591,13 @@ if(file1.exists()){
 
     }
 
-
+    /**
+     *
+     * @param page
+     * @param item
+     * @param session
+     * @return
+     */
     @RequestMapping("/gele/{page}/{item}")
     String getEle(@PathVariable String page,@PathVariable String item,HttpSession session){
         if(itemService.isOwnItem(session.getAttributeNames().nextElement(),item)&&getPageService.isOwnPage(page,item)){
@@ -489,6 +617,14 @@ if(file1.exists()){
 
         }}
 
+    /**
+     *
+     * @param item
+     * @param pagename
+     * @param pagetitle
+     * @param type
+     * @return
+     */
     @RequestMapping(value = "/addpage")
     String addPage(String item,String pagename,String pagetitle,String type){
         if(item.isEmpty()||pagename.isEmpty()||pagetitle.isEmpty()||type.isEmpty()){
@@ -510,6 +646,24 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
         }
 
     }
+
+    /**
+     *
+     * @param item
+     * @param elename
+     * @param num
+     * @param type
+     * @param elelo
+     * @param elevalue
+     * @param pid
+     * @param topage
+     * @param toframe
+     * @param waitv
+     * @param waitid
+     * @param isframe
+     * @param session
+     * @return
+     */
     @RequestMapping(value = "/addele")
     String addEle(String item,String elename,String num,String type,String elelo,String elevalue,String pid,String topage,String toframe,String waitv,String waitid,String isframe,HttpSession session){
 
@@ -545,7 +699,13 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
     }
 
 
-
+    /**
+     *
+     * @param page
+     * @param session
+     * @param item
+     * @return
+     */
     @RequestMapping("/removepage/{page}/{item}")
     String removePage(@PathVariable String page,HttpSession session,@PathVariable String item){
         if(itemService.isOwnItem(session.getAttributeNames().nextElement(),item)&&getPageService.isOwnPage(page,item)){
@@ -563,6 +723,14 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
         }
     }
 
+    /**
+     *
+     * @param page
+     * @param session
+     * @param item
+     * @param ele
+     * @return
+     */
     @RequestMapping("/removeele/{ele}/{page}/{item}")
     String removeEle(@PathVariable String page,HttpSession session,@PathVariable String item,@PathVariable String ele){
         if(itemService.isOwnItem(session.getAttributeNames().nextElement(),item)&&getPageService.isOwnPage(page,item)&&getPageService.isOwnEle(page,ele)){
@@ -580,10 +748,21 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
         }
     }
 
+    /**
+     *
+     * @param tid
+     * @return
+     */
     @RequestMapping("/getlabel/{tid}")
     String getLabel(@PathVariable String tid){
         return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"labels\":"+configService.getLabel(tid)+"}";//",\"res\":" + caseService.getCaseresNum(seriesid)+
     }
+
+    /**
+     *
+     * @param tid
+     * @return
+     */
     @RequestMapping("/getusedlabel/{tid}")
     String getUsedLabel(@PathVariable String tid){
         return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"labels\":"+configService.getUsedLabel(tid)+"}";//",\"res\":" + caseService.getCaseresNum(seriesid)+
@@ -591,22 +770,43 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
 
 
     //case
+
+    /**
+     *
+     * @param seriesid
+     * @return
+     */
     @RequestMapping("/getseriesandcase/{seriesid}")
     String getSeriesAndCase(@PathVariable String seriesid){
         return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"cases\":"+caseService.getCaseresList(seriesid)+",\"series\":" + caseService.getFinishSeries(seriesid) + ",\"res\":" + caseService.getCaseres(seriesid) +"}";//",\"res\":" + caseService.getCaseresNum(seriesid)+
     }
 
-
+    /**
+     *
+     * @param tid
+     * @param all
+     * @return
+     */
     @RequestMapping("/getcase/{all}/{tid}")
 String getcase(@PathVariable String tid,@PathVariable String all){
         return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"cases\":"+caseService.getcase(tid,all.equals("1")?true:false)+"}";
     }
 
+    /**
+     *
+     * @param seriesid
+     * @return
+     */
     @RequestMapping("/getcasereslist/{seriesid}")
     String getCasereslist(@PathVariable String seriesid){
         return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"cases\":"+caseService.getCaseresList(seriesid)+"}";
     }
 
+    /**
+     *
+     * @param cid
+     * @return
+     */
     @RequestMapping("/getstep/{cid}")
     String getstep(@PathVariable String cid){
         List<Step> ls =itemService.getStep(cid);
@@ -615,6 +815,11 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+    /**
+     *
+     * @param tid
+     * @return
+     */
     @RequestMapping("/getdatasource/{tid}")
     String getDatasource(@PathVariable String tid){
 
@@ -623,7 +828,11 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
-
+    /**
+     *
+     * @param sid
+     * @return
+     */
     @RequestMapping("/getexp/{sid}")
     String getExp(@PathVariable String sid){
 
@@ -632,6 +841,11 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+    /**
+     *
+     * @param cid
+     * @return
+     */
 
     @RequestMapping("/getprecondition/{cid}")
     String getPrecondition(@PathVariable String cid){
@@ -641,7 +855,17 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
-
+    /**
+     *
+     * @param type
+     * @param sid
+     * @param a
+     * @param b
+     * @param c
+     * @param d
+     * @param e
+     * @return
+     */
 
     @RequestMapping("/updateexp")
     String updateExp(String type,String sid,String a,String b,String c,String d,String e){
@@ -666,6 +890,15 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+    /**
+     *
+     * @param type
+     * @param cid
+     * @param a
+     * @param b
+     * @param c
+     * @return
+     */
     @RequestMapping("/updatepre")
     String updatePrecondition(String type,String cid,String a,String b,String c){
         if(type.isEmpty()||cid.isEmpty()){
@@ -689,6 +922,11 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+    /**
+     *
+     * @param did
+     * @return
+     */
 
     @RequestMapping("/getdatasourceconnect/{did}")
     String getDatasourceConnect(@PathVariable String did){
@@ -697,6 +935,13 @@ String getcase(@PathVariable String tid,@PathVariable String all){
         return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"con\":\""+configService.connectDatasource(did).replace("\"","\\\"")+"\"}";
 
     }
+
+    /**
+     *
+     * @param tid
+     * @param session
+     * @return
+     */
     @RequestMapping("/getseries/{tid}")
     String getSeries(@PathVariable String tid, HttpSession session){
 
@@ -705,7 +950,11 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
-
+    /**
+     *
+     * @param sid
+     * @return
+     */
     @RequestMapping("/getpid/{sid}")
     String getpid(@PathVariable String sid){
         String value=caseService.getPid(sid);
@@ -717,6 +966,12 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+
+    /**
+     *
+     * @param sid
+     * @return
+     */
     @RequestMapping("/gettopage/{sid}")
     String gettopage(@PathVariable String sid){
         String value=caseService.getTopage(sid);
@@ -727,6 +982,12 @@ String getcase(@PathVariable String tid,@PathVariable String all){
         }
 
     }
+
+    /**
+     *
+     * @param tid
+     * @return
+     */
     @RequestMapping("/getcasehome/{tid}")
     String getCaseHome(@PathVariable String tid){
 
@@ -735,16 +996,29 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
 
     }
+
+    /**
+     *
+     * @param cid
+     * @return
+     */
     @RequestMapping("/gethttpcase/{cid}")
     String getHttpCase(@PathVariable String cid){
 
 
-        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"case\":"+ caseService.getHttpCase(cid)+"}";
+        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"cases\":"+ caseService.getHttpCase(cid)+"}";
 
 
     }
 
-
+    /**
+     *
+     * @param cid
+     * @param tid
+     * @param name
+     * @param session
+     * @return
+     */
     @RequestMapping("/testcase/{cid}/{tid}/{name}")
     String testCase(@PathVariable String cid,@PathVariable String tid,@PathVariable String name,HttpSession session){
         int n=0;
@@ -809,7 +1083,13 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
-
+    /**
+     *
+     * @param cids
+     * @param tid
+     * @param seriesName
+     * @return
+     */
         @RequestMapping("/addseries")
     String addSeries( String cids,String tid,String seriesName){
       int n=  caseService.addRunCase(seriesName,cids,tid,"2","0");
@@ -827,6 +1107,12 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+    /**
+     *
+     * @param id
+     * @param ispass
+     * @return
+     */
     @RequestMapping("/addcase2all")
     String addCase2All( String id,String ispass){
         int n;
@@ -849,7 +1135,11 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
-
+    /**
+     *
+     * @param chid
+     * @return
+     */
 
     @RequestMapping("/removecasehome/{chid}")
     String removeCaseHome( @PathVariable String chid){
@@ -868,6 +1158,11 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+    /**
+     *
+     * @param euid
+     * @return
+     */
 
     @RequestMapping("/removeeurl/{euid}")
     String removeEurl( @PathVariable String euid){
@@ -886,6 +1181,11 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping("/removefile/{id}")
     String removeFile( @PathVariable String id){
         int n=  configService.reomveFile(id);
@@ -903,6 +1203,12 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+    /**
+     *
+     * @param id
+     * @param cids
+     * @return
+     */
     @RequestMapping("/updatecids")
     String updateCids(  String id,String cids){
         int n=  caseService.updateCaseHome4cids(cids,id);
@@ -920,6 +1226,14 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+    /**
+     *
+     * @param name
+     * @param des
+     * @param tid
+     * @param type
+     * @return
+     */
     @RequestMapping("/addcasehome")
     String addCaseHome( String name,String des,String tid,String type){
         int n=0;
@@ -948,6 +1262,14 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+    /**
+     *
+     * @param name
+     * @param des
+     * @param tid
+     * @param type
+     * @return
+     */
     @RequestMapping("/addlabel")
     String addLabel( String name,String des,String tid,String type){
         int n=0;
@@ -995,7 +1317,12 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 //
 //    }
 
-
+    /**
+     *
+     * @param mimi
+     * @param session
+     * @return
+     */
     @RequestMapping("/clearisused")
     String clearIsused(String mimi,HttpSession session){
         if(userService.isManager(session.getAttributeNames().nextElement())){
@@ -1024,6 +1351,12 @@ int num=configService.clearisused();
 
     }
 
+    /**
+     *
+     * @param mimi
+     * @param session
+     * @return
+     */
     @RequestMapping("/stoprunningcase")
     String stopRunningCase(String mimi,HttpSession session){
         if(userService.isManager(session.getAttributeNames().nextElement())){
@@ -1052,6 +1385,13 @@ int num=configService.clearisused();
 
     }
 
+    /**
+     *
+     * @param id
+     * @param tid
+     * @param cid
+     * @return
+     */
     @RequestMapping("/ge4p/{id}/{tid}/{cid}")
     String geteleforpage(@PathVariable String id,@PathVariable String tid,@PathVariable String cid){
         if(id.equalsIgnoreCase("0")){
@@ -1091,6 +1431,17 @@ int num=configService.clearisused();
 
     }
 
+    /**
+     *
+     * @param step
+     * @param pagename
+     * @param catid
+     * @param cid
+     * @param value
+     * @param eid
+     * @param ename
+     * @return
+     */
     @RequestMapping("/addstep")
     String addstep( String step,String pagename,String catid,String cid,String value,String eid,String ename){
 if(step.isEmpty()||pagename.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmpty()||ename.isEmpty()){
@@ -1117,7 +1468,16 @@ if(step.isEmpty()||pagename.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmp
 }}
 
 
-
+    /**
+     *
+     * @param id
+     * @param pagename
+     * @param catid
+     * @param value
+     * @param eid
+     * @param ename
+     * @return
+     */
     @RequestMapping("/fixstep")
     String fixstep( String id,String pagename,String catid,String value,String eid,String ename){
         if(id.isEmpty()||pagename.isEmpty()||catid.isEmpty()||eid.isEmpty()||ename.isEmpty()){
@@ -1137,7 +1497,12 @@ if(step.isEmpty()||pagename.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmp
 
         }}
 
-
+    /**
+     *
+     * @param id
+     * @param labels
+     * @return
+     */
     @RequestMapping("/upatelabel")
     String updateLabel( String id,String labels){
         if(id.isEmpty()||labels.isEmpty()){
@@ -1157,7 +1522,16 @@ if(step.isEmpty()||pagename.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmp
 
         }}
 
-
+    /**
+     *
+     * @param type
+     * @param url
+     * @param con
+     * @param eq
+     * @param value
+     * @param cid
+     * @return
+     */
     @RequestMapping("/upatehttp")
     String updateHttp( String type,String url,String con,String eq,String value,String cid){
         if(cid.isEmpty()||type.isEmpty()||url.isEmpty()||eq.isEmpty()||value.isEmpty()){
@@ -1177,8 +1551,17 @@ if(step.isEmpty()||pagename.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmp
 
         }}
 
-
-@RequestMapping("/addcase")
+    /**
+     *
+     * @param name
+     * @param des
+     * @param important
+     * @param type
+     * @param tid
+     * @param elety
+     * @return
+     */
+    @RequestMapping("/addcase")
 String addcase(String name,String des,String important,String type,String tid,String elety){
        if(name.isEmpty()||important.isEmpty()||des.isEmpty()||type.isEmpty()||tid.isEmpty()||elety.isEmpty()){
            return "{\"isok\":1,\"msg\":\"信息不匹配\",\"to\":\"/\"}";
@@ -1202,6 +1585,19 @@ String addcase(String name,String des,String important,String type,String tid,St
        }
 }
 
+    /**
+     *
+     * @param name
+     * @param des
+     * @param type
+     * @param link
+     * @param dataname
+     * @param user
+     * @param pass
+     * @param tid
+     * @param id
+     * @return
+     */
     @RequestMapping("/adddatasource")
     String addDatasource(String name,String des,String type,String link,String dataname,String user,String pass,String tid,String id){
         if(name.isEmpty()||type.isEmpty()||tid.isEmpty()||link.isEmpty()||dataname.isEmpty()||user.isEmpty()||pass.isEmpty()||id.isEmpty()){
@@ -1227,11 +1623,11 @@ if(id.equalsIgnoreCase("0")){
     }
 
 
-
-
-
-
-
+    /**
+     *
+     * @param cid
+     * @return
+     */
     @RequestMapping("/removecase/{cid}")
     String removeCase(@PathVariable String cid){
        int a= caseService.removeCase(cid);
@@ -1244,6 +1640,11 @@ if(id.equalsIgnoreCase("0")){
 
     }
 
+    /**
+     *
+     * @param lid
+     * @return
+     */
     @RequestMapping("/removelabel/{lid}")
     String removeLabel(@PathVariable String lid){
         int a= configService.removeLabel(lid);
@@ -1256,6 +1657,23 @@ if(id.equalsIgnoreCase("0")){
 
     }
 
+    @RequestMapping("/copycase/{mu}/{yuan}")
+    String copyCase(@PathVariable String mu,@PathVariable String yuan){
+        int a= caseService.copyCase(mu,yuan);
+
+        if(a>0){
+            return "{\"isok\":0,\"msg\":\"复制成功\",\"to\":\"/\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"复制失败\",\"to\":\"/\"}";
+        }
+
+    }
+
+    /**
+     *
+     * @param seid
+     * @return
+     */
     @RequestMapping("/removeseries/{seid}")
     String removeSeries(@PathVariable String seid){
         int a= caseService.removeSeries(seid);
@@ -1267,6 +1685,13 @@ if(id.equalsIgnoreCase("0")){
         }
 
     }
+
+    /**
+     *
+     * @param seid
+     * @param tid
+     * @return
+     */
     @RequestMapping("/runseries/{seid}/{tid}")
     String runSeries(@PathVariable String seid,@PathVariable String tid){
         int a= caseService.updateOneseriesStatus("1","",seid);
@@ -1291,6 +1716,13 @@ if(id.equalsIgnoreCase("0")){
         }
 
     }
+
+    /**
+     *
+     * @param seid
+     * @param tid
+     * @return
+     */
     @RequestMapping("/stopseries/{seid}/{tid}")
     String stopSeries(@PathVariable String seid,@PathVariable String tid){
 
@@ -1308,6 +1740,13 @@ if(id.equalsIgnoreCase("0")){
 
 
     }
+
+    /**
+     *
+     * @param seid
+     * @param tid
+     * @return
+     */
     @RequestMapping("/pauseseries/{seid}/{tid}")
     String pauseSeries(@PathVariable String seid,@PathVariable String tid){
         int a= caseService.updateOneseriesStatus("0","",seid);
@@ -1322,7 +1761,11 @@ if(id.equalsIgnoreCase("0")){
     }
 
 
-
+    /**
+     *
+     * @param did
+     * @return
+     */
     @RequestMapping("/removedatasource/{did}")
     String removeDatasource(@PathVariable String did){
         int a= configService.removeDatasource(did);
@@ -1335,6 +1778,11 @@ if(id.equalsIgnoreCase("0")){
 
     }
 
+    /**
+     *
+     * @param sid
+     * @return
+     */
     @RequestMapping("/removestep/{sid}")
     String removestep(@PathVariable String sid){
         int a= caseService.removeStep(sid);

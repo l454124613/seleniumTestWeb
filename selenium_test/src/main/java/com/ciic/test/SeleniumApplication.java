@@ -19,6 +19,11 @@ public class SeleniumApplication {
 @Autowired
 private Proxy proxy;
 
+    /**
+     * 主要启动方法
+     * @param args
+     * @throws IOException
+     */
 	public static void main(String[] args) throws IOException {
 
 		SpringApplication.run(SeleniumApplication.class, args);
@@ -32,6 +37,11 @@ private Proxy proxy;
 //		}
 	}
 
+
+    /**
+     * 修改上传文件的大小
+     * @return
+     */
 	@Bean
 	public MultipartConfigElement multipartConfigElement() {
 		MultipartConfigFactory factory = new MultipartConfigFactory();
@@ -41,7 +51,13 @@ private Proxy proxy;
 		factory.setMaxRequestSize("102400KB");
 		return factory.createMultipartConfig();
 	}
-@Bean
+
+    /**
+     * 运行http代理
+     * @return
+     * @throws IOException
+     */
+    @Bean
 public int proxy() throws IOException {
 		proxy.run();
 

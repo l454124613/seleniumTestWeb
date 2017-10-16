@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 /**
+ * 已坏，无法使用，作为不启动web的参考
  * Created by lixuecheng on 2017/7/10.
  */
 //@SpringBootApplication
