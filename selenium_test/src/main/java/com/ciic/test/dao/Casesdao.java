@@ -169,9 +169,29 @@ return list;
               if(!lc2.get(0).getType().equals("1")){
                   return 0;
               }
-              jdbcTemplate.update("UPDATE step set isused=0 where cid=?",new Object[]{mid});
-           return    jdbcTemplate.update("INSERT INTO step ( \"pagename\", \"step\", \"catid\", \"catname\", \"cid\", \"value\", \"eid\", \"ename\", \"isused\", \"expid\") select  \"pagename\", \"step\", \"catid\", \"catname\", ?, \"value\", \"eid\", \"ename\", \"isused\", \"expid\" from step where cid =? and isused=1",new Object[]{mid,yid});
+             jdbcTemplate.update("UPDATE step set isused=0 where cid=?",new Object[]{mid});
+           int a2=    jdbcTemplate.update("INSERT INTO step ( \"pagename\", \"step\", \"catid\", \"catname\", \"cid\", \"value\", \"eid\", \"ename\", \"isused\", \"expid\") select  \"pagename\", \"step\", \"catid\", \"catname\", ?, \"value\", \"eid\", \"ename\", \"isused\", \"expid\" from step where cid =? and isused=1",new Object[]{mid,yid});
+          jdbcTemplate.update("DELETE from exp where sid in (SELECT id from step where cid=? and isused=1)",new Object[]{mid});
 
+           List<Step> ls= jdbcTemplate.query("select * from step where cid=? and isused=1",new Object[]{mid},new BeanPropertyRowMapper<>(Step.class));
+           List<Step> ls2= jdbcTemplate.query("select * from step where cid=? and isused=1",new Object[]{yid},new BeanPropertyRowMapper<>(Step.class));
+           if(ls.size()!=ls2.size()){
+               return 0;
+           }else {
+               for (int i = 0; i <ls.size() ; i++) {
+                 Expected expected=  jdbcTemplate.query("select * from exp where sid="+ls2.get(i).getId(),new BeanPropertyRowMapper<>(Expected.class)).get(0);
+                   jdbcTemplate.update("INSERT INTO exp ( \"type\", \"a\", \"b\", \"c\", \"d\", \"e\", \"isused\", \"sid\") VALUES ( "+expected.getType()+", "+expected.getA()+", "+expected.getB()+", "+expected.getC()+", "+expected.getD()+", '"+expected.getE()+"', 1, "+ls.get(i).getId()+")");
+               }
+
+
+           }
+
+
+           if(a2==0){
+    return  0;
+}else {
+    return a2;
+}
           }else {
               List<HttpCase> lh=jdbcTemplate.query("select * from httpcase where cid=?",new Object[]{yid},new BeanPropertyRowMapper<>(HttpCase.class));
              if(lh.size()==0){
@@ -371,7 +391,33 @@ return "0";
 
     @Override
     public List<Caseres> getCaseres(String seriesid) {
-        return jdbcTemplate.query("select * from caseres where listid in (SELECT id from casereslist where seriesid=?) order by listid,sid",new Object[]{seriesid},new BeanPropertyRowMapper<>(Caseres.class));
+        List<Caseres>lc= jdbcTemplate.query("select * from caseres where listid in (SELECT id from casereslist where seriesid=?) ",new Object[]{seriesid},new BeanPropertyRowMapper<>(Caseres.class));
+      int ss=lc.size();
+        List<Caseres> lc2=new ArrayList<>();
+        for (int i = lc.size()-1; i >0 ; i--) {
+
+            if(lc.get(i).getWord().equals("预期结果")){
+               lc2.add(lc.get(i));
+               lc.remove(i);
+            }else {
+                if(i==ss-1||lc2.size()==0){
+                    return lc;
+                }else {
+                    for (int j = 0; j <lc2.size() ; j++) {
+                        if(lc2.get(j).getSid().equals(lc.get(i).getSid())){
+                            lc.add(i+1,lc2.get(j));
+                            lc2.remove(j);
+                            break;
+                        }
+                    }
+
+                }
+
+            }
+
+            
+        }
+        return lc;
     }
 
     @Override
