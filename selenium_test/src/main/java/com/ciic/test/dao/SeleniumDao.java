@@ -16,8 +16,10 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +34,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -741,6 +741,18 @@ if(ly.size()==0){
     }
     private WebDriver startDriver(String tid ){
         // 创建DesiredCapabilities类的一个对象实例
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--start-maximized");
+        options.addArguments("--disable-popup-blocking");
+        options.addArguments("no-sandbox");
+        options.addArguments("disable-extensions");
+        options.addArguments("no-default-browser-check");
+
+        Map<String, Object> prefs = new HashMap<String, Object>();
+        prefs.put("credentials_enable_service", false);
+        prefs.put("profile.password_manager_enabled", false);
+        options.setExperimentalOption("prefs", prefs);
+//
         DesiredCapabilities cap=DesiredCapabilities.chrome();
         Proxy proxy=new Proxy();
         proxy.setHttpProxy("localhost:8102").setSslProxy("localhost:8102");
@@ -751,6 +763,7 @@ if(ly.size()==0){
         cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
         System.setProperty("webdriver.chrome.driver", driverPath);
         cap.setCapability(CapabilityType.PROXY, proxy);
+        cap.setCapability(ChromeOptions.CAPABILITY,options);
 
         WebDriver driver = new ChromeDriver(cap);
         driver.manage().window().maximize();
