@@ -1,69 +1,126 @@
 <!DOCTYPE html>
-<html lang="en" xmlns: xmlns:>
+<html lang="en" style="height: 100%">
 <head>
     <meta charset="UTF-8">
-    <title>自动化测试管理平台</title>
-
-    <META HTTP-EQUIV="pragma" CONTENT="no-cache">
-    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
-    <META HTTP-EQUIV="expires" CONTENT="0">
-    <meta name="renderer" content="webkit">
-
+    <title>test</title>
     <link href="../css/semantic.min.css" rel="stylesheet">
     <!--<link href="../components/dropdown.min.css" rel="stylesheet">-->
     <link href="../css/context.css" rel="stylesheet">
-
 </head>
-<body style="height: 85%;">
+<body style="height: 100%">
 
-
-<div class="ui  menu" style="position: fixed;width: 100%;z-index: 20;top: 0px;">
-    <a class="active item" href="context.html">首页 </a>
-    <div class="ui scrolling dropdown  item">
-        <input type="hidden" name="gender">
-        <div class="default text" id="chooseitem">请选择项目</div>
-        <i class="dropdown icon"></i>
-        <div class="menu" id="itemc">
-
+<div class="ui  inverted left vertical  pointing  labeled icon thin  sidebar menu">
+    <a class="item" href="context.html">
+        <i class="home icon"></i>
+        主页
+    </a>
+    <!--<a class="item" href="context.html">-->
+        <!--<i class="setting icon"></i>-->
+        <!--管理-->
+    <!--</a>-->
+    <div class="item ">
+        <b>基础设置</b>
+        <div class=" content menu">
+            <a class="item" onclick='clickdatasource()'>数据库设置</a>
+            <a class="item" onclick='clicklabel()'>标签设置</a>
+            <a class="item" onclick='clickfile()'>上传文件设置</a>
+            <a class="item" onclick='clickurl()'>排除URL设置</a>
+        </div>
+    </div>
+    <div class="item ">
+        <b>用例配置</b>
+        <div class=" content menu">
+            <a class="item" onclick='clickcasehome()'>管理用例库</a>
+            <a class="item"  onclick='clickcase()'>管理用例</a>
+            <a class="item" onclick='clickpage()'>管理页面</a>
+            <a class="item" onclick='clickelemnet()'>管理元素</a>
+        </div>
+    </div>
+    <div class="item ">
+        <b>执行操作</b>
+        <div class=" content menu">
+            <a class="item" onclick='clicktest()'>执行测试</a>
+            <a class="item" onclick='clicklook()'>查看进度</a>
 
         </div>
     </div>
-    <div class="ui inverted orange button" style="display: none;margin-left: 15px;font-size:120%" onclick="shwomenu()" id="showmenu" >显示菜单</div>
-    <div class="right menu">
-
-        <!--<h6 class="ui   icon header"><i class=" user icon"></i> name </h6>-->
-        <!--<div class=" ui icon header small"><i class="user icon big"></i></div>-->
-
-        <a class="ui item label" ><h3 id="username"></h3></a>
-        <div class="item">
-            <div class="ui primary button" id="logout">注销</div>
+    <div class="item " id="log3">
+        <b>日志信息</b>
+        <div class=" content menu">
+            <a class="item" onclick='clicklog()'>操作日志</a>
+            <a class="item" onclick='clickslog()'>报错日志</a>
 
         </div>
     </div>
+    <div class="item ">
+        <b>其他操作</b>
+        <div class=" content menu">
+            <a class="item" id='al' onclick='changealert()'>切换console提示</a>
+            <a class="item" onclick='showhelp(0)'>帮助文档</a>
+
+        </div>
+    </div>
+
 </div>
 
-<!--菜单结束-->
-<!--<div class="ui compact  message" style="margin:0 auto;text-align:center">-->
+
+
+<div class="pusher">
+
+    <div class="ui  menu" id="menu5" style="position: fixed;width: 100%;z-index: 20;top: 0px;">
+        <a class="active item" onclick="toggle()">菜单 </a>
+        <div class="ui scrolling dropdown  item" id="choosei">
+            <input type="hidden" name="gender">
+            <div class="default text" id="chooseitem">请选择项目</div>
+            <i class="dropdown icon"></i>
+            <div class="menu" id="itemc">
+
+
+            </div>
+        </div>
+        <!--<div class="ui inverted orange button" style="display: none;margin-left: 15px;font-size:120%" onclick="shwomenu()" id="showmenu" >显示菜单</div>-->
+        <div class="right menu">
+
+            <!--<h6 class="ui   icon header"><i class=" user icon"></i> name </h6>-->
+            <!--<div class=" ui icon header small"><i class="user icon big"></i></div>-->
+
+            <a class="ui item label" id="u2"  data-content=""><h3 id="username"></h3></a>
+            <div class="item">
+                <div class="ui primary button" id="logout">注销</div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--菜单结束-->
+    <!--<div class="ui compact  message" style="margin:0 auto;text-align:center">-->
     <!--<p>Get all the best inventions in your e-mail every day. Sign up now!</p>-->
-<!--</div>-->
-<div class=" main container" id="menu1" style="position: fixed;top: 50px;z-index: 1">
+    <!--</div>-->
+    <div class=" main container" id="menu1" style="position: fixed;top: 50px;z-index: 1">
 
+    </div>
+    <div id="menu3">
+        <div class="menu3">功能1</div>
+        <div class="menu3">功能2</div>
+        <div class="menu3">功能3</div>
+        <div class="menu3">功能4</div>
+        <div class="menu3">功能5</div>
+    </div>
+
+    <div class=" ui main  container"  id="menu7">
+        <div >123</div>
+        <div style="margin-top: 70px"></div>
+        <div id="context">
+            <h1 class="ui center aligned header"  style="margin-top: 10%">欢迎来到自动化测试管理平台</h1>
+        </div>
+
+
+
+
+
+    </div>
 </div>
-<div id="menu3">
-    <div class="menu3">功能1</div>
-    <div class="menu3">功能2</div>
-    <div class="menu3">功能3</div>
-    <div class="menu3">功能4</div>
-    <div class="menu3">功能5</div>
-</div>
 
-<div class=" ui main  container" id="context" style="margin-left: 200px;margin-top: 70px">
-    <h1 class="ui center aligned header" style="margin-top: 10%">欢迎来到自动化测试管理平台</h1>
-
-
-
-
-</div>
 
 <div class="ui modal " id="modal6">
     <i class="close icon"></i>
@@ -115,50 +172,50 @@
 
 
 <div class="ui modal " id="modal8">
-<i class="close icon"></i>
-<div class="header" >
-    *预置操作*
-</div>
-<div class="content" >
-    <div class="ui form">
-        <div class="inline fields">
-            <label>请选择预置操作?</label>
-            <div class="field">
-                <div class="ui radio checkbox " id="yu44">
-                    <input type="radio"  onchange="changeyu4()" checked="checked" id="yu4" name="yuzhi">
-                    <label>不使用</label>
+    <i class="close icon"></i>
+    <div class="header" >
+        *预置操作*
+    </div>
+    <div class="content" >
+        <div class="ui form">
+            <div class="inline fields">
+                <label>请选择预置操作?</label>
+                <div class="field">
+                    <div class="ui radio checkbox " id="yu44">
+                        <input type="radio"  onchange="changeyu4()" checked="checked" id="yu4" name="yuzhi">
+                        <label>不使用</label>
+                    </div>
                 </div>
-            </div>
-            <div class="field">
-                <div class="ui radio checkbox" id="yu11">
-                    <input type="radio" onchange="changeyu1()" id="yu1" name="yuzhi" >
-                    <label>用例前置</label>
+                <div class="field">
+                    <div class="ui radio checkbox" id="yu11">
+                        <input type="radio" onchange="changeyu1()" id="yu1" name="yuzhi" >
+                        <label>用例前置</label>
+                    </div>
                 </div>
-            </div>
-            <div class="field">
-                <div class="ui radio checkbox" id="yu22">
-                    <input type="radio" onchange="changeyu2()" id="yu2" name="yuzhi">
-                    <label>修改数据库数据</label>
+                <div class="field">
+                    <div class="ui radio checkbox" id="yu22">
+                        <input type="radio" onchange="changeyu2()" id="yu2" name="yuzhi">
+                        <label>修改数据库数据</label>
+                    </div>
                 </div>
-            </div>
-            <div class="field">
-                <div class="ui radio checkbox" id="yu33">
-                    <input type="radio"  onchange="changeyu3()" id="yu3" name="yuzhi">
-                    <label>接口修改数据</label>
+                <div class="field">
+                    <div class="ui radio checkbox" id="yu33">
+                        <input type="radio"  onchange="changeyu3()" id="yu3" name="yuzhi">
+                        <label>接口修改数据</label>
+                    </div>
                 </div>
-            </div>
 
+
+            </div>
+        </div>
+        <div  id="yuid">
 
         </div>
     </div>
-    <div  id="yuid">
-
+    <div class="actions">
+        <div class="ui button" id="closemodal8">取消</div>
+        <div class="ui button" id="addpageone8">确定</div>
     </div>
-</div>
-<div class="actions">
-    <div class="ui button" id="closemodal8">取消</div>
-    <div class="ui button" id="addpageone8">确定</div>
-</div>
 </div>
 
 
@@ -243,88 +300,88 @@
 </div>
 
 
-    <div class="ui modal " id="modal7">
-        <i class="close icon"></i>
-        <div class="header">
-            *数据库*
-        </div>
-        <div class="content">
-            <div class="ui form">
-                <div class="fields">
-                    <div class="six wide field">
-                        <label>名称</label>
-                        <input type="text" name="datasource[name]" id="dname" placeholder="名称">
-                    </div>
-                    <div class="twelve wide field">
-                        <label>描述</label>
-                        <input type="text" name="datasource[des]" id="ddes" placeholder="描述">
-                    </div>
+<div class="ui modal " id="modal7">
+    <i class="close icon"></i>
+    <div class="header">
+        *数据库*
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="fields">
+                <div class="six wide field">
+                    <label>名称</label>
+                    <input type="text" name="datasource[name]" id="dname" placeholder="名称">
                 </div>
-
-
-
-                <div class="field">
-
-                    <div class="fields">
-
-                        <div class="four wide field">
-                            <label>数据库类型</label>
-                            <div class="ui fluid search selection dropdown" id="sedtype">
-                                <input type="hidden" name="datasource[type]" id="dtype">
-                                <i class="dropdown icon"></i>
-                                <div class="default text">选择数据库</div>
-                                <div class="menu" >
-                                    <div class="item" data-value="1">Mysql</div>
-                                    <div class="item" data-value="2">Sqlserver</div>
-
-
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="eight wide field">
-                            <label>数据库链接</label>
-                            <input type="text" name="datasource[link]" id="dlink" placeholder="数据库链接，例如10.1.1.1:3306">
-                        </div>
-
-
-                        <div class="four wide field">
-                            <label>数据库名称</label>
-                            <input type="text" name="datasource[dataname]" id="ddname" placeholder="数据库名称">
-                        </div>
-
-
-                    </div>
-                    <div class="fields">
-
-                        <div class="eight wide field">
-                            <label>用户名</label>
-                            <input type="text" name="datasource[user]"  id="duser" placeholder="用户名">
-
-                        </div>
-
-
-                        <div class="eight wide field">
-                            <label>密码</label>
-                            <input type="password" name="datasource[pass]" id="dpass" placeholder="密码">
-                        </div>
-
-
-
-
-
-                    </div>
+                <div class="twelve wide field">
+                    <label>描述</label>
+                    <input type="text" name="datasource[des]" id="ddes" placeholder="描述">
                 </div>
             </div>
 
 
+
+            <div class="field">
+
+                <div class="fields">
+
+                    <div class="four wide field">
+                        <label>数据库类型</label>
+                        <div class="ui fluid search selection dropdown" id="sedtype">
+                            <input type="hidden" name="datasource[type]" id="dtype">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">选择数据库</div>
+                            <div class="menu" >
+                                <div class="item" data-value="1">Mysql</div>
+                                <div class="item" data-value="2">Sqlserver</div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="eight wide field">
+                        <label>数据库链接</label>
+                        <input type="text" name="datasource[link]" id="dlink" placeholder="数据库链接，例如10.1.1.1:3306">
+                    </div>
+
+
+                    <div class="four wide field">
+                        <label>数据库名称</label>
+                        <input type="text" name="datasource[dataname]" id="ddname" placeholder="数据库名称">
+                    </div>
+
+
+                </div>
+                <div class="fields">
+
+                    <div class="eight wide field">
+                        <label>用户名</label>
+                        <input type="text" name="datasource[user]"  id="duser" placeholder="用户名">
+
+                    </div>
+
+
+                    <div class="eight wide field">
+                        <label>密码</label>
+                        <input type="password" name="datasource[pass]" id="dpass" placeholder="密码">
+                    </div>
+
+
+
+
+
+                </div>
+            </div>
         </div>
-        <div class="actions">
-            <div class="ui button" id="closemodal7">取消</div>
-            <div class="ui button" id="addpageone7">确定</div>
-        </div>
+
+
     </div>
+    <div class="actions">
+        <div class="ui button" id="closemodal7">取消</div>
+        <div class="ui button" id="addpageone7">确定</div>
+    </div>
+</div>
 
 <div class="ui modal " id="modal5">
     <i class="close icon"></i>
@@ -386,32 +443,32 @@
         *项目*
     </div>
     <div class="content">
-<div class="ui form">
-    <div class="fields">
-        <div class="four wide field">
-            <label>项目名称</label>
-            <input type="text"   placeholder="项目名称" id="additemname">
-        </div>
-        <div class="twelve wide field">
-            <label>首页链接</label>
-            <div class="ui labeled input">
-                <div class="ui label">需要填写协议如：http(s):// </div>
-                <input type="text" placeholder="首页链接" id="additemurl">
-            </div>
-        </div>
-
-        </div>
         <div class="ui form">
-            <div class="field">
-                <label>参与用户</label>
-                <select multiple="" class="ui dropdown" id="seuser">
-                    <option value="">选择用户...</option>
+            <div class="fields">
+                <div class="four wide field">
+                    <label>项目名称</label>
+                    <input type="text"   placeholder="项目名称" id="additemname">
+                </div>
+                <div class="twelve wide field">
+                    <label>首页链接</label>
+                    <div class="ui labeled input">
+                        <div class="ui label">需要填写协议如：http(s):// </div>
+                        <input type="text" placeholder="首页链接" id="additemurl">
+                    </div>
+                </div>
+
+            </div>
+            <div class="ui form">
+                <div class="field">
+                    <label>参与用户</label>
+                    <select multiple="" class="ui dropdown" id="seuser">
+                        <option value="">选择用户...</option>
 
 
-                </select>
+                    </select>
+                </div>
             </div>
         </div>
-</div>
     </div>
     <div class="actions">
         <div class="ui button" id="closemodal4">取消</div>
@@ -487,14 +544,14 @@
             <div class="three wide field">
                 <label>定位方式</label>
                 <select class="ui fluid dropdown" id="elo">
-                <option value="">定位方式...</option>
-                <option value="1">id</option>
-                <option value="6">xpath</option>
-                <option value="5">classname</option>
-                <option value="4">linktext</option>
-                <option value="7">css</option>
-                <option value="2">name</option>
-                <option value="3">tagname</option>
+                    <option value="">定位方式...</option>
+                    <option value="1">id</option>
+                    <option value="6">xpath</option>
+                    <option value="5">classname</option>
+                    <option value="4">linktext</option>
+                    <option value="7">css</option>
+                    <option value="2">name</option>
+                    <option value="3">tagname</option>
 
 
                 </select>
@@ -584,7 +641,17 @@
     </div>
 </div>
 
+</body>
 
+
+<script src="../js/jquery-3.2.1.min.js" ></script>
+<script src="../js/semantic.min.js" ></script>
+<script src="../js/jquery.tablesort.min.js" ></script>
+
+<script src="../components/menu.js" ></script>
+
+<script src="../js/js.cookie.js" ></script>
+<script src="../js/context2.js"></script>
 <script  >
     function compileStr(code){ //对字符串进行加密
         var c=String.fromCharCode(code.charCodeAt(0)+code.length);
@@ -609,17 +676,78 @@
         }
         return c;   }
 </script>
+<script>
 
-<script src="../js/jquery-3.2.1.min.js" ></script>
-<script src="../js/semantic.min.js" ></script>
-<script src="../js/jquery.tablesort.min.js" ></script>
-<!--<script src="../components/dropdown.min.js" ></script>-->
-<script src="../components/menu.js" ></script>
-<!--<script src="../components/shape.js" ></script>-->
-<script src="../js/js.cookie.js" ></script>
-<script src="../js/context.js"></script>
-
+    //    $('.sidebar')
+    //        .sidebar('attach events', '.button', 'overlay').sidebar('toggle')
+    //    ;
+    //    $('.button')
+    //        .removeClass('disabled')
+    //    ;
 
 
+
+
+    function toggle() {
+        //  alert();
+        var ww=$(document.body).outerWidth(true);
+//        var v1=0;
+//        if(ww>1127){
+//            v1=1127
+//        }else if(ww>933){
+//            v1=933
+//        }else if(ww>723){
+//            v1=723
+//        }else {
+//            v1=500
+//        }
+        $('.ui.sidebar').sidebar({
+
+            dimPage : false,
+
+//            onShow: function() {
+//               // $('.ui.sidebar').css("z-index",999);
+//              //  alert(2);
+//                $('#menu5').css('width', ww-150);
+//
+//
+//            },
+            onVisible: function() {
+                // $('.ui.sidebar').css("z-index",999);
+                //  alert(2);
+//                $('.pusher').css('width', ww-150);
+//                $('#menu5').css('width', ww-150);
+                $('.pusher').animate({width:ww-152},450);
+                //   $('#menu7').animate({width:v1+"px"});
+
+
+            },
+//
+            onHide: function() {
+                // $('.ui.sidebar').css("z-index",1);
+                // alert(1);
+                //   $('.pusher').animate('width', ww);
+                $('.pusher').animate({width:ww},150);
+                //   $('#menu7').css('width', v1);
+            }
+        })
+        //            .sidebar('setting', {transition:'overlay'})
+            .sidebar('toggle');
+        setTimeout(function () {
+
+            $('.pushable').unbind("click");
+            $('.pusher').unbind("click");
+        },500);
+
+    }
+
+
+
+
+    //    $('.demo.sidebar')
+    //        .sidebar('setting', 'transition', 'overlay')
+    //        .sidebar('toggle')
+    //    ;
+</script>
 </body>
 </html>
