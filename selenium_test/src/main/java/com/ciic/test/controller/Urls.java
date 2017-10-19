@@ -379,19 +379,21 @@ private Map<String,Thread> map4thread=new HashMap();
     @RequestMapping(value = "/upload/{uid}/{tid}", method = RequestMethod.POST)
     @ResponseBody
     public String upload(@RequestParam("file") MultipartFile file,HttpSession session,@PathVariable String uid,@PathVariable String tid) {
+       String tit= itemService.getName(tid);
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH )+1;
-        File file2=new File(filePath+year+"_"+month+"/");
+        File file2=new File(filePath+tit+"/"+year+"_"+month+"/");
         if(!file2.exists()){
             file2.mkdirs();
         }
-        File file1=new File(filePath+year+"_"+month+"/"+file.getOriginalFilename());
+        File file1=new File(filePath+tit+"/"+year+"_"+month+"/"+file.getOriginalFilename());
         if (!file.isEmpty()) {
             try {
 
 if(file1.exists()){
-    file1=new File(filePath+year+"_"+month+"/"+file.getOriginalFilename()+"_"+Math.random());
+    new File(filePath+tit+"/"+year+"_"+month+"/"+System.currentTimeMillis()+'/').mkdirs();
+    file1=new File(filePath+tit+"/"+year+"_"+month+"/"+System.currentTimeMillis()+'/'+file.getOriginalFilename());
 }
                 BufferedOutputStream out = new BufferedOutputStream(
                         new FileOutputStream(file1));

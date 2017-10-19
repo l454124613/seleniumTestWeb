@@ -2,7 +2,7 @@
 <html lang="en" style="height: 100%">
 <head>
     <meta charset="UTF-8">
-    <title>test</title>
+    <title>主页</title>
     <link href="../css/semantic.min.css" rel="stylesheet">
     <!--<link href="../components/dropdown.min.css" rel="stylesheet">-->
     <link href="../css/context.css" rel="stylesheet">
@@ -55,7 +55,7 @@
     <div class="item ">
         <b>其他操作</b>
         <div class=" content menu">
-            <a class="item" id='al' onclick='changealert()'>切换console提示</a>
+            <a class="item" id='al' onclick='changealert()'>alert提示</a>
             <a class="item" onclick='showhelp(0)'>帮助文档</a>
 
         </div>
@@ -84,13 +84,33 @@
             <!--<h6 class="ui   icon header"><i class=" user icon"></i> name </h6>-->
             <!--<div class=" ui icon header small"><i class="user icon big"></i></div>-->
 
-            <a class="ui item label" id="u2"  data-content=""><h3 id="username"></h3></a>
+            <a class="ui item label" id="u2"  ><h3 id="username"></h3>
+                </a>
             <div class="item">
                 <div class="ui primary button" id="logout">注销</div>
 
             </div>
         </div>
     </div>
+<div class="ui custom  popup top left transition hidden"  style="padding-bottom: 1px;padding-left: 1px;padding-right: 1px;">
+
+
+    <div style="
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+" id="al2">
+
+    </div>
+    <div class="ui bottom attached progress hidden" >
+        <div class="bar"style="margin-top: 0px;" ></div>
+    </div>
+</div>
+
+
+
+
+
 
     <!--菜单结束-->
     <!--<div class="ui compact  message" style="margin:0 auto;text-align:center">-->

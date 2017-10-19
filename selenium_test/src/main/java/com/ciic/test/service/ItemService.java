@@ -24,6 +24,7 @@ public interface ItemService {
     int removeItemUser(String id);
     int updateItem(String name,String url,String id);
     List<user> getItemUser(String id);
+    String getName(String id);
     int addtitle(String title);
     String gerTitle(String id);
 

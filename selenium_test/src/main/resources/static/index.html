@@ -141,8 +141,13 @@ $.get('/com',function (data,status) {
                            }else {
                                Cookies.remove('user');
                            }
+                           if(
+                               uncompileStr(Cookies.get('user1')).split(name).length!=2
+                           ){
+                               Cookies.set('user1', compileStr(name));
+                           }
 
-                            Cookies.set('user1', compileStr(name));
+
                            if(uu[2]=="1"){
                                Cookies.set('user2', compileStr("我是管理员"));
                            }else {

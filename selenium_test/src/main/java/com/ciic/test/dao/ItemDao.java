@@ -150,6 +150,17 @@ public class ItemDao implements ItemService{
     }
 
     @Override
+    public String getName(String id) {
+        List<tmp> ll=  jdbcTemplate.query("Select name value from item where isused=1 and id =?",mycode.prase(new Object[]{id}),new BeanPropertyRowMapper<tmp>(tmp.class));
+        if(ll.size()>0){
+            return ll.get(0).getValue();
+        }else {
+            return "err";
+        }
+
+    }
+
+    @Override
     public String getItemUrl(String tid) {
 
        List<tmp> ll= jdbcTemplate.query("SELECT firstpageurl value from item WHERE id=? and isused=1",mycode.prase(new Object[]{tid}),new BeanPropertyRowMapper<tmp>(tmp.class));

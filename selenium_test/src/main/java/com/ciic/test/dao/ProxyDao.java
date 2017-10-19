@@ -49,7 +49,22 @@ public class ProxyDao implements Proxy{
                         List<tmp> lt=jdbcTemplate.query("select url value from excepturl where  isused=1",new BeanPropertyRowMapper<>(tmp.class));
 if(lt.size()>0){
     for (int i = 0; i <lt.size() ; i++) {
-        if(lt.get(i).getValue().equals(httpRequest.uri())){
+       String tm= httpRequest.uri();
+        String ta=lt.get(i).getValue();
+        if(ta.contains("(")&&ta.contains(")")){
+            int t1=ta.indexOf("(");
+            int t2=ta.lastIndexOf(")");
+            String tb=ta.substring(t1,t2+1);
+            String re11=ta.replace(tb,"tmppmt112233qq");
+           ta= re11.replace(".","\\.").replace("?","\\?").replace("+","\\+");
+           tb=tb.substring(1,t2-t1);
+           ta= ta.replace("tmppmt112233qq",tb);
+
+
+        }else {
+            ta=ta.replace(".","\\.").replace("?","\\?").replace("+","\\+");
+        }
+        if(httpRequest.uri().matches(ta)){
             HttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, NettyHttpProxyServer.SUCCESS1);
             ctx.writeAndFlush(response);
 

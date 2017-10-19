@@ -3,6 +3,7 @@ package com.ciic.test;
 import com.ciic.test.service.Proxy;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -38,6 +39,9 @@ private Proxy proxy;
 	}
 
 
+	@Value("${test.file.size}")
+	private String fileSize;
+
     /**
      * 修改上传文件的大小
      * @return
@@ -46,9 +50,9 @@ private Proxy proxy;
 	public MultipartConfigElement multipartConfigElement() {
 		MultipartConfigFactory factory = new MultipartConfigFactory();
 		//单个文件最大
-		factory.setMaxFileSize("10240KB"); //KB,MB
+		factory.setMaxFileSize(fileSize+"KB"); //KB,MB
 		/// 设置总上传数据总大小
-		factory.setMaxRequestSize("102400KB");
+		factory.setMaxRequestSize(fileSize+"0KB");
 		return factory.createMultipartConfig();
 	}
 
