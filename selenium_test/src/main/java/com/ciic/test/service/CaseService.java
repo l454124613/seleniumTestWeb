@@ -77,6 +77,7 @@ int updatePrecondition(String type,String cid ,String a,String b,String c);
 
     int addCaseHome(String name,String des,String tid);
     int updateCaseHome4cids(String cids,String id);
+    int setCaseHome(String id,String tid);
     List<CaseHome> getCaseHome(String tid);
     int removeCaseHome(String id);
     int updateCaseHome(String id,String name,String des);

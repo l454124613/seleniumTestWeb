@@ -9,7 +9,7 @@
 </head>
 <body style="height: 100%">
 
-<div class="ui  inverted left vertical  pointing  labeled icon thin  sidebar menu">
+<div class="ui  inverted left vertical  pointing  labeled icon thin visible sidebar menu">
     <a class="item" href="context.html">
         <i class="home icon"></i>
         主页
@@ -30,7 +30,8 @@
     <div class="item ">
         <b>用例配置</b>
         <div class=" content menu">
-            <a class="item" onclick='clickcasehome()'>管理用例库</a>
+            <div id="casehomemenu"> <a class="item" onclick='clickcasehome()'>管理版本库</a></div>
+
             <a class="item"  onclick='clickcase()'>管理用例</a>
             <a class="item" onclick='clickpage()'>管理页面</a>
             <a class="item" onclick='clickelemnet()'>管理元素</a>

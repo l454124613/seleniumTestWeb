@@ -495,8 +495,14 @@ return thread;
     }
 
     @Override
+    public int setCaseHome(String id, String tid) {
+        jdbcTemplate.update("update casehome set isnow=0 where tid=? and isused=1 ",new Object[]{tid});
+       return jdbcTemplate.update("update casehome set isnow=1 where tid=? and isused=1 and id=?",new Object[]{tid,id});
+    }
+
+    @Override
     public List<CaseHome> getCaseHome(String tid) {
-        return jdbcTemplate.query("select * from casehome where isused=1 and tid=?",new Object[]{tid},new BeanPropertyRowMapper<>(CaseHome.class));
+        return jdbcTemplate.query("select * from casehome where isused=1 and tid=? order by id desc",new Object[]{tid},new BeanPropertyRowMapper<>(CaseHome.class));
     }
 
     @Override

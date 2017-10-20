@@ -20,9 +20,21 @@ public class CaseHome {
                 .append(des).append('\"');
         sb.append(",\"cids\":\"")
                 .append(cids).append('\"');
+        sb.append(",\"isnow\":\"")
+                .append(isnow).append('\"');
         sb.append('}');
         return sb.toString();
     }
+
+    public String getIsnow() {
+        return isnow;
+    }
+
+    public void setIsnow(String isnow) {
+        this.isnow = isnow;
+    }
+
+    private String isnow;
 
     public String getId() {
         return id;

@@ -999,6 +999,26 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+    @RequestMapping("/setcasehome/{id}/{tid}")
+    String setCaseHome(@PathVariable String tid,@PathVariable String id ,HttpSession httpSession){
+
+        if(userService.isManager(httpSession.getAttributeNames().nextElement())) {
+
+            int n = caseService.setCaseHome(id, tid);
+
+
+            if (n == 1) {
+
+
+                return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+            } else {
+                return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+            }
+        }else {
+            return "{\"isok\":4,\"msg\":\"当前权限无法操作\",\"to\":\"/\"}";
+        }
+    }
+
     /**
      *
      * @param cid
