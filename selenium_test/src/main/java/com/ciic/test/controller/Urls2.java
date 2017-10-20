@@ -1,6 +1,7 @@
 package com.ciic.test.controller;
 
 import com.ciic.test.bean.*;
+import com.ciic.test.rest.RestResultResponse;
 import com.ciic.test.service.*;
 import com.ciic.test.tools.mycode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -313,10 +314,18 @@ private Map<String,Thread> map4thread=new HashMap();
      * @return
      */
     @RequestMapping("/test" )
-    String test(String cid){
+    public  RestResultResponse test(String cid){
 //caseService.test(cid);
-
-        return "ok";
+        boolean a=true;
+        if (cid.equals("1")){
+            a=false;
+        }
+//        if(a){
+//
+//        }else {
+//            throw new com.ciic.test.exception.DelectFailedException("实验",cid);
+//        }
+        return new RestResultResponse(true,"实验",cid);
     }
 
     /**

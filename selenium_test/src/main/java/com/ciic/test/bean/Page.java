@@ -1,7 +1,7 @@
 package com.ciic.test.bean;
 
 import com.ciic.test.service.GetElementService;
-import com.ciic.test.service.pageInfo.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 

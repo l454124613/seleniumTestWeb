@@ -5,7 +5,7 @@ import com.ciic.test.bean.Element;
 import com.ciic.test.bean.tmp;
 import com.ciic.test.service.GetElementService;
 import com.ciic.test.service.GetPageService;
-import com.ciic.test.service.pageInfo.*;
+
 
 import com.ciic.test.tools.mycode;
 import org.openqa.selenium.WebElement;
@@ -30,36 +30,36 @@ public class GetPageDao implements GetPageService{
     @Autowired
     private GetElementService getElementService;
 
-    @Autowired
-    private ButtonService buttonService;
-    @Autowired
-    private CheckboxService checkboxService;
-    @Autowired
-    private DialogService dialogService;
-    @Autowired
-    private RadioService radioService;
-    @Autowired
-    private SelectService selectService;
-    @Autowired
-    private TextService textService;
-    @Autowired
-    private UploadService uploadService;
-    @Autowired
-    private SwitchToService switchToService;
+//    @Autowired
+//    private ButtonService buttonService;
+//    @Autowired
+//    private CheckboxService checkboxService;
+//    @Autowired
+//    private DialogService dialogService;
+//    @Autowired
+//    private RadioService radioService;
+//    @Autowired
+//    private SelectService selectService;
+//    @Autowired
+//    private TextService textService;
+//    @Autowired
+//    private UploadService uploadService;
+//    @Autowired
+//    private SwitchToService switchToService;
 
 
 
 
 
 private List<Element> list;
-private Map<String, ButtonService> mapb;
-private Map<String, CheckboxService> mapc;
-private Map<String, DialogService> mapd;
-private Map<String, RadioService> mapr;
-private Map<String, SelectService> maps;
-private Map<String, TextService> mapt;
-private Map<String, UploadService> mapu;
-private Map<String, SwitchToService> mapsw;
+//private Map<String, ButtonService> mapb;
+//private Map<String, CheckboxService> mapc;
+//private Map<String, DialogService> mapd;
+//private Map<String, RadioService> mapr;
+//private Map<String, SelectService> maps;
+//private Map<String, TextService> mapt;
+//private Map<String, UploadService> mapu;
+//private Map<String, SwitchToService> mapsw;
 
 
     @Override
@@ -75,76 +75,76 @@ private Map<String, SwitchToService> mapsw;
         return jdbcTemplate.query("SELECT element.id,pid,num,isframe,locationMethod,value,name,lastupdatetime,updater,topage,toframe,waitid,waitvalue,page.pagename from element join page on element.pid=page.id where element.isused=1 and page.isused=1 and tid=?",new Object[]{tid},new BeanPropertyRowMapper<>(Element.class));
     }
 
-    @Override
-    public GetPageService control() {
-        Map<String, WebElement> map=     getElementService.getElements(list);
-        mapb=new HashMap<>();
-        mapc=new HashMap<>();
-        mapd=new HashMap<>();
-        mapr=new HashMap<>();
-        maps=new HashMap<>();
-        mapt=new HashMap<>();
-        mapu=new HashMap<>();
-        mapsw=new HashMap<>();
-        map.forEach((k,v)->{
-            String[] k2=  k.split("1a0a1");
-            switch (k2[1]){
-                case "0": mapb.put(k2[0],buttonService.setElemnet(v));break;
-                case "1": mapc.put(k2[0],checkboxService.setElemnet(v));break;
-                case "2": mapd.put(k2[0],dialogService);break;
-                case "3": mapr.put(k2[0],radioService.setElemnet(v));break;
-                case "4": maps.put(k2[0],selectService.setElemnet(v));break;
-                case "5": mapt.put(k2[0],textService.setElemnet(v));break;
-                case "6": mapu.put(k2[0],uploadService.setElemnet(v));break;
-                case "7": mapsw.put(k2[0],switchToService.setElement(v));break;
+//    @Override
+//    public GetPageService control() {
+//        Map<String, WebElement> map=     getElementService.getElements(list);
+//        mapb=new HashMap<>();
+//        mapc=new HashMap<>();
+//        mapd=new HashMap<>();
+//        mapr=new HashMap<>();
+//        maps=new HashMap<>();
+//        mapt=new HashMap<>();
+//        mapu=new HashMap<>();
+//        mapsw=new HashMap<>();
+//        map.forEach((k,v)->{
+//            String[] k2=  k.split("1a0a1");
+//            switch (k2[1]){
+//                case "0": mapb.put(k2[0],buttonService.setElemnet(v));break;
+//                case "1": mapc.put(k2[0],checkboxService.setElemnet(v));break;
+//                case "2": mapd.put(k2[0],dialogService);break;
+//                case "3": mapr.put(k2[0],radioService.setElemnet(v));break;
+//                case "4": maps.put(k2[0],selectService.setElemnet(v));break;
+//                case "5": mapt.put(k2[0],textService.setElemnet(v));break;
+//                case "6": mapu.put(k2[0],uploadService.setElemnet(v));break;
+//                case "7": mapsw.put(k2[0],switchToService.setElement(v));break;
+//
+//
+//            }
+//
+//        });
+//        return this;
+//    }
 
 
-            }
-
-        });
-        return this;
-    }
-
-
-    @Override
-    public Map<String, ButtonService> getbuttonmap() {
-        return mapb;
-    }
-
-    @Override
-    public Map<String, CheckboxService> getcheckboxmap() {
-        return mapc;
-    }
-
-    @Override
-    public Map<String, DialogService> getdialogmap() {
-        return mapd;
-    }
-
-    @Override
-    public Map<String, RadioService> getradiomap() {
-        return mapr;
-    }
-
-    @Override
-    public Map<String, SelectService> getselectmap() {
-        return maps;
-    }
-
-    @Override
-    public Map<String, TextService> gettextmap() {
-        return mapt;
-    }
-
-    @Override
-    public Map<String, UploadService> getuploadmap() {
-        return mapu;
-    }
-
-    @Override
-    public Map<String, SwitchToService> getFramemap() {
-        return mapsw;
-    }
+//    @Override
+//    public Map<String, ButtonService> getbuttonmap() {
+//        return mapb;
+//    }
+//
+//    @Override
+//    public Map<String, CheckboxService> getcheckboxmap() {
+//        return mapc;
+//    }
+//
+//    @Override
+//    public Map<String, DialogService> getdialogmap() {
+//        return mapd;
+//    }
+//
+//    @Override
+//    public Map<String, RadioService> getradiomap() {
+//        return mapr;
+//    }
+//
+//    @Override
+//    public Map<String, SelectService> getselectmap() {
+//        return maps;
+//    }
+//
+//    @Override
+//    public Map<String, TextService> gettextmap() {
+//        return mapt;
+//    }
+//
+//    @Override
+//    public Map<String, UploadService> getuploadmap() {
+//        return mapu;
+//    }
+//
+//    @Override
+//    public Map<String, SwitchToService> getFramemap() {
+//        return mapsw;
+//    }
 
     @Override
     public int updatePageInfoById(String tid,String pid,String pagename,String pagetitle) {
