@@ -507,7 +507,7 @@ return thread;
 
     @Override
     public int removeCaseHome(String id) {
-        return jdbcTemplate.update("update casehome set isused=0 where id=?",mycode.prase(new Object[]{id}));
+        return jdbcTemplate.update("update casehome set isused=0 where id=? and isnow=0",mycode.prase(new Object[]{id}));
     }
 
     @Override

@@ -999,6 +999,13 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
 
+    /**
+     *
+     * @param tid
+     * @param id
+     * @param httpSession
+     * @return
+     */
     @RequestMapping("/setcasehome/{id}/{tid}")
     String setCaseHome(@PathVariable String tid,@PathVariable String id ,HttpSession httpSession){
 

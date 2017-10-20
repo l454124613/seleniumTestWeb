@@ -157,6 +157,7 @@ public class aopLogin {
                     case "removeEurl":aa="删除排除的链接";
                     case "addCase2All":aa="添加或移除总库用例";
                     case "copyCase":aa="复制用例";
+                    case "setCaseHome":aa="修改版本库";
 
                 }
 
