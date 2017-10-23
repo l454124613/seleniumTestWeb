@@ -30,8 +30,7 @@ import java.util.Map;
 /**
  * Created by lixuecheng on 2017/7/4.
  */
-@RestController
-@EnableAutoConfiguration
+
 public class Urls {
     @Autowired
     private UserService userService;
@@ -59,44 +58,44 @@ private Map<String,Thread> map4thread=new HashMap();
      * @return
      * @throws UnsupportedEncodingException
      */
-    @RequestMapping("/login" )
-    String login(HttpSession session,String user) throws UnsupportedEncodingException {
-
-        String us= mycode.decode(URLDecoder.decode(user,"utf8"));
-        //System.out.println(us);
-     String[] us2=us.split("!!!");
-
-
-        if(us2.length!=2||us2[0].isEmpty()||us2[1].isEmpty()){
-            return "{\"isok\":2,\"msg\":\"failed\",\"to\":\"\"}";
-        }else {
-            int isok= userService.isUsingUser(us2[0],us2[1]);
-            if(isok==1){
-             List<user> lu= userService.selectUser(us2[0],us2[1]);
-                session.setAttribute(lu.get(0).getId(),us2[0]);
-                return "{\"isok\":0,\"msg\":\"success\",\"to\":\"/html/context.html\",\"user\":\""+mycode.encode(lu.get(0).getName()+" ???"+lu.get(0).getEmail()+" ???"+lu.get(0).getIsmanager())+"\"}";
-            }else {
-                return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
-            }
-        }
-
-    }
+//    @RequestMapping("/login" )
+//    String login(HttpSession session,String user) throws UnsupportedEncodingException {
+//
+//        String us= mycode.decode(URLDecoder.decode(user,"utf8"));
+//        //System.out.println(us);
+//     String[] us2=us.split("!!!");
+//
+//
+//        if(us2.length!=2||us2[0].isEmpty()||us2[1].isEmpty()){
+//            return "{\"isok\":2,\"msg\":\"failed\",\"to\":\"\"}";
+//        }else {
+//            int isok= userService.isUsingUser(us2[0],us2[1]);
+//            if(isok==1){
+//             List<user> lu= userService.selectUser(us2[0],us2[1]);
+//                session.setAttribute(lu.get(0).getId(),us2[0]);
+//                return "{\"isok\":0,\"msg\":\"success\",\"to\":\"/html/context.html\",\"user\":\""+mycode.encode(lu.get(0).getName()+" ???"+lu.get(0).getEmail()+" ???"+lu.get(0).getIsmanager())+"\"}";
+//            }else {
+//                return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
+//            }
+//        }
+//
+//    }
 
     /**
      *
      * @param session
      * @return
      */
-    @RequestMapping("/getuser" )
-    String getuser(HttpSession session){
-      String u2=  session.getAttributeNames().nextElement();
-
-              if(userService.isManager(u2)){
-                  return "{\"isok\":0,\"msg\":\"success\",\"to\":\"/\",\"users\":"+userService.getUser()+"}";
-              }else {
-                  return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
-              }
-    }
+//    @RequestMapping("/getuser" )
+//    String getuser(HttpSession session){
+//      String u2=  session.getAttributeNames().nextElement();
+//
+//              if(userService.isManager(u2)){
+//                  return "{\"isok\":0,\"msg\":\"success\",\"to\":\"/\",\"users\":"+userService.getUser()+"}";
+//              }else {
+//                  return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
+//              }
+//    }
 
     /**
      *
@@ -107,66 +106,66 @@ private Map<String,Thread> map4thread=new HashMap();
      * @param type
      * @return
      */
-    @RequestMapping("/additem" )
-    String additem(HttpSession session,String name,String url,String users,String type){
-        if(userService.isManager(session.getAttributeNames().nextElement()) &&!name.isEmpty()&&!url.isEmpty()&&!type.isEmpty()){
-
-            if(type.equalsIgnoreCase("0")){
-                int a1= itemService.addItem(name,url);
-                int a2=itemService.getmaxitemid();
-                String[] u2=users.split(",");
-                if(a2>0&&u2.length>0){
-                    int num4a=0;
-                    for (int i = 0; i < u2.length; i++) {
-                       num4a+= itemService.addItemUser(u2[i],a2+"");
-                    }
-                    if(num4a!=u2.length){
-                           return "{\"isok\":1,\"msg\":\"添加用户操作失败\",\"to\":\"/\"}";
-                    }
-
-                }
-                if(a1==1&&a2>0){
-
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String aa= mycode.getTitle(url);
-                            itemService.addtitle(aa);
-
-                        }
-                    }).start();
-                    return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
-                }else {
-                    return "{\"isok\":1,\"msg\":\"添加项目操作失败\",\"to\":\"/\"}";
-                }
-            }else {
-              int a=  itemService.updateItem(name,url,type);
-             int a2= itemService.removeItemUser(type);
-                String[] u2=users.split(",");
-                int num4a=0;
-                for (int i = 0; i < u2.length; i++) {
-                    num4a+=   itemService.addItemUser(u2[i],type);
-                }
-                if(num4a!=u2.length){
-                    return "{\"isok\":1,\"msg\":\"添加用户操作失败\",\"to\":\"/\"}";
-                }
-                if (a==1){
-
-                    return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
-                }else {
-                    return "{\"isok\":1,\"msg\":\"修改项目操作失败\",\"to\":\"/\"}";
-                }
-
-
-            }
-
-
-
-
-        }else {
-            return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
-        }
-    }
+//    @RequestMapping("/additem" )
+//    String additem(HttpSession session,String name,String url,String users,String type){
+//        if(userService.isManager(session.getAttributeNames().nextElement()) &&!name.isEmpty()&&!url.isEmpty()&&!type.isEmpty()){
+//
+//            if(type.equalsIgnoreCase("0")){
+//                int a1= itemService.addItem(name,url);
+//                int a2=itemService.getmaxitemid();
+//                String[] u2=users.split(",");
+//                if(a2>0&&u2.length>0){
+//                    int num4a=0;
+//                    for (int i = 0; i < u2.length; i++) {
+//                       num4a+= itemService.addItemUser(u2[i],a2+"");
+//                    }
+//                    if(num4a!=u2.length){
+//                           return "{\"isok\":1,\"msg\":\"添加用户操作失败\",\"to\":\"/\"}";
+//                    }
+//
+//                }
+//                if(a1==1&&a2>0){
+//
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            String aa= mycode.getTitle(url);
+//                            itemService.addtitle(aa);
+//
+//                        }
+//                    }).start();
+//                    return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+//                }else {
+//                    return "{\"isok\":1,\"msg\":\"添加项目操作失败\",\"to\":\"/\"}";
+//                }
+//            }else {
+//              int a=  itemService.updateItem(name,url,type);
+//             int a2= itemService.removeItemUser(type);
+//                String[] u2=users.split(",");
+//                int num4a=0;
+//                for (int i = 0; i < u2.length; i++) {
+//                    num4a+=   itemService.addItemUser(u2[i],type);
+//                }
+//                if(num4a!=u2.length){
+//                    return "{\"isok\":1,\"msg\":\"添加用户操作失败\",\"to\":\"/\"}";
+//                }
+//                if (a==1){
+//
+//                    return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+//                }else {
+//                    return "{\"isok\":1,\"msg\":\"修改项目操作失败\",\"to\":\"/\"}";
+//                }
+//
+//
+//            }
+//
+//
+//
+//
+//        }else {
+//            return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+//        }
+//    }
 
 
     /**
@@ -179,62 +178,36 @@ private Map<String,Thread> map4thread=new HashMap();
      * @param ispass
      * @return
      */
-    @RequestMapping("/adduser" )
-    String adduser(HttpSession session,String name,String email,String ismanager,String type,String ispass){
-        String u2=  session.getAttributeNames().nextElement();
-        if(userService.isManager(u2)&&!name.isEmpty()&&!email.isEmpty()&&!ismanager.isEmpty()&&!type.isEmpty()){
-            int aa=0;
-            if(type.equalsIgnoreCase("0")){
-                aa=    userService.adduser(name,email,"123456",ismanager);
-            }else {
-                if(ispass.equalsIgnoreCase("1")){
-                    aa=userService.updateUser(name,email,"123456",ismanager,type);
-                }else {
-                    aa=userService.updateUserNopass(name,email,ismanager,type);
-                }
-
-            }
-
-        if(aa==1){
-            return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
-        }else
-
-            return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
-
-
-        }else
-
-
-
-
-        return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
-    }
-
-    /**
-     *
-     * @param session
-     * @param id
-     * @return
-     */
-    @RequestMapping("/removeuser/{id}" )
-    String removeuser(HttpSession session,@PathVariable String id){
-        String u2=  session.getAttributeNames().nextElement();
-        if(userService.isManager(u2)){
-            int aa=    userService.jinyongUser(id);
-            if(aa==1){
-                return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
-            }else
-
-                return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
-
-
-        }else
-
-
-
-
-            return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
-    }
+//    @RequestMapping("/adduser" )
+//    String adduser(HttpSession session,String name,String email,String ismanager,String type,String ispass){
+//        String u2=  session.getAttributeNames().nextElement();
+//        if(userService.isManager(u2)&&!name.isEmpty()&&!email.isEmpty()&&!ismanager.isEmpty()&&!type.isEmpty()){
+//            int aa=0;
+//            if(type.equalsIgnoreCase("0")){
+//                aa=    userService.adduser(name,email,"123456",ismanager);
+//            }else {
+//                if(ispass.equalsIgnoreCase("1")){
+//                    aa=userService.updateUser(name,email,"123456",ismanager,type);
+//                }else {
+//                    aa=userService.updateUserNopass(name,email,ismanager,type);
+//                }
+//
+//            }
+//
+//        if(aa==1){
+//            return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+//        }else
+//
+//            return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+//
+//
+//        }else
+//
+//
+//
+//
+//        return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
+//    }
 
     /**
      *
@@ -242,25 +215,51 @@ private Map<String,Thread> map4thread=new HashMap();
      * @param id
      * @return
      */
-    @RequestMapping("/removeitem/{id}" )
-    String removeitem(HttpSession session,@PathVariable String id){
-        String u2=  session.getAttributeNames().nextElement();
-        if(userService.isManager(u2)){
-            int aa=    itemService.removeItem(id);
-            if(aa==1){
-                return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
-            }else
+//    @RequestMapping("/removeuser/{id}" )
+//    String removeuser(HttpSession session,@PathVariable String id){
+//        String u2=  session.getAttributeNames().nextElement();
+//        if(userService.isManager(u2)){
+//            int aa=    userService.jinyongUser(id);
+//            if(aa==1){
+//                return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+//            }else
+//
+//                return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+//
+//
+//        }else
+//
+//
+//
+//
+//            return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
+//    }
 
-                return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
-
-
-        }else
-
-
-
-
-            return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
-    }
+    /**
+     *
+     * @param session
+     * @param id
+     * @return
+     */
+//    @RequestMapping("/removeitem/{id}" )
+//    String removeitem(HttpSession session,@PathVariable String id){
+//        String u2=  session.getAttributeNames().nextElement();
+//        if(userService.isManager(u2)){
+//            int aa=    itemService.removeItem(id);
+//            if(aa==1){
+//                return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+//            }else
+//
+//                return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+//
+//
+//        }else
+//
+//
+//
+//
+//            return "{\"isok\":1,\"msg\":\"failed\",\"to\":\"/\"}";
+//    }
 
     /**
      *
@@ -436,52 +435,52 @@ if(file1.exists()){
      * @param session
      * @return
      */
-    @RequestMapping("/getlog")
-    String getLog(HttpSession session){
-        if(userService.isManager(session.getAttributeNames().nextElement())){
-
-            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"操作成功\",\"logs\":"+configService.getActLog()+"}";
-        }else {
-
-            return "{\"isok\":1,\"msg\":\"信息不对称\",\"to\":\"/\"}";
-        }
-
-    }
-
-
-    /**
-     *
-     * @param session
-     * @return
-     */
-    @RequestMapping("/getslog")
-    String getsLog(HttpSession session){
-        if(userService.isManager(session.getAttributeNames().nextElement())){
-
-            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"操作成功\",\"logs\":"+configService.getsLog()+"}";
-        }else {
-
-            return "{\"isok\":1,\"msg\":\"信息不对称\",\"to\":\"/\"}";
-        }
-
-    }
+//    @RequestMapping("/getlog")
+//    String getLog(HttpSession session){
+//        if(userService.isManager(session.getAttributeNames().nextElement())){
+//
+//            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"操作成功\",\"logs\":"+configService.getActLog()+"}";
+//        }else {
+//
+//            return "{\"isok\":1,\"msg\":\"信息不对称\",\"to\":\"/\"}";
+//        }
+//
+//    }
+//
 
     /**
      *
      * @param session
      * @return
      */
-    @RequestMapping("/gitema")
-    String getAllItem(HttpSession session){
-        if(userService.isManager(session.getAttributeNames().nextElement())){
+//    @RequestMapping("/getslog")
+//    String getsLog(HttpSession session){
+//        if(userService.isManager(session.getAttributeNames().nextElement())){
+//
+//            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"操作成功\",\"logs\":"+configService.getsLog()+"}";
+//        }else {
+//
+//            return "{\"isok\":1,\"msg\":\"信息不对称\",\"to\":\"/\"}";
+//        }
+//
+//    }
 
-            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"操作成功\",\"items\":"+itemService.getAllItem()+"}";
-        }else {
-
-            return "{\"isok\":1,\"msg\":\"信息不对称\",\"to\":\"/\"}";
-        }
-
-    }
+    /**
+     *
+     * @param session
+     * @return
+     */
+//    @RequestMapping("/gitema")
+//    String getAllItem(HttpSession session){
+//        if(userService.isManager(session.getAttributeNames().nextElement())){
+//
+//            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"操作成功\",\"items\":"+itemService.getAllItem()+"}";
+//        }else {
+//
+//            return "{\"isok\":1,\"msg\":\"信息不对称\",\"to\":\"/\"}";
+//        }
+//
+//    }
 
     /**
      *
@@ -1006,25 +1005,25 @@ String getcase(@PathVariable String tid,@PathVariable String all){
      * @param httpSession
      * @return
      */
-    @RequestMapping("/setcasehome/{id}/{tid}")
-    String setCaseHome(@PathVariable String tid,@PathVariable String id ,HttpSession httpSession){
-
-        if(userService.isManager(httpSession.getAttributeNames().nextElement())) {
-
-            int n = caseService.setCaseHome(id, tid);
-
-
-            if (n == 1) {
-
-
-                return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
-            } else {
-                return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
-            }
-        }else {
-            return "{\"isok\":4,\"msg\":\"当前权限无法操作\",\"to\":\"/\"}";
-        }
-    }
+//    @RequestMapping("/setcasehome/{id}/{tid}")
+//    String setCaseHome(@PathVariable String tid,@PathVariable String id ,HttpSession httpSession){
+//
+//        if(userService.isManager(httpSession.getAttributeNames().nextElement())) {
+//
+//            int n = caseService.setCaseHome(id, tid);
+//
+//
+//            if (n == 1) {
+//
+//
+//                return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+//            } else {
+//                return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+//            }
+//        }else {
+//            return "{\"isok\":4,\"msg\":\"当前权限无法操作\",\"to\":\"/\"}";
+//        }
+//    }
 
     /**
      *
@@ -1352,33 +1351,33 @@ String getcase(@PathVariable String tid,@PathVariable String all){
      * @param session
      * @return
      */
-    @RequestMapping("/clearisused")
-    String clearIsused(String mimi,HttpSession session){
-        if(userService.isManager(session.getAttributeNames().nextElement())){
-
-            long a=System.currentTimeMillis()/1000;
-            String b=mycode.decode(mimi);
-            long c= 0;
-            try {
-                c = Long.parseLong(b);
-            } catch (Exception e) {
-                return "{\"isok\":1,\"msg\":\"时间不对等，请不要修改url内容\",\"to\":\"/\"}";
-            }
-            if(Math.abs(a-c)>50){
-                return "{\"isok\":1,\"msg\":\"时间不对等，请不要修改url内容\",\"to\":\"/\"}";
-            }else {
-int num=configService.clearisused();
-
-                return "{\"isok\":0,\"msg\":\"完成操作,删除"+num+"条数据。\",\"to\":\"/\"}";
-            }
-
-        }else {
-            return "{\"isok\":1,\"msg\":\"没有权限操作\",\"to\":\"/\"}";
-        }
-
-
-
-    }
+//    @RequestMapping("/clearisused")
+//    String clearIsused(String mimi,HttpSession session){
+//        if(userService.isManager(session.getAttributeNames().nextElement())){
+//
+//            long a=System.currentTimeMillis()/1000;
+//            String b=mycode.decode(mimi);
+//            long c= 0;
+//            try {
+//                c = Long.parseLong(b);
+//            } catch (Exception e) {
+//                return "{\"isok\":1,\"msg\":\"时间不对等，请不要修改url内容\",\"to\":\"/\"}";
+//            }
+//            if(Math.abs(a-c)>50){
+//                return "{\"isok\":1,\"msg\":\"时间不对等，请不要修改url内容\",\"to\":\"/\"}";
+//            }else {
+//int num=configService.clearisused();
+//
+//                return "{\"isok\":0,\"msg\":\"完成操作,删除"+num+"条数据。\",\"to\":\"/\"}";
+//            }
+//
+//        }else {
+//            return "{\"isok\":1,\"msg\":\"没有权限操作\",\"to\":\"/\"}";
+//        }
+//
+//
+//
+//    }
 
     /**
      *
@@ -1386,33 +1385,33 @@ int num=configService.clearisused();
      * @param session
      * @return
      */
-    @RequestMapping("/stoprunningcase")
-    String stopRunningCase(String mimi,HttpSession session){
-        if(userService.isManager(session.getAttributeNames().nextElement())){
-
-            long a=System.currentTimeMillis()/1000;
-            String b=mycode.decode(mimi);
-            long c= 0;
-            try {
-                c = Long.parseLong(b);
-            } catch (Exception e) {
-                return "{\"isok\":1,\"msg\":\"时间不对等，请不要修改url内容\",\"to\":\"/\"}";
-            }
-            if(Math.abs(a-c)>50){
-                return "{\"isok\":1,\"msg\":\"时间不对等，请不要修改url内容\",\"to\":\"/\"}";
-            }else {
-                int num=configService.stopRunCase();
-
-                return "{\"isok\":0,\"msg\":\"完成操作,处理"+num+"条数据。\",\"to\":\"/\"}";
-            }
-
-        }else {
-            return "{\"isok\":1,\"msg\":\"没有权限操作\",\"to\":\"/\"}";
-        }
-
-
-
-    }
+//    @RequestMapping("/stoprunningcase")
+//    String stopRunningCase(String mimi,HttpSession session){
+//        if(userService.isManager(session.getAttributeNames().nextElement())){
+//
+//            long a=System.currentTimeMillis()/1000;
+//            String b=mycode.decode(mimi);
+//            long c= 0;
+//            try {
+//                c = Long.parseLong(b);
+//            } catch (Exception e) {
+//                return "{\"isok\":1,\"msg\":\"时间不对等，请不要修改url内容\",\"to\":\"/\"}";
+//            }
+//            if(Math.abs(a-c)>50){
+//                return "{\"isok\":1,\"msg\":\"时间不对等，请不要修改url内容\",\"to\":\"/\"}";
+//            }else {
+//                int num=configService.stopRunCase();
+//
+//                return "{\"isok\":0,\"msg\":\"完成操作,处理"+num+"条数据。\",\"to\":\"/\"}";
+//            }
+//
+//        }else {
+//            return "{\"isok\":1,\"msg\":\"没有权限操作\",\"to\":\"/\"}";
+//        }
+//
+//
+//
+//    }
 
     /**
      *

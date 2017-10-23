@@ -637,13 +637,13 @@ private void map2Sql(Map<String,Set<String>> map,String tid){
             String cid1=ls.get(i);//获得用例id
             while(true){
 
-             List<tmp> l4=   jdbcTemplate.query("select type value ,a value2 from precondition where cid="+cid1, new BeanPropertyRowMapper<>(tmp.class));
+             List<tmp2> l4=   jdbcTemplate.query("select type value ,a value2 from precondition where cid="+cid1, new BeanPropertyRowMapper<>(tmp2.class));
             if(l4.size()==1){
                     //如果是用例。判断是否还有预置条件
-                    if(l4.get(0).getValue().equals("1")){
-                        List<tmp> lt3=jdbcTemplate.query("SELECT type value from caselist where id="+l4.get(0).getValue2(),new BeanPropertyRowMapper<>(tmp.class));
+                    if(l4.get(0).getValue1().equals("1")){
+                        List<tmp2> lt3=jdbcTemplate.query("SELECT type value from caselist where id="+l4.get(0).getValue2(),new BeanPropertyRowMapper<>(tmp2.class));
 if(lt3.size()==1){
-    if(lt3.get(0).getValue().equals("1")){
+    if(lt3.get(0).getValue1().equals("1")){
         l3.add(cid1+":1");
     }else {
         l3.add(cid1+":4");
@@ -656,12 +656,12 @@ if(lt3.size()==1){
 
                     }else {
                         //不是用例就添加
-                        if(l4.get(0).getValue().equals("2")){
+                        if(l4.get(0).getValue1().equals("2")){
                             l3.add(cid1+":2");
 
 
                         }else {
-                            if(l4.get(0).getValue().equals("3")){
+                            if(l4.get(0).getValue1().equals("3")){
                               //  updateHttpcase0(cid1);
                                 l3.add(cid1+":3");
                             }

@@ -1,5 +1,7 @@
 package com.ciic.test.controller;
 
+import com.ciic.test.exception.DelectFailedException;
+import com.ciic.test.exception.NotFoundException;
 import org.apache.xmlbeans.InterfaceExtension;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -36,7 +38,7 @@ public class aopLogin {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Pointcut("execution(* com.ciic.test.controller..*(..)) && !execution(* com.ciic.test.controller.Urls.login(..))")
+    @Pointcut("execution(* com.ciic.test.controller..*(..)) && !execution(* com.ciic.test.controller.Session.login(..)) && !execution(* com.ciic.test.controller.Session.test(..))")
     public void  execaop(){};
 
     @Around("execaop()")
@@ -47,7 +49,7 @@ public class aopLogin {
         HttpServletResponse response = null;
         long time1=System.currentTimeMillis();
 
-        Object result = null;
+        Object result = "wu";
         boolean isparam=true;
         for(Object param : thisJoinPoint.getArgs()){
             if(param==null){
@@ -170,7 +172,11 @@ public class aopLogin {
                     result="{\"isok\":1,\"msg\":\"参数获取不全\",\"to\":\"/\"}";
                 }
 
-            } catch (Throwable e) {
+            }catch (DelectFailedException |IllegalArgumentException|NotFoundException e){
+                throw e;
+
+            }
+            catch (Throwable e) {
                // e.printStackTrace();
                 String rr="请求参数："+Arrays.asList(thisJoinPoint.getArgs());
                 if(e.getCause()==null){
@@ -186,13 +192,13 @@ public class aopLogin {
             }
             if(aa.length()>0&&!islog){
                 String rr="请求参数："+Arrays.asList(thisJoinPoint.getArgs());
-                rr+="响应结果："+result;
+                rr+="响应结果："+result.toString();
 
                 long t1=System.currentTimeMillis()-time1;
                 jdbcTemplate.update("INSERT INTO \"log\" ( \"user\",\"uid\", \"type\", \"log\", \"time\", \"data\", \"usingtime\") VALUES ('"+user+"',"+uid+", 2, '"+aa+"', '"+ LocalDate.now()+" "+ LocalTime.now()+"', ?,'"+t1+"毫秒' )",new  Object[]{rr});
 
             }
-            return result;
+            return result.toString();
         } else{
 
          //   System.out.println(2);
@@ -213,7 +219,7 @@ public class aopLogin {
 //        }
         if(aa.length()>0){
             String rr="请求参数："+Arrays.asList(thisJoinPoint.getArgs());
-            rr+="响应结果："+result;
+            rr+="响应结果："+result.toString();
 
             long t1=System.currentTimeMillis()-time1;
             jdbcTemplate.update("INSERT INTO \"log\" ( \"user\",\"uid\", \"type\", \"log\", \"time\", \"data\", \"usingtime\") VALUES ('"+user+"',"+uid+", 2, '"+aa+"', '"+ LocalDate.now()+" "+ LocalTime.now()+"',?,'"+t1+"毫秒' )",new  Object[]{rr});
@@ -221,7 +227,7 @@ public class aopLogin {
         }
 
 
-        return result;
+        return result.toString();
 
     }
 }

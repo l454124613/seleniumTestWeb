@@ -12,9 +12,9 @@ import java.util.List;
 public class item {
     private String      id;
     private String      name;
-    private List<user>        users;
+    private List<User>        users;
 
-    public void setUsers(List<user> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 

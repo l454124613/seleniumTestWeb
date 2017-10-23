@@ -11,22 +11,9 @@ public class tmp {
         final StringBuilder sb = new StringBuilder("{");
         sb.append("\"value\":\"")
                 .append(value).append('\"');
-        sb.append(",\"value2\":\"")
-                .append(value2).append('\"');
         sb.append('}');
         return sb.toString();
     }
-
-    public String getValue2() {
-        return value2;
-    }
-
-    public void setValue2(String value2) {
-        this.value2 = value2;
-    }
-
-    private String value2;
-
 
     public String getValue() {
         return value;

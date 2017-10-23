@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class SeleniumDao implements SeleniumService {
 
-    private  List<tmp>  lt       =null;//所有用例
+    private  List<tmp2>  lt       =null;//所有用例
     private  List<tmp3> ls       =null;//所有step
     private String      seidStop ="0";
     private String      isWin ="0";
@@ -69,7 +69,7 @@ private String picPath;
             if(seriesid.equals(seidStop)){ //是否中断
                 break;
             }
-           String caseListId= lt.get(i).getValue();
+           String caseListId= lt.get(i).getValue1();
            String caseid=lt.get(i).getValue2();
             updateCaseListStatus("1",caseListId);//准备
          //  String pre=getpre(caseid);
@@ -100,7 +100,7 @@ private String picPath;
                 screenShot(driver[0],nowCaseresid[0],seriesid,caseListId,null,true);
                 updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
                 updateCaseListRes("2",caseListId);
-                List<tmp> lt2= jdbcTemplate.query("select cida value,cidb value2 from runtimecase where tid="+tid+"  and cida=(SELECT cid from caseres where id="+nowCaseresid[0]+")",new BeanPropertyRowMapper<>(tmp.class));
+                List<tmp2> lt2= jdbcTemplate.query("select cida value,cidb value2 from runtimecase where tid="+tid+"  and cida=(SELECT cid from caseres where id="+nowCaseresid[0]+")",new BeanPropertyRowMapper<>(tmp2.class));
                 if(lt2.size()>1){
                     for (int j = 1; j < lt2.size(); j++) {
                         List<tmp> lt3 =  jdbcTemplate.query("select listid value,id value2 from caseres where id > "+nowCaseresid[0]+" and cid = "+lt2.get(j).getValue2(),new BeanPropertyRowMapper<>(tmp.class));
@@ -125,7 +125,7 @@ private String picPath;
                 screenShot(driver[0],nowCaseresid[0],seriesid,caseListId,null,true);
                 updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
                 updateCaseListRes("2",caseListId);
-                List<tmp> lt2= jdbcTemplate.query("select cida value,cidb value2 from runtimecase where tid="+tid+"  and cida=(SELECT cid from caseres where id="+nowCaseresid[0]+")",new BeanPropertyRowMapper<>(tmp.class));
+                List<tmp2> lt2= jdbcTemplate.query("select cida value1,cidb value2 from runtimecase where tid="+tid+"  and cida=(SELECT cid from caseres where id="+nowCaseresid[0]+")",new BeanPropertyRowMapper<>(tmp2.class));
                 if(lt2.size()>1){
                     for (int j = 1; j < lt2.size(); j++) {
                         List<tmp> lt3 =  jdbcTemplate.query("select listid value,id value2 from caseres where id > "+nowCaseresid[0]+" and cid = "+lt2.get(j).getValue2(),new BeanPropertyRowMapper<>(tmp.class));
@@ -161,13 +161,13 @@ private String picPath;
                 //closeDriver(driver);
                // String a="select cida value,cidb value2 from runtimecase where tid="+tid+" cida=(SELECT cid from caseres where id="+nowCaseresid[0]+")";
 
-                List<tmp> lt2= jdbcTemplate.query("select cida value,cidb value2 from runtimecase where tid="+tid+" and cida=(SELECT cid from caseres where id="+nowCaseresid[0]+")",new BeanPropertyRowMapper<>(tmp.class));
+                List<tmp2> lt2= jdbcTemplate.query("select cida value,cidb value2 from runtimecase where tid="+tid+" and cida=(SELECT cid from caseres where id="+nowCaseresid[0]+")",new BeanPropertyRowMapper<>(tmp2.class));
                 if(lt2.size()>1){
                     for (int j = 1; j < lt2.size(); j++) {
-                        List<tmp> lt3 =  jdbcTemplate.query("select listid value,id value2 from caseres where id > "+nowCaseresid[0]+" and cid = "+lt2.get(j).getValue2(),new BeanPropertyRowMapper<>(tmp.class));
+                        List<tmp2> lt3 =  jdbcTemplate.query("select listid value1,id value2 from caseres where id > "+nowCaseresid[0]+" and cid = "+lt2.get(j).getValue2(),new BeanPropertyRowMapper<>(tmp2.class));
                         for (int k = 0; k <lt3.size() ; k++) {
-                            jdbcTemplate.update("update casereslist set res=3 where id="+lt3.get(k).getValue());
-                            List<tmp> lt5= jdbcTemplate.query("select id value from caseres where listid="+lt3.get(k).getValue()+" order by id ",new BeanPropertyRowMapper<>(tmp.class));
+                            jdbcTemplate.update("update casereslist set res=3 where id="+lt3.get(k).getValue1());
+                            List<tmp> lt5= jdbcTemplate.query("select id value from caseres where listid="+lt3.get(k).getValue1()+" order by id ",new BeanPropertyRowMapper<>(tmp.class));
                             if(lt5.size()>0){
                                 jdbcTemplate.update("UPDATE caseres set res=3 , restext='预置条件运行失败', time='"+LocalDate.now()+" "+LocalTime.now()+"' where restext='-1' and id="+lt5.get(0).getValue());
 
@@ -186,7 +186,7 @@ private String picPath;
                 updateCaseListRes("3",caseListId);
                 updateCaseresRes("3",e1.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
                 screenShot(driver[0],nowCaseresid[0],seriesid,caseListId,null,true);
-                List<tmp> lt2= jdbcTemplate.query("select cida value,cidb value2 from runtimecase where tid="+tid+"  and cida=(SELECT cid from caseres where id="+nowCaseresid[0]+")",new BeanPropertyRowMapper<>(tmp.class));
+                List<tmp2> lt2= jdbcTemplate.query("select cida value,cidb value2 from runtimecase where tid="+tid+"  and cida=(SELECT cid from caseres where id="+nowCaseresid[0]+")",new BeanPropertyRowMapper<>(tmp2.class));
                 if(lt2.size()>1){
                     for (int j = 1; j < lt2.size(); j++) {
                         List<tmp> lt3 =  jdbcTemplate.query("select listid value,id value2 from caseres where id > "+nowCaseresid[0]+" and cid = "+lt2.get(j).getValue2(),new BeanPropertyRowMapper<>(tmp.class));
@@ -265,9 +265,9 @@ if(lt.size()==1){
     }
 
     private String runSql(String resid){
-        List<tmp> lt=jdbcTemplate.query("SELECT a value ,b value2 from precondition where type=2 and cid =(SELECT cid from caseres where id="+resid+")",new BeanPropertyRowMapper<>(tmp.class));
+        List<tmp2> lt=jdbcTemplate.query("SELECT a value ,b value2 from precondition where type=2 and cid =(SELECT cid from caseres where id="+resid+")",new BeanPropertyRowMapper<>(tmp2.class));
         if(lt.size()==1){
-        String daid=    lt.get(0).getValue();
+        String daid=    lt.get(0).getValue1();
         String sqls=   lt.get(0).getValue2();
 
 String iscon=configService.connectDatasource(daid);
@@ -693,7 +693,7 @@ private Header[] getheaders(String head){
     }
 
     private void init(String seriesid){
-   lt= jdbcTemplate.query("select id value ,cid value2 from casereslist where status =0 and seriesid= "+seriesid+" order by id",new BeanPropertyRowMapper<>(tmp.class));
+   lt= jdbcTemplate.query("select id value1 ,cid value2 from casereslist where status =0 and seriesid= "+seriesid+" order by id",new BeanPropertyRowMapper<>(tmp2.class));
 
 
     }

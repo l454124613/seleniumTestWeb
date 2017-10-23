@@ -127,8 +127,8 @@ public class ItemDao implements ItemService{
     }
 
     @Override
-    public List<user> getItemUser(String id) {
-       return jdbcTemplate.query("SELECT * from user   where id in (SELECT uid from u2g where gid= ?)",mycode.prase(new Object[]{id}),new BeanPropertyRowMapper<user>(user.class));
+    public List<User> getItemUser(String id) {
+       return jdbcTemplate.query("SELECT * from user   where id in (SELECT uid from u2g where gid= ?)",mycode.prase(new Object[]{id}),new BeanPropertyRowMapper<User>(User.class));
     }
 
     @Override

@@ -24,6 +24,31 @@ public class mycode {
         return re;
 
     }
+
+    /**
+     * 判断参数是否为空，无内容
+     * @param args
+     * @return
+     */
+    public static boolean hasEmpty(String ...args){
+        for (String a:args){
+            if(a.isEmpty()){
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    /**
+     * 创建数组
+     * @param args
+     * @return
+     */
+    public static  Object[] getArrayObj(Object...args){
+        return args;
+    }
+
     public  static String decode(String so){
         char a=so.charAt(0);
 //        System.out.println(so.length());
@@ -48,7 +73,15 @@ public class mycode {
 
     public static Object[] prase(Object[] a){
         for (int i = 0; i <a.length ; i++) {
-           a[i]= a[i].toString().replace("&","&amp;").replace("<","&lt;").replace(" ","&nbsp;").replace(">","&gt;")
+            a[i]= a[i].toString().replace("&","&amp;").replace("<","&lt;").replace(" ","&nbsp;").replace(">","&gt;")
+                    .replace("\"","&quot;").replace("'","&apos;");
+        }
+        return a;
+
+    }
+    public static Object[] praseWithArray(String...a){
+        for (int i = 0; i <a.length ; i++) {
+            a[i]= a[i].toString().replace("&","&amp;").replace("<","&lt;").replace(" ","&nbsp;").replace(">","&gt;")
                     .replace("\"","&quot;").replace("'","&apos;");
         }
         return a;
