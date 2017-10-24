@@ -1,6 +1,7 @@
 package com.ciic.test.controller;
 
 import com.ciic.test.exception.DelectFailedException;
+import com.ciic.test.exception.GetSessionFailedException;
 import com.ciic.test.exception.NotFoundException;
 import org.apache.xmlbeans.InterfaceExtension;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -169,10 +170,10 @@ public class aopLogin {
 
 
                 }else {
-                    result="{\"isok\":1,\"msg\":\"参数获取不全\",\"to\":\"/\"}";
+                   throw  new IllegalArgumentException("参数获取不全");
                 }
 
-            }catch (DelectFailedException |IllegalArgumentException|NotFoundException e){
+            }catch (DelectFailedException |IllegalArgumentException|NotFoundException |GetSessionFailedException e){
                 throw e;
 
             }
@@ -204,10 +205,20 @@ public class aopLogin {
          //   System.out.println(2);
            // logger.debug("Session已超时，正在跳转回登录页面");
            // System.out.println("Session已超时，正在跳转回登录页面");
-            result="{\"isok\":3,\"msg\":\"登录超时\",\"to\":\"/\"}";
+//            result="{\"isok\":3,\"msg\":\"登录超时\",\"to\":\"/\"}";
          //   System.out.println(request.getContextPath());
            // System.out.println(response);
          //   response.sendRedirect("");
+            result="获取session失败";
+            if(aa.length()>0){
+                String rr="请求参数："+Arrays.asList(thisJoinPoint.getArgs());
+                rr+="响应结果："+result.toString();
+
+                long t1=System.currentTimeMillis()-time1;
+                jdbcTemplate.update("INSERT INTO \"log\" ( \"user\",\"uid\", \"type\", \"log\", \"time\", \"data\", \"usingtime\") VALUES ('"+user+"',"+uid+", 2, '"+aa+"', '"+ LocalDate.now()+" "+ LocalTime.now()+"',?,'"+t1+"毫秒' )",new  Object[]{rr});
+
+            }
+            throw new GetSessionFailedException();
         }
 
 //        System.out.println(1);
@@ -217,17 +228,10 @@ public class aopLogin {
 //        } catch (Throwable throwable) {
 //            throwable.printStackTrace();
 //        }
-        if(aa.length()>0){
-            String rr="请求参数："+Arrays.asList(thisJoinPoint.getArgs());
-            rr+="响应结果："+result.toString();
-
-            long t1=System.currentTimeMillis()-time1;
-            jdbcTemplate.update("INSERT INTO \"log\" ( \"user\",\"uid\", \"type\", \"log\", \"time\", \"data\", \"usingtime\") VALUES ('"+user+"',"+uid+", 2, '"+aa+"', '"+ LocalDate.now()+" "+ LocalTime.now()+"',?,'"+t1+"毫秒' )",new  Object[]{rr});
-
-        }
 
 
-        return result.toString();
+
+
 
     }
 }

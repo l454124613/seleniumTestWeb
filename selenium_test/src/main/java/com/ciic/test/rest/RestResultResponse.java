@@ -17,31 +17,31 @@ public class RestResultResponse {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
-        sb.append("\"status\":\"")
+        sb.append("\"result\":\"")
                 .append(result).append('\"');
+        sb.append(",\"msg\":\"")
+                .append(msg).append('\"');
         sb.append('}');
         return sb.toString();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        RestResultResponse that = (RestResultResponse) o;
-
-        return result.equals(that.result);
+    public String getMsg() {
+        return msg;
     }
 
-    @Override
-    public int hashCode() {
-        return result.hashCode();
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
+
+    private String msg;
+
+
 
     public RestResultResponse(boolean isok,  String action,String msg) {
 
         if(isok){
             result="操作成功";
+            this.msg=msg;
         }else {
             throw  new IllegalArgumentException("操作失败");
 

@@ -1,15 +1,14 @@
 package com.ciic.test.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ciic.test.bean.User;
+import com.ciic.test.bean.tmp;
 import com.ciic.test.exception.NotFoundException;
 import com.ciic.test.rest.RestResultResponse;
 import com.ciic.test.service.UserService;
 import com.ciic.test.tools.mycode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
@@ -31,24 +30,27 @@ public class Session {
      * 登录
      * @return
      */
-    @RequestMapping(method= RequestMethod.POST,consumes ={ "application/json"}, produces={ "application/json"} )
-    Object login(HttpSession session, String user) throws UnsupportedEncodingException, IllegalArgumentException {
-        String us= mycode.decode(URLDecoder.decode(user,"utf8"));
+    @RequestMapping(method= RequestMethod.POST,consumes ={ "application/json"},produces={ "application/json"})
+    Object login(HttpSession session, @RequestBody tmp t) throws UnsupportedEncodingException, IllegalArgumentException {
+        String us= mycode.decode(URLDecoder.decode(t.getValue(),"utf8"));
         //格式是：账号！！！密码
-        String[] us2=us.split("!!!");
+        JSONObject jsonObject= JSONObject.parseObject(us);
+       // User user1=JSONObject.toJavaObject(jsonObject, User.class);
+       String em= jsonObject.getString("email");
+       String pa= jsonObject.getString("password");
 
-        if(mycode.hasEmpty(us2)){
+
+        if(mycode.hasEmpty(em,pa)){
             throw new IllegalArgumentException("获得的参数不全");
         }else {
-          User user1=  userService.getUserByEmail(us2[0]);
-            if (user1.getPassword().equals(us2[1])) {
-                session.setAttribute(user1.getId(),us2[0]);
+          User user1=  userService.getUserByEmail(em);
+            if (user1.getPassword().equals(pa)) {
+                userService.updateLastTime(user1.getId());
+                session.setAttribute(user1.getId(),em);
                 return user1;
             }else {
-                throw new NotFoundException("用户","email="+us2[0]);
+                throw new NotFoundException("用户","email="+em);
             }
-
-
         }
 
     }
@@ -74,7 +76,7 @@ public class Session {
       if(dd.equals("5")){
           return new RestResultResponse(false,"1","2");
       }else {
-          return new RestResultResponse(true,"","");
+          return new RestResultResponse(true,"","123");
       }
 
         //   response.sendRedirect("");

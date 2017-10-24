@@ -25,6 +25,7 @@ public interface UserService {
     List<User> addUser(String name,String email,String manage);
     List<User> updateUserWithoutPassword(String name,String email,String manage,String id);
     List<User> deleteUserByid(String id);
+    int updateLastTime(String id);
 
 
 

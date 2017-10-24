@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>WELCOME</title>
-    <!--<link href="css/tether.min.css" rel="stylesheet">-->
-    <!--<link href="css/bootstrap.min.css" rel="stylesheet">-->
     <link href="css/semantic.min.css" rel="stylesheet">
     <link href="css/login.css" rel="stylesheet">
     <meta name="renderer" content="webkit">
@@ -25,7 +23,7 @@
     </div>
     <div class="field">
         <div class="ui checkbox">
-            <input type="checkbox" tabindex="0" id="rem" class="">
+            <input type="checkbox" tabindex="0" id="rem" >
             <label>记住我（保存30天）</label>
         </div>
     </div>
@@ -35,136 +33,79 @@
 <script src="js/jquery-3.2.1.min.js" ></script>
 <script src="js/semantic.min.js" ></script>
 <script src="js/js.cookie.js" ></script>
-<script  >
-    function compileStr(code){ //对字符串进行加密
-        var c=String.fromCharCode(code.charCodeAt(0)+code.length);
-
-        for(var i=1;i<code.length;i++)
-        {
-            c+=String.fromCharCode(code.charCodeAt(i)+code.charCodeAt(i-1));
-        }
-        return encodeURI(c);   }
-
-    //字符串进行解密
-    function uncompileStr(code){
-        code=decodeURI(code);
-
-        var c=String.fromCharCode(code.charCodeAt(0)-code.length);
-
-
-        for(var i=1;i<code.length;i++)
-        {
-            c+=String.fromCharCode(code.charCodeAt(i)-c.charCodeAt(i-1));
-
-        }
-        return c;   }
-</script>
-
-
-<!--<script src="js/tether.min.js" ></script>-->
+<script src="js/httpr.js" ></script>
 <!--<script src="js/bootstrap.min.js" ></script>-->
 <script>
-
+var user={name:"",email:"",password:"",id:"",other:"",isused:"",lastlogintime:"",ismanager:"",isrem:"",alerttype:0,itemid:0,itemname:""};
+var ju;
 $(document).ready(function () {
-  // console.log(ass);
-$.get('/com',function (data,status) {
-
-  var o=$.parseJSON(data);
-
-        if(o.isok==0){
-
-            location.href=o.to;
-        }
-
-    
-});
-
-
+    $.GetJSON('/com','version=0.2',function (a) {
+        location.href='html/context2.html'
+    },function (a) {
         var c= Cookies.get('user');
-    if(typeof(c)==="undefined"){
+        if(typeof(c)==="undefined"){
 
-
-
-    }else {
-        var c3=uncompileStr(c);
-      //  alert(c);
-        var c2= c3.split('???');
-        $("#email").val(c2[0]);
-        $("#password").val(c2[1]);
-
-        if($("#email").val().length>0&&$("#password").val().length>0){
-            $("#rem").attr("checked","true");
+        }else {
+            var c3=uncompileStr(c);
+         ju = s2j(c3);
+                    if(ju.isrem==1){
+                $("#rem").attr("checked","true");
+                $("#email").val(ju.email);
+                $("#password").val(ju.password);
+            }
         }
+           });
+
 
     }
 
-
-
-}
-
 );
 
-//var ass=$("#email").popup(
-//    {
-//        on:'change',
-//        position : 'right center',
-//       // inline: true,
-//       // popup: '#password',
-//        title    : 'My favorite dog',
-//        content  : 'My favorite dog would like other dogs as much as themselves'
-//    }
-//);
 
 
    $("#submit").click(function () {
        var em=$.trim($("#email").val());
        var pa=$.trim($("#password").val());
        if(em.length>0&&pa.length>0){
-           $.post("login",
-               {
-                   user:compileStr(em+"!!!"+pa)
-               },
-               function(data,status){
+           $.postJSON("/session",j2s({value:compileStr(j2s({email:em,password:pa}))}),function (a) {
+              if($('#rem').is(':checked')){
+                  user.isrem="1";
+              }else {
+                  user.isrem="0";
+              }
+              var u1=a;
+              user.id=u1.id;
+              user.password=u1.password;
+              user.name=u1.name;
+              user.email=u1.email;
+              user.ismanager=u1.ismanager;
+              user.isused=u1.isused;
 
-                   var o=$.parseJSON(data);
-                    switch(o.isok){
-                        case 0:{
-                           var uu=uncompileStr(o.user).split('???');
-                           var name='';
-                           if(uu[0].length>1){
-                               name=uu[0];
-                           }else {
-                               name=uu[1];
-                           }
-                           if($('#rem').is(':checked')){
-                               Cookies.set('user', compileStr($("#email").val()+"???"+$("#password").val()), { expires: 30 });
-                           }else {
-                               Cookies.remove('user');
-                           }
-                           if(
-                               uncompileStr(Cookies.get('user1')).split(name).length!=2
-                           ){
-                               Cookies.set('user1', compileStr(name));
-                           }
-
-
-                           if(uu[2]=="1"){
-                               Cookies.set('user2', compileStr("我是管理员"));
-                           }else {
-                               Cookies.set('user2', compileStr("我不是管理员"));
-
-                           }
-
-                            location.href=o.to;break;}
+              user.lastlogintime=u1.lastlogintime;
+              if(typeof(ju)==="undefined"||ju.id!=user.id||typeof(ju.itemid)==="undefined"){
+                  user.alerttype=0
+                  user.itemid=-1;
+                  user.itemname="";
+              }
+              else{
+                  user.alerttype=ju.alerttype;
+                  user.itemid=ju.itemid;
+                  user.itemname=ju.itemname;
+              }
 
 
-                        case 1:alert('登录失败');break;
-                        case 2:alert('账号密码为空');break;
-                    }
+               Cookies.set('user', compileStr(j2s(user)), { expires: 30 });
+               location.href='html/context2.html';
+               
+           },function (a) {
+               if(a.status='404'){
+                   alert("邮箱或密码验证不通过。")
+               }
 
-               });
+           });
+
        }else{
-           alert('请输入内容');
+           alert('请输入正确信息');
        }
 
    });

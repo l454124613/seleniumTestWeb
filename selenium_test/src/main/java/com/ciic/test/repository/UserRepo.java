@@ -11,6 +11,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -74,5 +76,10 @@ public class UserRepo implements UserService {
         }else {
             throw new IllegalArgumentException("禁用用户失败");
         }
+    }
+
+    @Override
+    public int updateLastTime(String id) {
+        return jdbcTemplate.update("update user set lastlogintime='"+ LocalDate.now()+" "+ LocalTime.now()+"' where id="+id);
     }
 }

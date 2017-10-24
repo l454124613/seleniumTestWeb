@@ -1,6 +1,6 @@
 package com.ciic.test.bean;
 
-import com.ciic.test.dao.ItemDao;
+
 import com.ciic.test.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,16 +12,8 @@ import java.util.List;
 public class item {
     private String      id;
     private String      name;
-    private List<User>        users;
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
     private String isused;
     private String firstpageurl;
-
-
 
     @Override
     public String toString() {
@@ -30,8 +22,6 @@ public class item {
                 .append(id).append('\"');
         sb.append(",\"name\":\"")
                 .append(name).append('\"');
-        sb.append(",\"user\":")
-                .append(users);
         sb.append(",\"isused\":\"")
                 .append(isused).append('\"');
         sb.append(",\"firstpageurl\":\"")

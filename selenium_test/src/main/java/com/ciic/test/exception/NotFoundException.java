@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class NotFoundException extends RuntimeException{
     public NotFoundException(String action,String  msg) {
-        super("无法找到"+action+" '" + msg + "'.");
+
+        super("无法找到"+action+(msg.isEmpty()?"":" '" + msg + "'"));
     }
 //    public NotFoundException(String userName) {
 //        super("could not find user '" + userName + "'.");
