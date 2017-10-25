@@ -34,6 +34,7 @@ public class Session {
     Object login(HttpSession session, @RequestBody tmp t) throws UnsupportedEncodingException, IllegalArgumentException {
         String us= mycode.decode(URLDecoder.decode(t.getValue(),"utf8"));
         //格式是：账号！！！密码
+
         JSONObject jsonObject= JSONObject.parseObject(us);
        // User user1=JSONObject.toJavaObject(jsonObject, User.class);
        String em= jsonObject.getString("email");

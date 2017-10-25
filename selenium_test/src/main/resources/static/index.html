@@ -98,9 +98,13 @@ $(document).ready(function () {
                location.href='html/context2.html';
                
            },function (a) {
-               if(a.status='404'){
-                   alert("邮箱或密码验证不通过。")
+               switch (parseInt(a.status)){
+                   case 404:alert("邮箱或密码验证不通过。");break;
+                   case 401:location.href='/';break;
+                   case 0:alertf("网络连接出错");break;
+                   default:alertf(a.responseJSON.message);
                }
+
 
            });
 

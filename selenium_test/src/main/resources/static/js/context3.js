@@ -1,7 +1,7 @@
 /**
  * Created by lixuecheng on 2017/7/19.
  */
-var baseuser={name:"",email:"",password:"",id:"",other:"",isused:"",lastlogintime:"",ismanager:"",isrem:"",alerttype:0,itemid:0,itemname:""};
+var baseuser={name:"",email:"",password:"",id:"",other:"",isused:"",lastlogintime:"",ismanager:"",isrem:"",alerttype:"",itemid:"",itemname:""};
 var tid=-1;
 var pid=0;
 var ass1=0;
@@ -147,7 +147,117 @@ $('#logout').click(function () {
     });
 });
 
+function gettid(a,b) {
 
+    if(baseuser.itemid<0||baseuser.itemid==a){
+        baseuser.itemid=a;
+        baseuser.itemname=b;
+    }else{
+        baseuser.itemid=a;
+        baseuser.itemname=b;
+        $('#context').html("<h2 class=\"ui center aligned header\" style=\"margin-top: 7%\">已切换到项目："+b+"</h2>");
+    }
+    Cookies.set('user', compileStr(j2s(baseuser)), { expires: 30 });
+
+}
+function alertf(a) {
+    if(alertftype==0){
+        alert(a);
+    }else {
+        if(alertftype==1){
+            $('#al2').text(a);
+            showmsg1(1);
+
+        }else {
+            console.log(a);
+        }
+
+    }
+}
+function changealert() {
+
+
+
+    if(baseuser.alerttype==0){
+        $('#al').text('页面提示');
+        baseuser.alerttype=1;
+    }else {
+        if(baseuser.alerttype==1){
+            $('#al').text('console提示');
+            baseuser.alerttype=2
+        }else {
+            baseuser.alerttype=0;
+            $('#al').text('alert提示');
+        }
+
+    }
+
+    Cookies.set('user', compileStr(j2s(baseuser)), { expires: 30 });
+}
+function base( table,addmethod,addname,tableid,isplus) {
+    var table2=' <th style=\"width: 40px\">#</th>';
+    var num=1;
+    jQuery.each(table, function(i, val) {
+        if(val.length<2){
+            table2+="<th>"+i+"</th>";
+        }else {
+            table2+="<th style=\"width: "+val+"\">"+i+"</th>";
+        }
+        num++;
+
+
+    });
+
+    var re="<table class=\"ui very compact celled selectable  sortable single line table\"  style='z-index: 19' >\n" +
+        "                    <thead>\n" +
+        "                    <tr>\n" +
+        table2+
+
+        "                    </tr>\n" +
+        "                    </thead>\n" +
+        "                    <tbody id=\""+tableid+"\">\n" +
+        "                    <tr>\n" +
+        "\n" +
+        "                        <td colspan=\""+num+"\">loading......</td>\n" +
+        "                        \n" +
+        "                    </tr>\n" +
+
+        "\n" +
+        "                    </tbody>\n" +
+        "                    <tfoot class=\"full-width\">\n" +
+        "\n" +
+        "                    <tr>\n" +
+        "\n" +
+        "                        <th colspan=\""+num+"\">\n" +
+        "                            <div class=\"ui right floated small primary labeled icon button\" id='myaddbutton' onclick='"+addmethod+"' ><i class=\""+(isplus?'plus icon':'radio icon')+"\"></i>"+addname+"</div>\n" +
+        "                          \n" +
+        "                        </th>\n" +
+        "                    </tr>\n" +
+        "                    </tfoot>\n" +
+        "                </table>\n";
+
+    return re;
+
+}
+function shua(name,url,act,id,before) {
+    $.GetJSON(url,'version=0.2',function (a) {
+        var re= act(a);
+        if(typeof(before)==="undefined" ||before.length==0 ){
+            $('#'+id).html(re);
+        }else{
+            $('#'+id).html(before+re);
+        }
+        $('table').tablesort();
+    },function (a) {
+        switch (parseInt(a.status)){
+            case 404:$('#'+id).html('无相关信息');break;
+            case 401:location.href='/';break;
+            case 0:alertf("网络连接出错");break;
+            default:alertf(a.responseJSON.message);
+        }
+    });
+
+}
 
 
 function showmsg1(a) {
@@ -172,16 +282,6 @@ function showmsg1(a) {
        $('#u2').popup('hide');
 
     }
-
-
-
-
-    //setTimeout($('#u2').popup('hide'),3000)
-}
-function showmsg() {
-    showmsg1(1);
-
-    
 }
 function pro1() {
     var
@@ -213,35 +313,132 @@ function pro1() {
 }
 ;
 
-
-function showidea(a) {
-    forfirstfun();
-    var rr=""
-    if(a=='1'){
-        rr=base("                        <th style=\"width: 40px\">#</th>\n" +
-            "                        <th >用户</th>\n" +
-            "                        <th >标题</th>\n" +
-            "                        <th >状态</th>\n" +
-            "                        <th >提交时间</th>\n" +
-            "                        <th >备注</th>\n" +
-            "                        <th >操作</th>\n"   ,7,'up()',"回到顶部",'tlog',"2a2");
-
+function updateempty(a) {
+    if(typeof(a)==="undefined"||a=='null'){
+        return "";
     }else {
-        rr=base("                        <th style=\"width: 40px\">#</th>\n" +
-            "                        <th >标题</th>\n" +
-            "                        <th >状态</th>\n" +
-            "                        <th >提交时间</th>\n" +
-            "                        <th >备注</th>\n" +
-            "                        <th >操作</th>\n",6,'up()',"回到顶部",'tlog',"2a2");
+        return a;
     }
+}
+function is2cn(a,b) {
+    if(a==b){
+        return '是';
+    }else {
+        return '否';
+    }
+}
 
-    $('#context').html(rr);
-    $('#tlog').html('嘘~还没有写这个功能呢，等等');
-
-    //shualog();
+function celladd(a) {
 
     
 }
+function clickmanage() {
+
+    forfirstfun();
+   var usertmp= base({用户名称:0,用户邮箱:0,最后登录时间:'200px',是否管理员:'80px',是否禁用:'80px',操作:'80px'},'adduser','添加用户','auser',true);
+   var itemtmp= base({项目名称:0,首页链接:0,参与用户:'200px',是否禁用:'80px',操作:'80px'},'adduser','添加项目','aitem',true);
+    shua('usermaneger','/user',function (a) {
+var st='';
+for(var i=0;i<a.length;i++){
+    var o=a[i];
+    if(o.lastlogintime=='null'){
+        o.lastlogintime='';
+    }
+    if(o.ismanager==1){
+        o.ismanager='是';
+    }else{
+        o.ismanager='否';
+    }
+    var cell={z1:i,z2:o.name,z3:o.email,z4:updateempty(o.lastlogintime),z5:is2cn(o.ismanager,1),z6:is2cn(o.isused,1),d1:[]}
+    re2+= "                    <tr>\n" +
+        "\n" +
+        "                        <td  >"+(i+1)+"</td>\n" +
+        "                        <td  >"+((users1[i].name=='null')?'':users1[i].name)+"</td>\n" +
+        "                        <td  >"+users1[i].email+"</td>\n" +
+        "                        <td  >"+((users1[i].lastlogintime=='null')?'':users1[i].lastlogintime)+"</td>\n" +
+        "                        <td  >"+(users1[i].ismanager=="1")+"</td>\n" +
+        "                        <td  >"+(users1[i].isused=="0")+"</td>\n" +
+        "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"updateuser("+users1[i].id+","+users1[i].ismanager+",'"+users1[i].name+"','"+users1[i].email+"')\" title=\"修改用户\"><i class=\"paint brush icon\"></i></button>\n" +
+        "                            <button class=\"ui circular basic icon button "+((users1[i].isused=="0")?'disabled':'')+"\" onclick='removeuser("+users1[i].id+")' title=\"禁用用户\"><i class=\"remove circle icon red\"></i></button></td>\n" +
+
+        "                    </tr>\n";
+}
+    },auser,'');
+    var re="<div id='mett' class=\"ui top attached tabular menu\">\n" +
+        "  <a class=\"active item\" onclick='shuauser()' data-tab=\"first\">用户管理</a>\n" +
+        "  <a class=\"item\" data-tab=\"second\" onclick='shuaitem()'>项目管理</a>\n" +
+        "  <a class=\"item  \" data-tab=\"third\"  >其他设置</a>\n" +
+        "</div>\n" +
+        "<div class=\"ui bottom attached active tab segment\" data-tab=\"first\">\n" +
+        "(想要删除用户，请在数据表中操作)"+usertmp +
+        "</div>\n" +
+        "<div class=\"ui bottom attached tab segment\" data-tab=\"second\">\n" +
+        "(想要删除项目，请在数据表中操作)"+
+        itemtmp+
+        "</div>\n" +
+        "<div class=\"ui bottom attached tab segment\" data-tab=\"third\">\n" +
+        "<div class=\"ui middle aligned divided list\">\n"+
+        "  <div class=\"item\">\n"+
+        "    <div class=\"right floated content\">\n"+
+        "      <div class=\"ui button\"  onclick='clearIsused()'>清除</div>\n"+
+        "    </div>\n"+
+
+        "   <div class=\"header\">清除无用数据</div>为减少数据库的空间，清除isused字段为0的数据（用户和项目表除外），无法恢复，请慎重! "+
+        "  </div>\n"+
+        "  <div class=\"item\">\n"+
+        "    <div class=\"right floated content\">\n"+
+        "      <div class=\"ui button\"  onclick='stoprunningcase()'>强制处理</div>\n"+
+        "    </div>\n"+
+
+        "   <div class=\"header\">解决运行卡住的问题</div>在运行用例和调试用例时，会出现无法退出，或强制退出后，无法再运行的问题，此处强制终止。会影响到其他正在运行的用，请确保无人在使用，才去点击。 "+
+        "  </div>\n"+
+        "  <div class=\"item\">\n"+
+        "    <div class=\"right floated content\">\n"+
+        "      <div class=\"ui button disabled\">备用</div>\n"+
+        "    </div>\n"+
+
+        "   <div class=\"header\">备用</div>备用"+
+        "  </div>\n"+
+        "</div>"+
+        "</div>";
+    $('#context').html(re);
+    $('#mett .item').tab();
+
+
+
+
+}
+
+
+
+// function showidea(a) {
+//     forfirstfun();
+//     var rr=""
+//     if(a=='1'){
+//         rr=base("                        <th style=\"width: 40px\">#</th>\n" +
+//             "                        <th >用户</th>\n" +
+//             "                        <th >标题</th>\n" +
+//             "                        <th >状态</th>\n" +
+//             "                        <th >提交时间</th>\n" +
+//             "                        <th >备注</th>\n" +
+//             "                        <th >操作</th>\n"   ,7,'up()',"回到顶部",'tlog',"2a2");
+//
+//     }else {
+//         rr=base("                        <th style=\"width: 40px\">#</th>\n" +
+//             "                        <th >标题</th>\n" +
+//             "                        <th >状态</th>\n" +
+//             "                        <th >提交时间</th>\n" +
+//             "                        <th >备注</th>\n" +
+//             "                        <th >操作</th>\n",6,'up()',"回到顶部",'tlog',"2a2");
+//     }
+//
+//     $('#context').html(rr);
+//     $('#tlog').html('嘘~还没有写这个功能呢，等等');
+//
+//     //shualog();
+//
+//
+// }
 
 function showhelp(a) {
     if(a=='1'){
@@ -260,80 +457,11 @@ function ueswidth() {
     //     hidemenu();
     // }
 }
-function changealert() {
-
-    var c= Cookies.get('user1');
-    var c2=uncompileStr(c);
-    var c3=c2.split(':::');
-
-    if(alertftype==0){
-        $('#al').text('页面提示');
-        alertftype=1;
-    }else {
-        if(alertftype==1){
-            $('#al').text('console提示');
-            alertftype=2
-        }else {
-            alertftype=0;
-            $('#al').text('alert提示');
-        }
-
-    }
-    var c4=c3[0]+":::"+alertftype;
-    Cookies.set('user1', compileStr(c4));
-}
-
-function alertf(a) {
-    if(alertftype==0){
-        alert(a);
-    }else {
-        if(alertftype==1){
-$('#al2').text(a);
-showmsg1(1);
-
-        }else {
-            console.log(a);
-        }
-
-    }
-}
-
-function base( table,num,addmethod,addname,tableid,ss) {
-    var re="<table class=\"ui very compact celled selectable  sortable single line table\"  style='z-index: 19' >\n" +
-        "                    <thead>\n" +
-        "                    <tr>\n" +
-            table+
-
-        "                    </tr>\n" +
-        "                    </thead>\n" +
-        "                    <tbody id=\""+tableid+"\">\n" +
-        "                    <tr>\n" +
-        "\n" +
-        "                        <td colspan=\""+num+"\">loading......</td>\n" +
-        "                        \n" +
-        "                    </tr>\n" +
-
-        "\n" +
-        "                    </tbody>\n" +
-        "                    <tfoot class=\"full-width\">\n" +
-        "\n" +
-        "                    <tr>\n" +
-        "\n" +
-        "                        <th colspan=\""+num+"\">\n" +
 
 
-        "                            <div class=\"ui right floated small primary labeled icon button\" id='myaddbutton' onclick='"+addmethod+"' ><i class=\""+(ss==='2a2'?'radio icon':'plus icon')+"\"></i>"+addname+"</div>\n" +
-        "                          \n" +
-        "                        </th>\n" +
-        "                    </tr>\n" +
-        "                    </tfoot>\n" +
-        "                </table>\n";
 
-    // console.log(ss==='2a2');
-    // console.log(ss);
-    return re;
-    
-}
+
+
 
 
 function clickurl() {
@@ -1114,69 +1242,7 @@ function clickslog() {
 
 }
 
-function clickmanage() {
 
-    forfirstfun();
-
-    var user1=base("                        <th style=\"width: 40px\">#</th>\n" +
-        "                        <th >用户名称</th>\n" +
-        "                        <th >用户邮箱</th>\n" +
-        "                        <th style=\"width: 200px\">最后登录时间</th>\n" +
-        "                        <th style=\"width: 80px\">是否管理员</th>\n" +
-        "                        <th style=\"width: 80px\">是否禁用</th>\n" +
-        "                        <th style=\"width: 80px\">操作</th>\n",7,'adduser()',"添加用户",'tuser');
-    var re="<div id='mett' class=\"ui top attached tabular menu\">\n" +
-        "  <a class=\"active item\" onclick='shuauser()' data-tab=\"first\">用户管理</a>\n" +
-        "  <a class=\"item\" data-tab=\"second\" onclick='shuaitem()'>项目管理</a>\n" +
-        "  <a class=\"item  \" data-tab=\"third\"  >其他设置</a>\n" +
-        "</div>\n" +
-        "<div class=\"ui bottom attached active tab segment\" data-tab=\"first\">\n" +
-            "(想要删除用户，请在数据表中操作)"+user1 +
-        "</div>\n" +
-        "<div class=\"ui bottom attached tab segment\" data-tab=\"second\">\n" +
-        "(想要删除项目，请在数据表中操作)"+
-      base( "                        <th style=\"width: 40px\">#</th>\n" +
-          "                        <th style='max-width: 15%'>项目名称</th>\n" +
-          "                        <th style='max-width:40%'>项目首页链接</th>\n" +
-
-          "                        <th style='max-width:20%'>参与用户</th>\n" +
-          "                        <th style=\"width: 80px\">是否禁用</th>\n" +
-
-
-          "                        <th style=\"width: 80px\">操作</th>\n",6,'additem()','添加项目','titem')+
-        "</div>\n" +
-        "<div class=\"ui bottom attached tab segment\" data-tab=\"third\">\n" +
-        "<div class=\"ui middle aligned divided list\">\n"+
-        "  <div class=\"item\">\n"+
-        "    <div class=\"right floated content\">\n"+
-        "      <div class=\"ui button\"  onclick='clearIsused()'>清除</div>\n"+
-        "    </div>\n"+
-
-        "   <div class=\"header\">清除无用数据</div>为减少数据库的空间，清除isused字段为0的数据（用户和项目表除外），无法恢复，请慎重! "+
-        "  </div>\n"+
-        "  <div class=\"item\">\n"+
-        "    <div class=\"right floated content\">\n"+
-        "      <div class=\"ui button\"  onclick='stoprunningcase()'>强制处理</div>\n"+
-        "    </div>\n"+
-
-        "   <div class=\"header\">解决运行卡住的问题</div>在运行用例和调试用例时，会出现无法退出，或强制退出后，无法再运行的问题，此处强制终止。会影响到其他正在运行的用，请确保无人在使用，才去点击。 "+
-        "  </div>\n"+
-        "  <div class=\"item\">\n"+
-        "    <div class=\"right floated content\">\n"+
-        "      <div class=\"ui button disabled\">备用</div>\n"+
-        "    </div>\n"+
-
-        "   <div class=\"header\">备用</div>备用"+
-        "  </div>\n"+
-        "</div>"+
-        "</div>";
-    $('#context').html(re);
-    $('#mett .item').tab();
-    shuauser();
-
-    
-
-}
 
 function stoprunningcase() {
     $.post('/stoprunningcase',{mimi:compileStr(Date.parse(new Date())/1000+'')},function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
@@ -1219,6 +1285,7 @@ function lookruncase(a) {
     //
     // });
 }
+
 
 function shuauser() {
 
@@ -3104,16 +3171,7 @@ $('#addpageone2').click(function () {
 
 });
 
-function gettid(a,b) {
-    if(tid<0||tid==a){
-        tid=a;
-    }else{
-        tid=a;
-        $('#context').html("<h2 class=\"ui center aligned header\" style=\"margin-top: 7%\">已切换到项目："+b+"</h2>");
-    }
-    Cookies.set('user5',a+':'+b, { expires: 30 });
 
-}
 
 function removepage(a) {
     if (confirm("你确定要删除吗？")) {
