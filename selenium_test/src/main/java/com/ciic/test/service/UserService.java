@@ -4,6 +4,7 @@ import com.ciic.test.bean.User;
 
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lixuecheng on 2017/7/4.
@@ -26,6 +27,8 @@ public interface UserService {
     List<User> updateUserWithoutPassword(String name,String email,String manage,String id);
     List<User> deleteUserByid(String id);
     int updateLastTime(String id);
+    Map<String,List<String>> getUser4Item();
+
 
 
 

@@ -2,6 +2,7 @@ package com.ciic.test.repository;
 
 import com.ciic.test.bean.User;
 
+import com.ciic.test.bean.tmp2;
 import com.ciic.test.exception.NotFoundException;
 import com.ciic.test.service.UserService;
 import com.ciic.test.tools.mycode;
@@ -13,7 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lixuecheng on 2017/10/23.
@@ -81,5 +85,47 @@ public class UserRepo implements UserService {
     @Override
     public int updateLastTime(String id) {
         return jdbcTemplate.update("update user set lastlogintime='"+ LocalDate.now()+" "+ LocalTime.now()+"' where id="+id);
+    }
+
+    @Override
+    public Map<String, List<String>> getUser4Item() {
+      List<tmp2> lt=  jdbcTemplate.query("select tid value1,uid value2 from u2t order by tid ",new BeanPropertyRowMapper<>(tmp2.class));
+      Map<String, List<String>> map=new HashMap<>();
+      String a="";
+      List<String> ls=new ArrayList<>();
+        for (int i = 0; i <lt.size() ; i++) {
+            tmp2 t=lt.get(i);
+            if(map.size()==0&&ls.size()==0){
+                a=t.getValue1();
+                ls.add(t.getValue2());
+
+            }else {
+                if(i==lt.size()-1){
+                    if(t.getValue1().equals(a)){
+                        ls.add(t.getValue2());
+                        map.put("item"+a,ls);
+                    }else {
+                        map.put("item"+a,ls);
+                        ls=new ArrayList<>();
+                        a=t.getValue1();
+                        ls.add(t.getValue2());
+                        map.put("item"+a,ls);
+
+                    }
+                }else {
+                    if(t.getValue1().equals(a)){
+                        ls.add(t.getValue2());
+                    }else {
+                        map.put("item"+a,ls);
+                        ls=new ArrayList<>();
+                        a=t.getValue1();
+                        ls.add(t.getValue2());
+                    }
+                }
+
+            }
+
+        }
+        return map;
     }
 }

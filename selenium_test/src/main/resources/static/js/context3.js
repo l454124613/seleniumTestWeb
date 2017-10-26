@@ -2,6 +2,8 @@
  * Created by lixuecheng on 2017/7/19.
  */
 var baseuser={name:"",email:"",password:"",id:"",other:"",isused:"",lastlogintime:"",ismanager:"",isrem:"",alerttype:"",itemid:"",itemname:""};
+var basedata={};
+
 var tid=-1;
 var pid=0;
 var ass1=0;
@@ -63,7 +65,7 @@ $(document).ready(function () {
 //         document.querySelector('#menu3').style.width=0;
 //     }
     $.GetJSON('/com','version=0.2',function (a) {
-        var c= Cookies.get('user');
+        var c= localStorage.getItem('user');
         if(typeof(c)==="undefined"){
             alertf("账户异常");
 
@@ -157,7 +159,7 @@ function gettid(a,b) {
         baseuser.itemname=b;
         $('#context').html("<h2 class=\"ui center aligned header\" style=\"margin-top: 7%\">已切换到项目："+b+"</h2>");
     }
-    Cookies.set('user', compileStr(j2s(baseuser)), { expires: 30 });
+    localStorage.setItem('user', compileStr(j2s(baseuser)));
 
 }
 function alertf(a) {
@@ -192,7 +194,64 @@ function changealert() {
 
     }
 
-    Cookies.set('user', compileStr(j2s(baseuser)), { expires: 30 });
+    localStorage.setItem('user', compileStr(j2s(baseuser)));
+}
+var aa={head:'1231',form:[{a0:[6,'名称','inpt','mname','名称','',''],a1:[12,'描述','inpt','mdes','描述','',''],size:2},{a0:[16,'111','se','sss','描述4','sss3','<div class="item" data-value="1">Mysql</div><div class="item" data-value="2">Sqlserver</div>'],size:1},{a0:[6,'名称','inpt','mname','名称','',''],a1:[12,'描述','inpt','mdes','描述','',''],size:2},{a0:[16,'111','se','sss','描述4','sss3','<div class="item" data-value="1">Mysql</div><div class="item" data-value="2">Sqlserver</div>'],size:1},{a0:[6,'名称','inpt','mname','名称','',''],a1:[12,'描述','inpt','mdes','描述','',''],size:2},{a0:[16,'111','se','sss','描述4','sss3','<div class="item" data-value="1">Mysql</div><div class="item" data-value="2">Sqlserver</div>'],size:1}]}
+function openmodal(data) {
+
+
+            $('#mhead').text(data.head);
+var o=data.form;
+var ss="";
+for(var i=0;i<o.length;i++){
+    ss+="<div class=\"fields\">";
+        for(var j=0;j<o[i].size;j++){
+            var s2='a'+j;
+            var s1=o[i][s2];
+            ss+="<div class=\""+num2en(s1[0])+" wide field\">";
+            ss+="<label>"+s1[1]+"</label>";
+            ss+=modaltype(s1[2],s1[3],s1[4],s1[5],s1[6]) +"</div>";
+            
+        }
+        ss+=" </div>";
+    }
+    $('#mform').html(ss);
+    $('.ui.dropdown') .dropdown();
+    $('.ui.modal').modal('refresh');
+
+    
+}
+
+function modaltype(a,id,c,seid,funse) {
+    switch(a){
+        case 'inpt':return "<input type=\"text\"" +" id=\""+id+"\""+" placeholder=\""+c +"\">";
+        case 'inpp':return "<input type=\"password\"" +" id=\""+id+"\""+" placeholder=\""+c+"\">";
+        case 'se': return "<div class=\"ui fluid search selection dropdown\" id=\""+id+"\">  <input type=\"hidden\"><i class=\"dropdown icon\"></i><div class=\"default text\">"+c+"</div> <div class=\"menu\"  id =\""+seid+"\"> "+funse+" </div> </div>";
+        default: return "div";
+    }
+    
+}
+
+function num2en(a) {
+    switch(a){
+        case 1:return 'one';break;
+        case 2:return 'two';break;
+        case 3:return 'three';break;
+        case 4:return 'four';break;
+        case 5:return 'five';break;
+        case 6:return 'six';break;
+        case 7:return 'seven';break;
+        case 8:return 'eight';break;
+        case 9:return 'nine';break;
+        case 10:return 'ten';break;
+        case 11:return 'eleven';break;
+        case 12:return 'twelve';break;
+        case 13:return 'thirteen';break;
+        case 14:return 'fourteen';break;
+        case 15:return 'fifteen';break;
+        case 16:return 'sixteen';break;
+        default: return '';
+    }
 }
 function base( table,addmethod,addname,tableid,isplus) {
     var table2=' <th style=\"width: 40px\">#</th>';
@@ -239,10 +298,19 @@ function base( table,addmethod,addname,tableid,isplus) {
     return re;
 
 }
+/**
+ *
+ * @param name
+ * @param url
+ * @param act
+ * @param id
+ * @param before
+ */
 function shua(name,url,act,id,before) {
     $.GetJSON(url,'version=0.2',function (a) {
         var re= act(a);
         if(typeof(before)==="undefined" ||before.length==0 ){
+
             $('#'+id).html(re);
         }else{
             $('#'+id).html(before+re);
@@ -329,44 +397,34 @@ function is2cn(a,b) {
 }
 
 function celladd(a) {
+    var ss='<tr>';
+    jQuery.each(a, function(i, val) {
 
+        if(i.charAt(0)=='z'){
+            ss+="<td>"+val+"</td>";
+
+        }else if(i.charAt(0)=='d'){
+            ss+="<td>"+val.join(' ')+"</td>";
+
+
+        }
+
+
+
+    });
+ss+='</tr>';
+    return ss;
     
 }
 function clickmanage() {
 
     forfirstfun();
-   var usertmp= base({用户名称:0,用户邮箱:0,最后登录时间:'200px',是否管理员:'80px',是否禁用:'80px',操作:'80px'},'adduser','添加用户','auser',true);
-   var itemtmp= base({项目名称:0,首页链接:0,参与用户:'200px',是否禁用:'80px',操作:'80px'},'adduser','添加项目','aitem',true);
-    shua('usermaneger','/user',function (a) {
-var st='';
-for(var i=0;i<a.length;i++){
-    var o=a[i];
-    if(o.lastlogintime=='null'){
-        o.lastlogintime='';
-    }
-    if(o.ismanager==1){
-        o.ismanager='是';
-    }else{
-        o.ismanager='否';
-    }
-    var cell={z1:i,z2:o.name,z3:o.email,z4:updateempty(o.lastlogintime),z5:is2cn(o.ismanager,1),z6:is2cn(o.isused,1),d1:[]}
-    re2+= "                    <tr>\n" +
-        "\n" +
-        "                        <td  >"+(i+1)+"</td>\n" +
-        "                        <td  >"+((users1[i].name=='null')?'':users1[i].name)+"</td>\n" +
-        "                        <td  >"+users1[i].email+"</td>\n" +
-        "                        <td  >"+((users1[i].lastlogintime=='null')?'':users1[i].lastlogintime)+"</td>\n" +
-        "                        <td  >"+(users1[i].ismanager=="1")+"</td>\n" +
-        "                        <td  >"+(users1[i].isused=="0")+"</td>\n" +
-        "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"updateuser("+users1[i].id+","+users1[i].ismanager+",'"+users1[i].name+"','"+users1[i].email+"')\" title=\"修改用户\"><i class=\"paint brush icon\"></i></button>\n" +
-        "                            <button class=\"ui circular basic icon button "+((users1[i].isused=="0")?'disabled':'')+"\" onclick='removeuser("+users1[i].id+")' title=\"禁用用户\"><i class=\"remove circle icon red\"></i></button></td>\n" +
+   var usertmp= base({用户名称:0,用户邮箱:0,最后登录时间:'200px',是否管理员:'80px',是否可用:'80px',操作:'80px'},'adduser()','添加用户','auser',true);
+   var itemtmp= base({项目名称:0,首页链接:0,是否可用:'80px',操作:'80px'},'additem()','添加项目','aitem',true);
 
-        "                    </tr>\n";
-}
-    },auser,'');
     var re="<div id='mett' class=\"ui top attached tabular menu\">\n" +
-        "  <a class=\"active item\" onclick='shuauser()' data-tab=\"first\">用户管理</a>\n" +
-        "  <a class=\"item\" data-tab=\"second\" onclick='shuaitem()'>项目管理</a>\n" +
+        "  <a class=\"active item\"  data-tab=\"first\">用户管理</a>\n" +
+        "  <a class=\"item\" data-tab=\"second\" >项目管理</a>\n" +
         "  <a class=\"item  \" data-tab=\"third\"  >其他设置</a>\n" +
         "</div>\n" +
         "<div class=\"ui bottom attached active tab segment\" data-tab=\"first\">\n" +
@@ -404,7 +462,42 @@ for(var i=0;i<a.length;i++){
     $('#context').html(re);
     $('#mett .item').tab();
 
+    shua('usermaneger','/user',function (a) {
+        var st='';
+        var us={};
+        var re='';
+        for(var i=0;i<a.length;i++){
 
+            var o=a[i];
+            us['id'+a[i].id]=o;
+            var cell={z1:i+1,z2:o.name,z3:o.email,z4:updateempty(o.lastlogintime),z5:is2cn(o.ismanager,1),z6:is2cn(o.isused,1),d1:["<button class=\"ui  circular basic icon button\" onclick=\"updateuser("+o.id+"')\" title=\"修改用户\"><i class=\"paint brush icon\"></i></button>","<button class=\"ui circular basic icon button "+((o.isused=="0")?'disabled':'')+"\" onclick='removeuser("+o.id+")' title=\"禁用用户\"><i class=\"remove circle icon red\"></i></button>"]};
+            re+=celladd(cell);
+
+
+        }
+        basedata['user']=us;
+
+        return re;
+    },'auser','');
+    shua('itemmaneger','/item',function (a) {
+        var st='';
+        var us={};
+        var re='';
+        for(var i=0;i<a.length;i++){
+
+            var o=a[i];
+            us['id'+a[i].id]=o;
+            //var itemtmp= base({项目名称:0,首页链接:0,参与用户:'200px',是否可用:'80px',操作:'80px'},'adduser','添加项目','aitem',true);
+
+            var cell={z1:i+1,z2:o.name,z3:o.url,z6:is2cn(o.isused,1),d1:["<button class=\"ui  circular basic icon button\" onclick=\"updateuser("+o.id+"')\" title=\"修改项目\"><i class=\"paint brush icon\"></i></button>","<button class=\"ui circular basic icon button "+((o.isused=="0")?'disabled':'')+"\" onclick='removeuser("+o.id+")' title=\"禁用项目\"><i class=\"remove circle icon red\"></i></button>"]};
+            re+=celladd(cell);
+
+
+        }
+        basedata['item']=us;
+
+        return re;
+    },'aitem','');
 
 
 }

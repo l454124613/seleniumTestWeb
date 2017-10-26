@@ -42,7 +42,7 @@ $(document).ready(function () {
     $.GetJSON('/com','version=0.2',function (a) {
         location.href='html/context2.html'
     },function (a) {
-        var c= Cookies.get('user');
+        var c= localStorage.getItem('user');
         if(typeof(c)==="undefined"){
 
         }else {
@@ -94,7 +94,7 @@ $(document).ready(function () {
               }
 
 
-               Cookies.set('user', compileStr(j2s(user)), { expires: 30 });
+               localStorage.setItem('user', compileStr(j2s(user)));
                location.href='html/context2.html';
                
            },function (a) {

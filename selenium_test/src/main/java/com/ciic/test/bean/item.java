@@ -13,7 +13,7 @@ public class item {
     private String      id;
     private String      name;
     private String isused;
-    private String firstpageurl;
+    private String url;
 
     @Override
     public String toString() {
@@ -24,19 +24,21 @@ public class item {
                 .append(name).append('\"');
         sb.append(",\"isused\":\"")
                 .append(isused).append('\"');
-        sb.append(",\"firstpageurl\":\"")
-                .append(firstpageurl).append('\"');
+        sb.append(",\"url\":\"")
+                .append(url).append('\"');
         sb.append('}');
         return sb.toString();
     }
 
-    public String getFirstpageurl() {
-        return firstpageurl;
+    public String getUrl() {
+        return url;
     }
 
-    public void setFirstpageurl(String firstpageurl) {
-        this.firstpageurl = firstpageurl;
+    public void setUrl(String url) {
+        this.url = url;
     }
+
+
 
     public String getIsused() {
         return isused;
