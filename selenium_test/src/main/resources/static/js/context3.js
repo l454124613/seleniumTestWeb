@@ -470,7 +470,7 @@ function clickmanage() {
 
             var o=a[i];
             us['id'+a[i].id]=o;
-            var cell={z1:i+1,z2:o.name,z3:o.email,z4:updateempty(o.lastlogintime),z5:is2cn(o.ismanager,1),z6:is2cn(o.isused,1),d1:["<button class=\"ui  circular basic icon button\" onclick=\"updateuser("+o.id+"')\" title=\"修改用户\"><i class=\"paint brush icon\"></i></button>","<button class=\"ui circular basic icon button "+((o.isused=="0")?'disabled':'')+"\" onclick='removeuser("+o.id+")' title=\"禁用用户\"><i class=\"remove circle icon red\"></i></button>"]};
+            var cell={z1:i+1,z2:o.name,z3:o.email,z4:updateempty(o.lastlogintime),z5:is2cn(o.ismanager,1),z6:is2cn(o.isused,1),d1:["<button class=\"ui  circular basic icon button\" onclick=\"updateuser("+o.id+")\" title=\"修改用户\"><i class=\"paint brush icon\"></i></button>","<button class=\"ui circular basic icon button "+((o.isused=="0")?'disabled':'')+"\" onclick='removeuser("+o.id+")' title=\"禁用用户\"><i class=\"remove circle icon red\"></i></button>"]};
             re+=celladd(cell);
 
 
@@ -498,6 +498,17 @@ function clickmanage() {
 
         return re;
     },'aitem','');
+    $.GetJSON('/user/initem','version=0.2',function(a){
+        basedata['userinitme']=a;
+
+    },function (a){
+        switch (parseInt(a.status)){
+            case 404:alertf(a.responseJSON.message);break;
+            case 401:location.href='/';break;
+            case 0:alertf("网络连接出错");break;
+            default:alertf(a.responseJSON.message);
+        }
+    } );
 
 
 }
