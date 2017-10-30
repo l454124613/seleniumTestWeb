@@ -12,26 +12,78 @@ import java.util.*;
  */
 public class mycode {
     public  static String encode(String so){
+        String re="";
         char a=so.charAt(0);
+        int a2=a+so.length();
+        if(a2%2==1){
+            re+='蠷';
+            re+=(char)((a2+1)/2);
+        }else {
+            re+='硿';
+            re+=(char)((a2)/2);
+        }
 
 
-        String re=(char)(a+so.length())+"";
+
         for (int i = 1; i <so.length() ; i++) {
-            re=re+(char)(so.charAt(i)+so.charAt(i-1));
+            int aa=so.charAt(i)+so.charAt(i-1);
+            if(aa%2==1){
+                re+='蠷';
+                re+=(char)((aa+1)/2);
+            }else {
+                re+='硿';
+                re+=(char)((aa)/2);
+            }
         }
 
 
         return re;
 
     }
+
+    /**
+     * 判断参数是否为空，无内容
+     * @param args
+     * @return
+     */
+    public static boolean hasEmpty(String ...args){
+        for (String a:args){
+            if(a.isEmpty()){
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    /**
+     * 创建数组
+     * @param args
+     * @return
+     */
+    public static  Object[] getArrayObj(Object...args){
+        return args;
+    }
+
     public  static String decode(String so){
-        char a=so.charAt(0);
-//        System.out.println(so.length());
-//        System.out.println(a+1);
-       String re=(char)(a-so.length())+"";
-//        System.out.println(re);
-        for (int i = 1; i <so.length() ; i++) {
-            re=re+(char)(so.charAt(i)-re.charAt(i-1));
+
+        String re="";
+        int n1=0;
+        if(so.charAt(0)=='蠷'){
+            n1=so.charAt(1)*2-1-so.length()/2;
+        }else {
+            n1=so.charAt(1)*2-so.length()/2;
+        }
+        re+=(char)n1;
+
+        for (int i = 3,j=2; i <so.length() ; i+=2,j+=2) {
+            if(so.charAt(j)=='蠷'){
+                n1=so.charAt(i)*2-1-n1;
+            }else {
+                n1=so.charAt(i)*2-n1;
+            }
+            re+=(char)n1;
+
         }
 
         return re;

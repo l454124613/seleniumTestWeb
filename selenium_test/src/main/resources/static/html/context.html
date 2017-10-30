@@ -673,30 +673,8 @@
 
 <script src="../js/js.cookie.js" ></script>
 <script src="../js/context2.js"></script>
-<script  >
-    function compileStr(code){ //对字符串进行加密
-        var c=String.fromCharCode(code.charCodeAt(0)+code.length);
+<script src="../js/httpr.js"></script>
 
-        for(var i=1;i<code.length;i++)
-        {
-            c+=String.fromCharCode(code.charCodeAt(i)+code.charCodeAt(i-1));
-        }
-        return encodeURI(c);   }
-
-    //字符串进行解密
-    function uncompileStr(code){
-        code=decodeURI(code);
-
-        var c=String.fromCharCode(code.charCodeAt(0)-code.length);
-
-
-        for(var i=1;i<code.length;i++)
-        {
-            c+=String.fromCharCode(code.charCodeAt(i)-c.charCodeAt(i-1));
-
-        }
-        return c;   }
-</script>
 <script>
 
     //    $('.sidebar')
