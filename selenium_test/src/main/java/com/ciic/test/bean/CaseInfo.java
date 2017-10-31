@@ -13,14 +13,6 @@ public class CaseInfo {
     private String label;
     private String ispass;
 
-    public String getIspass() {
-        return ispass;
-    }
-
-    public void setIspass(String ispass) {
-        this.ispass = ispass;
-    }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
@@ -40,8 +32,28 @@ public class CaseInfo {
                 .append(label).append('\"');
         sb.append(",\"ispass\":\"")
                 .append(ispass).append('\"');
+        sb.append(",\"vid\":\"")
+                .append(vid).append('\"');
         sb.append('}');
         return sb.toString();
+    }
+
+    public String getVid() {
+        return vid;
+    }
+
+    public void setVid(String vid) {
+        this.vid = vid;
+    }
+
+    private String vid;
+
+    public String getIspass() {
+        return ispass;
+    }
+
+    public void setIspass(String ispass) {
+        this.ispass = ispass;
     }
 
     public String getLabel() {

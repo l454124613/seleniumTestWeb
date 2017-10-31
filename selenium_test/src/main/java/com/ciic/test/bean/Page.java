@@ -20,6 +20,16 @@ public class Page {
    private String  pagename;
    private String  pagetitle;
 
+    public String getVid() {
+        return vid;
+    }
+
+    public void setVid(String vid) {
+        this.vid = vid;
+    }
+
+    private String vid;
+
     public String getId() {
         return id;
     }
@@ -57,7 +67,7 @@ public class Page {
         return "{" +
                 "\"pagename\":\"" + pagename + '\"' +
                 ", \"pagetitle\":\"" + pagetitle + '\"' +
-                ", \"id\":\"" + id + '\"' +
+                ", \"id\":\"" + id + '\"' +", \"vid\":\"" + vid + '\"'+
                 '}';
     }
 //

@@ -8,6 +8,7 @@ import com.ciic.test.service.Proxy;
 import com.ciic.test.service.SeleniumService;
 import com.ciic.test.tools.mycode;
 import com.sun.corba.se.impl.ior.NewObjectKeyTemplateBase;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -99,6 +100,42 @@ return list;
     public int removeCase(String id) {
         return    jdbcTemplate.update("UPDATE caselist set isused=0 where id=?",mycode.prase(new Object[]{id}));
 
+    }
+
+    @Override
+    public int finishCasehome(String id) {
+
+
+            tmp t2=jdbcTemplate.query("select tid value2  from casehome where id=?",new Object[]{id},new BeanPropertyRowMapper<>(tmp.class)).get(0);
+            List<Page> lp=  jdbcTemplate.query("select * from page where (vid =\"\"  or vid is null ) and isused=1 and tid=?",new Object[]{t2.getValue2()},new BeanPropertyRowMapper<>(Page.class));
+            for (int i = 0; i < lp.size(); i++) {
+                int a2= jdbcTemplate.update("INSERT INTO page ( \"pagename\", \"pagetitle\", \"parentid\", \"isused\", \"tid\", \"vid\") select pagename, pagetitle, parentid, isused, tid, ? from page where id="+lp.get(i).getId(),new Object[]{id});
+                if(a2>0){
+                    tmp t=jdbcTemplate.query("select max(id) value from page where vid="+id,new BeanPropertyRowMapper<>(tmp.class)).get(0);
+                    int a3= jdbcTemplate.update("INSERT INTO element ( \"num\", \"pid\", \"locationMethod\", \"value\", \"name\", \"toframe\", \"topage\", \"createtime\", \"lastupdatetime\", \"creater\", \"waitid\", \"waitvalue\", \"updater\", \"isused\", \"isframe\") select num, ?, locationMethod, value, name, toframe, topage, createtime, lastupdatetime, creater, waitid, waitvalue, updater, isused, isframe from element where pid= "+lp.get(i).getId(),new Object[]{t.getValue()});
+                    if(a3>0){
+
+
+
+
+                    }else {
+                        return 0;
+                    }
+                }else {
+                    return 0;
+                }
+
+
+            }
+          List<CaseInfo> lc=  jdbcTemplate.query("select * from caselist where (vid =\"\"  or vid is null ) and isused=1 and tid="+t2.getValue2(),new BeanPropertyRowMapper<>(CaseInfo.class));
+        for (int i = 0; i <lc.size() ; i++) {
+            CaseInfo c=lc.get(i);
+            if(c.getType().equals("1")){
+               // jdbcTemplate.query("select * from step")
+            }
+        }
+
+        return jdbcTemplate.update("update casehome set isfinish=1 where id=?",new Object[]{id});
     }
 
     @Override
@@ -486,7 +523,16 @@ return thread;
 
     @Override
     public int addCaseHome(String name, String des, String tid) {
-        return jdbcTemplate.update("INSERT INTO \"casehome\" ( \"name\", \"des\",  \"tid\")  VALUES (?, ?, ?)",mycode.prase(new Object[]{name,des,tid}));
+       List<CaseHome> lc=jdbcTemplate.query("select * from casehome where isused =1 and tid=? and isnow=1",new Object[]{tid},new BeanPropertyRowMapper<>(CaseHome.class));
+
+       if(lc.size()>0){
+         return jdbcTemplate.update("INSERT INTO \"casehome\" ( \"name\", \"des\",  \"tid\")  VALUES (?, ?, ?)",mycode.prase(new Object[]{name,des,tid}));
+
+
+       }else {
+           return jdbcTemplate.update("INSERT INTO \"casehome\" ( \"name\", \"des\",  \"tid\",\"isnow\")  VALUES (?, ?, ?,1)",mycode.prase(new Object[]{name,des,tid}));
+
+       }
     }
 
     @Override

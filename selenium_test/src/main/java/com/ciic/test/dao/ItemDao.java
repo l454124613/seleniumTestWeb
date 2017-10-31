@@ -45,7 +45,7 @@ public class ItemDao implements ItemService{
 
     @Override
     public List<Page> getPage(String tid) {
-                return jdbcTemplate.query("SELECT id,pagename,pagetitle from page where isused=1 and tid=?",mycode.prase(new Object[]{tid}),new BeanPropertyRowMapper<Page>(Page.class));
+                return jdbcTemplate.query("SELECT id,pagename,pagetitle from page where isused=1 and tid=? and vid =(select id from casehome where tid=? and isnow=1)",mycode.prase(new Object[]{tid,tid}),new BeanPropertyRowMapper<Page>(Page.class));
 
     }
 

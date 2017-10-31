@@ -18,6 +18,7 @@ int updateCantRunCase(String id);
 int updatecase(String id ,String name ,String des,String important);
 
 int removeCase(String id);
+int finishCasehome(String id);
 int addCase(String name ,String des,String important,String tid,String type);
 
 List<CaseInfo> getOnecase(String id);

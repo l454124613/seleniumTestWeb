@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +73,20 @@ private List<Element> list;
 
     @Override
     public List<Element> getall(String tid) {
-        return jdbcTemplate.query("SELECT element.id,pid,num,isframe,locationMethod,value,name,lastupdatetime,updater,topage,toframe,waitid,waitvalue,page.pagename from element join page on element.pid=page.id where element.isused=1 and page.isused=1 and tid=?",new Object[]{tid},new BeanPropertyRowMapper<>(Element.class));
+        List<tmp> lt=jdbcTemplate.query("select isfinish value ,id value2 from casehome where tid=? and isused=1 and isnow=1",new Object[]{tid},new BeanPropertyRowMapper<>(tmp.class));
+if(lt.size()>0){
+    if(lt.get(0).getValue().equals("0")){
+        return jdbcTemplate.query("SELECT element.id,pid,num,isframe,locationMethod,value,element.name,lastupdatetime,updater,topage,toframe,waitid,waitvalue,page.pagename,page.vid from element join page on element.pid=page.id  where element.isused=1 and page.isused=1 and page.tid=? and (vid=\"\" or vid is null)\n ",new Object[]{tid},new BeanPropertyRowMapper<>(Element.class));
+
+
+    }else {
+        return jdbcTemplate.query("SELECT element.id,pid,num,isframe,locationMethod,value,element.name,lastupdatetime,updater,topage,toframe,waitid,waitvalue,page.pagename,page.vid from element join page on element.pid=page.id  where element.isused=1 and page.isused=1 and page.tid=? and vid="+lt.get(0).getValue2(),new Object[]{tid},new BeanPropertyRowMapper<>(Element.class));
+
+    }
+
+}else {
+    return  new ArrayList<>();
+}
     }
 
 //    @Override

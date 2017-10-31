@@ -7,7 +7,6 @@ public class CaseHome {
     private  String id;
     private  String name;
     private  String des;
-    private  String cids;
 
     @Override
     public String toString() {
@@ -18,13 +17,23 @@ public class CaseHome {
                 .append(name).append('\"');
         sb.append(",\"des\":\"")
                 .append(des).append('\"');
-        sb.append(",\"cids\":\"")
-                .append(cids).append('\"');
+        sb.append(",\"isfinish\":\"")
+                .append(isfinish).append('\"');
         sb.append(",\"isnow\":\"")
                 .append(isnow).append('\"');
         sb.append('}');
         return sb.toString();
     }
+
+    public String getIsfinish() {
+        return isfinish;
+    }
+
+    public void setIsfinish(String isfinish) {
+        this.isfinish = isfinish;
+    }
+
+    private String isfinish;
 
     public String getIsnow() {
         return isnow;
@@ -60,11 +69,5 @@ public class CaseHome {
         this.des = des;
     }
 
-    public String getCids() {
-        return cids;
-    }
 
-    public void setCids(String cids) {
-        this.cids = cids;
-    }
 }

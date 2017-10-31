@@ -1186,7 +1186,22 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
 
     }
+    @RequestMapping("/finishcasehome/{chid}")
+    String finishCaseHome( @PathVariable String chid){
+        int n=  caseService.finishCasehome(chid);
 
+
+        if(n==1){
+
+
+            return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
+        }
+
+
+
+    }
     /**
      *
      * @param euid

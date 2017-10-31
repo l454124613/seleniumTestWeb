@@ -16,37 +16,6 @@ public class Element {
     private String id;
     private String num;
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("{");
-        sb.append("\"id\":\"")
-                .append(id).append('\"');
-        sb.append(",\"num\":\"")
-                .append(num).append('\"');
-        sb.append(",\"isframe\":\"")
-                .append(isframe).append('\"');
-        sb.append(",\"locationMethod\":\"")
-                .append(locationMethod).append('\"');
-        sb.append(",\"value\":\"")
-                .append(value).append('\"');
-        sb.append(",\"name\":\"")
-                .append(name).append('\"');
-        sb.append(",\"topage\":\"")
-                .append(topage).append('\"');
-        sb.append(",\"toframe\":\"")
-                .append(toframe).append('\"');
-        sb.append(",\"waitid\":\"")
-                .append(waitid).append('\"');
-        sb.append(",\"waitvalue\":\"")
-                .append(waitvalue).append('\"');
-        sb.append(",\"pid\":\"")
-                .append(pid).append('\"');
-        sb.append(",\"pagename\":\"")
-                .append(pagename).append('\"');
-        sb.append('}');
-        return sb.toString();
-    }
-
     public String getNum() {
         return num;
     }
@@ -74,6 +43,48 @@ public class Element {
     private String waitvalue;
     private String pid;
     private  String pagename;
+    private  String vid;
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append("\"id\":\"")
+                .append(id).append('\"');
+        sb.append(",\"num\":\"")
+                .append(num).append('\"');
+        sb.append(",\"isframe\":\"")
+                .append(isframe).append('\"');
+        sb.append(",\"locationMethod\":\"")
+                .append(locationMethod).append('\"');
+        sb.append(",\"value\":\"")
+                .append(value).append('\"');
+        sb.append(",\"name\":\"")
+                .append(name).append('\"');
+        sb.append(",\"topage\":\"")
+                .append(topage).append('\"');
+        sb.append(",\"toframe\":\"")
+                .append(toframe).append('\"');
+        sb.append(",\"waitid\":\"")
+                .append(waitid).append('\"');
+        sb.append(",\"waitvalue\":\"")
+                .append(waitvalue).append('\"');
+        sb.append(",\"pid\":\"")
+                .append(pid).append('\"');
+        sb.append(",\"pagename\":\"")
+                .append(pagename).append('\"');
+        sb.append(",\"vid\":\"")
+                .append(vid).append('\"');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public String getVid() {
+        return vid;
+    }
+
+    public void setVid(String vid) {
+        this.vid = vid;
+    }
 
     public String getPagename() {
         return pagename;
