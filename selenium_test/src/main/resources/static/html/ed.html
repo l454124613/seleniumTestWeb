@@ -1,87 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Editable WYSIWYG</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <style>
-        #editor {
-            resize:vertical;
-            overflow:auto;
-            border:1px solid silver;
-            border-radius:5px;
-            min-height:100px;
-            box-shadow: inset 0 0 10px silver;
-            padding:1em;
-        }
-    </style>
+    <title>EditArea Test</title>
+    <script language="javascript" type="text/javascript" src="../js/edit_area/edit_area_full.js"></script>
+    <script language="javascript" type="text/javascript">
+        editAreaLoader.init({
+            id : "textarea_1"		// textarea id
+            ,syntax: "css"			// syntax to be uses for highgliting
+            ,start_highlight: true		// to display with highlight mode on start-up
+        });
+    </script>
 </head>
 <body>
-<div class="content">
-    <div class="container-fluid">
-        <div id='pad-wrapper'>
-            <div id="editparent">
-                <div id='editControls' class='span12' style='text-align:center; padding:5px;'>
-                    <div class='btn-group'>
-                        <a class='btn' data-role='undo' href='#'>返回</a>
-                        <a class='btn' data-role='redo' href='#'>前进</a>
-                    </div>
-                    <div class='btn-group'>
-                        <a class='btn' data-role='bold' href='#'><b>Bold</b></a>
-                        <a class='btn' data-role='italic' href='#'><em>Italic</em></a>
-                        <a class='btn' data-role='underline' href='#'><u><b>U</b></u></a>
-                        <a class='btn' data-role='strikeThrough' href='#'><strike>abc</strike></a>
-                    </div>
-                    <div class='btn-group'>
-                        <a class='btn' data-role='justifyLeft' href='#'>左</a>
-                        <a class='btn' data-role='justifyCenter' href='#'>中</i></a>
-                        <a class='btn' data-role='justifyRight' href='#'>右</i></a>
-                        <a class='btn' data-role='justifyFull' href='#'>全</a>
-                    </div>
-                    <div class='btn-group'>
-                        <a class='btn' data-role='indent' href='#'>向右</a>
-                        <a class='btn' data-role='outdent' href='#'>向左</a>
-                    </div>
-                    <div class='btn-group'>
-                        <a class='btn' data-role='insertUnorderedList' href='#'>点</a>
-                        <a class='btn' data-role='insertOrderedList' href='#'>数字</a>
-                    </div>
-                    <div class='btn-group'>
-                        <a class='btn' data-role='h1' href='#'>h<sup>1</sup></a>
-                        <a class='btn' data-role='h2' href='#'>h<sup>2</sup></a>
-                        <a class='btn' data-role='p' href='#'>p</a>
-                    </div>
-                    <div class='btn-group'>
-                        <a class='btn' data-role='subscript' href='#'>下标</a>
-                        <a class='btn' data-role='superscript' href='#'>上标</a>
-                    </div>
-                </div>
-                <div id='editor' class='span12' style='' contenteditable="plaintext-only">
-                    <h1>1.This is a title!</h1>
-                    <p>2.This is just some example text to start us off</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<script src="../js/jquery-3.2.1.min.js"></script>
+<form method="post">
+	<textarea id="textarea_1" name="content" cols="80" rows="15">
+/*This is some css that will be editable with EditArea.*/
+body, html{
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	border: none;
+	overflow: hidden;
+}</textarea>
 
-<script>
-
-    $(function() {
-        $('#editControls a').click(function(e) {
-            switch($(this).data('role')) {
-                case 'h1':
-                case 'h2':
-                case 'p':
-                    document.execCommand('formatBlock', false, '<' + $(this).data('role') + '>');
-                    break;
-                default:
-                    document.execCommand($(this).data('role'), false, null);
-                    break;
-            }
-
-        })
-    });
-</script>
+</form>
 </body>
 </html>

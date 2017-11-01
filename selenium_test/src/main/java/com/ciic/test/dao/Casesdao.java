@@ -54,21 +54,7 @@ return list;
 
     @Override
     public List<CaseInfo> getcase(String tid,boolean isall) {
-        if (tid.charAt(0)=='t'){
-            String id=tid.replace("t","");
 
-            String aac="select cids value  from casehome where id=?";
-           List<tmp> lt= jdbcTemplate.query(aac,new Object[]{id},new BeanPropertyRowMapper<tmp>(tmp.class));
-
-           if(lt.size()>0){
-
-               return  jdbcTemplate.query("select * from caselist where id in ("+lt.get(0).getValue()+")" ,new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
-
-        }else {
-            return new ArrayList<CaseInfo>();
-        }
-
-        }else
             if(isall){
                 return  jdbcTemplate.query("select * from caselist where tid=? and isused=1 " ,mycode.prase(new Object[]{tid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
 
