@@ -94,10 +94,80 @@
     </div>
 
     <div class=" ui main  container"  id="menu7">
-        <div >123</div>
+
         <div style="margin-top: 70px"></div>
+
         <div id="context">
-            <h1 class="ui center aligned header"  style="margin-top: 10%">欢迎来到自动化测试管理平台</h1>
+            <div style="margin-bottom: 5px;">
+                <div class="ui  basic buttons">
+                    <button class="ui  button" title="离开" ><i class="long arrow left icon"></i>离开</button>
+
+                </div>
+                <div class="ui  basic icon buttons right floated">
+                    <button class="ui button"><i class="file icon"></i></button>
+                    <button class="ui button"><i class="save icon"></i></button>
+                    <button class="ui button"><i class="upload icon"></i></button>
+                    <button class="ui button"><i class="download icon"></i></button>
+                    <button class="ui button"><i class="cloud download icon"></i></button>
+                    <button class="ui button"><i class="trash outline icon"></i></button>
+                </div>
+
+                <div class="ui  icon buttons">
+                    <button class="ui basic button" title="编辑撤回" onclick=" document.execCommand('undo', false, null)"><i class="chevron left icon"></i></button>
+                    <button class="ui basic button" title="编辑再做" onclick=" document.execCommand('redo', false, null)"><i class="chevron right icon"></i></button>
+
+                </div>
+            </div>
+
+
+
+            <div class="ui styled fluid accordion"  >
+                <div class="title">
+                    <i class="dropdown icon"></i>
+                    What is a dog?
+                </div>
+                <div class="content" >
+                    <div class="ui grid">
+                        <div class="four wide column">
+                            <div class="ui vertical fluid tabular menu">
+                                <a class="item active">
+                                    基础信息
+                                </a>
+                                <a class="item">
+                                    信息头
+                                </a>
+                                <a class="item">
+                                    正则提取
+                                </a>
+                                <a class="item">
+                                    响应断言
+                                </a>
+                            </div>
+                        </div>
+                        <div class="twelve wide stretched column">
+
+                            <div class="ui segment" contenteditable="true">
+                                This is an stretched grid column. This segment will always match the tab height
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="title">
+                    <i class="dropdown icon"></i>
+                    What kinds of dogs are there?
+                </div>
+                <div class="content" contenteditable="true">
+                    <p>There are many breeds of dogs. Each breed varies in size and temperament. Owners often select a breed of dog that they find to be compatible with their own lifestyle and desires from a companion.</p>
+                </div>
+                <div class="title">
+                    <i class="dropdown icon"></i>
+                    How do you acquire a dog?
+                </div>
+                <div class="content" contenteditable="true">
+                    <p>Three common ways for a prospective owner to acquire a dog is from pet shops, private owners, or shelters.</p>
+                    <p>A pet shop may be the most convenient way to buy a dog. Buying a dog from a private owner allows you to assess the pedigree and upbringing of your dog before choosing to take it home. Lastly, finding your dog from a shelter, helps give a good home to a dog who may not find one so readily.</p>
+                </div>
+            </div>
         </div>
 
 
@@ -632,50 +702,25 @@
 
 <script src="../js/jquery-3.2.1.min.js" ></script>
 <script src="../js/semantic.min.js" ></script>
-<script src="../js/jquery.tablesort.min.js" ></script>
-
 <script src="../components/menu.js" ></script>
-
 <script src="../js/js.cookie.js" ></script>
 <script src="../js/context2.js"></script>
-<script  >
-    function compileStr(code){ //对字符串进行加密
-        var c=String.fromCharCode(code.charCodeAt(0)+code.length);
+<script src="../js/httpr.js"></script>
 
-        for(var i=1;i<code.length;i++)
-        {
-            c+=String.fromCharCode(code.charCodeAt(i)+code.charCodeAt(i-1));
-        }
-        return encodeURI(c);   }
-
-    //字符串进行解密
-    function uncompileStr(code){
-        code=decodeURI(code);
-
-        var c=String.fromCharCode(code.charCodeAt(0)-code.length);
-
-
-        for(var i=1;i<code.length;i++)
-        {
-            c+=String.fromCharCode(code.charCodeAt(i)-c.charCodeAt(i-1));
-
-        }
-        return c;   }
-</script>
 <script>
 
-//    $('.sidebar')
-//        .sidebar('attach events', '.button', 'overlay').sidebar('toggle')
-//    ;
-//    $('.button')
-//        .removeClass('disabled')
-//    ;
+    //    $('.sidebar')
+    //        .sidebar('attach events', '.button', 'overlay').sidebar('toggle')
+    //    ;
+    //    $('.button')
+    //        .removeClass('disabled')
+    //    ;
 
 
 
 
     function toggle() {
-      //  alert();
+        //  alert();
         var ww=$(document.body).outerWidth(true);
 //        var v1=0;
 //        if(ww>1127){
@@ -703,36 +748,42 @@
                 //  alert(2);
 //                $('.pusher').css('width', ww-150);
 //                $('#menu5').css('width', ww-150);
-                $('.pusher').animate({width:ww-140},450);
-             //   $('#menu7').animate({width:v1+"px"});
+                $('.pusher').animate({width:ww-152},450);
+                //   $('#menu7').animate({width:v1+"px"});
 
 
             },
 //
             onHide: function() {
-               // $('.ui.sidebar').css("z-index",1);
-               // alert(1);
-             //   $('.pusher').animate('width', ww);
+                // $('.ui.sidebar').css("z-index",1);
+                // alert(1);
+                //   $('.pusher').animate('width', ww);
                 $('.pusher').animate({width:ww},150);
-             //   $('#menu7').css('width', v1);
+                //   $('#menu7').css('width', v1);
             }
         })
-//            .sidebar('setting', {transition:'overlay'})
+        //            .sidebar('setting', {transition:'overlay'})
             .sidebar('toggle');
-setTimeout(function () {
+        setTimeout(function () {
 
-    $('.pushable').unbind("click");
-    $('.pusher').unbind("click");
-},500);
+            $('.pushable').unbind("click");
+            $('.pusher').unbind("click");
+        },500);
 
     }
 
 
 
 
-//    $('.demo.sidebar')
-//        .sidebar('setting', 'transition', 'overlay')
-//        .sidebar('toggle')
+    //    $('.demo.sidebar')
+    //        .sidebar('setting', 'transition', 'overlay')
+    //        .sidebar('toggle')
+    //    ;
+</script>
+
+<script>
+
+
 //    ;
 </script>
 </body>
