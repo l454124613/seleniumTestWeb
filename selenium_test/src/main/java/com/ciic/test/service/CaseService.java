@@ -44,6 +44,8 @@ int updateExp(String type,String sid,String a,String b,String c,String d,String 
 List<Precondition> getPrecondition(String cid);
 int updatePrecondition(String type,String cid ,String a,String b,String c);
 
+
+
 //run
 
 //    int addCase2RunOneCase(String cid,String tid);
