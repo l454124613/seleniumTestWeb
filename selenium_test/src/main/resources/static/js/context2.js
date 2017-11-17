@@ -209,6 +209,17 @@ var h=https[c];
         case 8:h.rest=re;break;
         case 9:h.header=re;break;
         case 10:h.body=re;break;
+        case 11:h.reg.path=re;break;
+        case 12:h.reg.name=re;break;
+        case 13:h.reg.reg=re;break;
+        case 14:h.reg.num=re;break;
+        case 15:h.reg.def=re;break;
+        case 16:h.ass.path=re;break;
+        case 17:h.ass.type=re;break;
+        case 18:h.ass.isigst=re;break;
+        case 19:h.ass.isfan=re;break;
+        case 20:h.ass.relation=re;break;
+        case 21:h.ass.pa=re;break;
     }
 
 }
@@ -231,12 +242,12 @@ switch (a){
 
 
     }break;
-    case 2: $('#'+b).unbind('input propertychange');$('#'+b).attr('contenteditable','true');$('#'+b).html(h.header);
+    case 2: $('#'+b).unbind('input propertychange');$('#'+b).attr('contenteditable','plaintext-only');$('#'+b).html(h.header);
     $('#'+b).bind('input propertychange', function() {
-        console.log(this);
+
         addhttp(this,9,b,true);
     });break;
-    case 3: $('#'+b).unbind('input propertychange');$('#'+b).attr('contenteditable','true');$('#'+b).html(h.body);$('#'+b).bind('input propertychange', function() {
+    case 3: $('#'+b).unbind('input propertychange');$('#'+b).attr('contenteditable','plaintext-only');$('#'+b).html(h.body);$('#'+b).bind('input propertychange', function() {
         addhttp(this,10,b,true);
     });break;
     case 4:{
@@ -255,14 +266,87 @@ switch (a){
         $('#'+b).unbind('input propertychange');
         $('#'+b).html("<div><label style=\"float: left\"><b>>匹配位置：</b></label><div oninput=\"addhttp(this,16,'"+b+"',false)\" contenteditable=\"true\" id='httpmethod' >"+h.ass.paht+"</div></div>" +
             "<div><label style=\"float: left\"><b>>匹配方式：</b></label><div oninput=\"addhttp(this,17,'"+b+"',false)\" contenteditable=\"true\" id='httpreq'>"+h.ass.type+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>是否忽略：</b></label><div oninput=\"addhttp(this,17,'"+b+"',false)\" contenteditable=\"true\" id='httpreq'>"+h.ass.isigst+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>是否取反：</b></label><div oninput=\"addhttp(this,18,'"+b+"',false)\" contenteditable=\"true\" id='ip'>"+h.ass.isfan+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>多条关系：</b></label><div oninput=\"addhttp(this,19,'"+b+"',false)\" contenteditable=\"true\" id='port'>"+h.ass.relation+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>匹配内容：</b></label><div oninput=\"addhttp(this,20,'"+b+"',false)\" contenteditable=\"true\" id='path'>"+h.ass.pa+"</div></div>" +
+            "<div><label style=\"float: left\"><b>>是否忽略：</b></label><div oninput=\"addhttp(this,18,'"+b+"',false)\" contenteditable=\"true\" id='httpreq'>"+h.ass.isigst+"</div></div>" +
+            "<div><label style=\"float: left\"><b>>是否取反：</b></label><div oninput=\"addhttp(this,19,'"+b+"',false)\" contenteditable=\"true\" id='ip'>"+h.ass.isfan+"</div></div>" +
+            "<div><label style=\"float: left\"><b>>多条关系：</b></label><div oninput=\"addhttp(this,20,'"+b+"',false)\" contenteditable=\"true\" id='port'>"+h.ass.relation+"</div></div>" +
+            "<div><label style=\"float: left\"><b>>匹配内容：</b></label><div oninput=\"addhttp(this,21,'"+b+"',false)\" contenteditable=\"true\" id='path'>"+h.ass.pa+"</div></div>" +
             "<div><br></div>\n" );
 
     }break;
 }
+}
+
+var ffm={size:4,i0:{name:'请求方法',des:'请求方法',type:'dropdown',length:3,con:['123:12312','123123:33']},i1:{name:'请求协议',des:'请求协议',type:'checkbox',length:3,con:['1231:123123','123:123123']},i2:{name:'请求超时',des:'0不做限制，时间单位毫秒',type:'input',length:5},i3:{name:'响应超时',des:'0不做限制，时间单位毫秒',type:'input',length:5}};
+function form2div(a) {
+    var re="<div class='ui form'>";
+    re+=a;
+    re+="</div>";
+    return re;
+}
+function getform(a) {
+    var re="<div class=\"fields\">";
+    for(var i=0;i<a.size;i++){
+        var va=a['i'+i];
+        re+=" <div class=\""+num2en(va.length)+" wide field\">";
+        re+="<label>"+va.name+"</label>";
+        switch (va.type){
+            case 'dropdown':{
+                re+="<div class=\"ui fluid search selection dropdown\">"+
+                    " <input type=\"hidden\" >"+
+                    "     <i class=\"dropdown icon\"></i>"+
+                    "     <div class=\"default text\">"+va.des+"</div>"+
+                    " <div class=\"menu\">";
+                for(var j=0;j<va.con.length;j++){
+                    var v2=va.con[j];
+                    var v3=v2.split(":");
+                    re+=" <div class=\"item\" data-value=\""+v3[0]+"\">"+v3[1]+"</div>"
+                }
+                    re+=" </div></div>";
+
+            }break;
+            case 'input':{
+                re+="<input type=\"text\"   placeholder=\""+va.des+"\">";
+
+            }break;
+            case 'checkbox':{
+                re+="<div class=\"ui toggle checkbox\" style=\"padding-top: 0.1rem;padding-left: 0.1rem;\">"+
+               " <input type=\"checkbox\"   >"+
+                "    <label></label>"+
+               " </div>";
+
+            }break;
+        }
+
+        re+=" </div>";
+
+    }
+    re+="</div>";
+    return re;
+
+
+
+    
+}
+function num2en(a) {
+    switch(a){
+        case 1:return 'one';break;
+        case 2:return 'two';break;
+        case 3:return 'three';break;
+        case 4:return 'four';break;
+        case 5:return 'five';break;
+        case 6:return 'six';break;
+        case 7:return 'seven';break;
+        case 8:return 'eight';break;
+        case 9:return 'nine';break;
+        case 10:return 'ten';break;
+        case 11:return 'eleven';break;
+        case 12:return 'twelve';break;
+        case 13:return 'thirteen';break;
+        case 14:return 'fourteen';break;
+        case 15:return 'fifteen';break;
+        case 16:return 'sixteen';break;
+        default: return '';
+    }
 }
 function newhttpstep() {
     diag('请输入请求的名称，多于10个字将被截取，谢谢',function (a) {
