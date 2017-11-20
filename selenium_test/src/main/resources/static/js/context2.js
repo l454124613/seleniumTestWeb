@@ -177,113 +177,257 @@ function diag(a,b)
         b(str);
     }
 }
- var https={base:{name:'',num:0,method:'GET/POST/PUT/DELETE/HEAD/PATCH/OPTIONS/TRACE',http:'HTTP/HTTPS',ip:'(IP地址或URI)',port:'(端口号)',path:'(以‘/’开始的路径)',encode:'GB2312/UTF-8/...',reqt:'(单位毫秒,0是不限制)0/1000/...',rest:'(单位毫秒,0是不限制)0/1000/...',header:'(格式是xxx:yyy，完成一条数据再回车)',body:'(格式是xxx=yyy，完成一条数据再回车，或者使用json，{...})',reg:{path:'响应正文/响应正文(转义)/响应头信息/响应代码/URL/请求头信息',name:'(参数值名称，不能数字开头，${参数名}此格式使用)',reg:'(正则表达式，使用（）表示提取部分)',num:'(符合正则的第几个内容，0表示随机)',def:'(若无提起内容，设置默认值，可不填为空)'},
-     ass:{paht:'响应正文/响应代码/响应头信息/请求头信息/URL',     isigst:'是/否(默认响应代码4xx和5xx为错误响应，选择‘是’后，忽略响应代码的判断)',type:'包含(可正则)/全文匹配(可正则)/包含(不可正则)/全文匹配(不可正则)',isfan:'是/否(选择‘是’则会当前匹配不到为正确)',
-     relation:'和/或(和是所有条件都正确为正确，或是有一个条件正确即正确)',pa:'(匹配的内容，多条匹配使用‘<’开头,第一条除外)'}},size:0};
+ var https={base:{name:'',num:0,base:{method:{key:'',value:''},http:{key:'',value:''},host:'',port:'',path:'',encoding:'',time4req:'',time4res:''},
+     header:'(格式是xxx:yyy，完成一条数据再回车)',
+     body:'(格式是xxx=yyy，完成一条数据再回车，或者使用json，{...})',
+     reg:{path:{key:'',value:''},name:'',reg:'',num:'',def:''},
+     ass:{path:{key:'',value:''},     isigst:false,type:{key:'',value:''},isfan:false,
+     isor:false,pa:''}}
+     ,size:0};
+
+function addhttp(id,text) {
+    var id2=$(text).attr('name');
+    var h=https[id2];
+    switch(id){
+        case 1:{
 
 
-function addhttp(a,b,c,ishtml) {
-    var re=''
-    if(ishtml){
-        re=$.trim($(a).html());
-    }else{
-      re=  $.trim($(a).text());
+            h.base.method.key=$(text).attr('data-value');
+            h.base.method.value=$(text).text();
+
+        }break;
+        case 2:{
+
+            h.base.http.key=$(text).attr('data-value');
+            h.base.http.value=$(text).text();
+        }break;
+        case 3:{
+
+            h.base.time4req=$(text).val();
+
+        }break;
+        case 4:{
+
+            h.base.time4res=$(text).val();
+
+        }break;
+        case 5:{
+
+            h.base.host=$(text).val();
+
+        }break;
+        case 6:{
+
+            h.base.port=$(text).val();
+
+        }break;
+        case 7:{
+
+            h.base.encoding=$(text).val();
+
+        }break;
+        case 8:{
+
+            h.base.path=$(text).val();
+
+        }break;
+        case 9:{
+
+            h.header=$(text).html();
+
+        }break;
+        case 10:{
+
+            h.body=$(text).html();
+
+        }break;
+        case 11:{
+
+            h.reg.path.key=$(text).attr('data-value');
+            h.reg.path.value=$(text).text();
+
+        }break;
+        case 12:{
+
+            h.reg.name=$(text).val();
+
+        }break;
+        case 13:{
+
+            h.reg.def=$(text).val();
+
+        }break;
+        case 14:{
+
+            h.reg.reg=$(text).val();
+
+        }break;
+        case 15:{
+
+            h.reg.num=$(text).val();
+
+        }break;
+        case 16:{
+
+            h.ass.path.key=$(text).attr('data-value');
+            h.ass.path.value=$(text).text();
+
+        }break;
+        case 17:{
+
+            h.ass.type.key=$(text).attr('data-value');
+            h.ass.type.value=$(text).text();
+
+        }break;
+        case 18:{
+
+            // h.ass.type.key=$(text).attr('data-value');
+            // h.ass.type.value=$(text).text();
+            h.ass.isigst= $(text).parent().checkbox('is checked');
+
+
+
+        }break;
+        case 19:{
+
+            // h.ass.type.key=$(text).attr('data-value');
+            // h.ass.type.value=$(text).text();
+            h.ass.isfan=  $(text).parent().checkbox('is checked');
+
+
+        }break;
+        case 20:{
+
+            // h.ass.type.key=$(text).attr('data-value');
+            // h.ass.type.value=$(text).text();
+            h.ass.isor=  $(text).parent().checkbox('is checked');
+
+
+        }break;
+        case 21:{
+
+            // h.ass.type.key=$(text).attr('data-value');
+            // h.ass.type.value=$(text).text();
+            h.ass.pa= $(text).html();
+
+
+        }break;
+
     }
-    // https.base.method=$('#httpmethod').text();
-    // https.base.http=$('#httpreq').text();
-    // https.base.ip=$('#ip').text();
-    // https.base.port=$('#port').text();
-    // https.base.path=$('#path').text();
-    // https.base.encode=$('#encoding').text();
-    // https.base.reqt=$('#reqtiming').text();
-    // https.base.rest=$('#restiming').text();
-var h=https[c];
-    switch (b){
-        case 1:h.method=re;break;
-        case 2:h.http=re;break;
-        case 3:h.ip=re;break;
-        case 4:h.port=re;break;
-        case 5:h.path=re;break;
-        case 6:h.encode=re;break;
-        case 7:h.reqt=re;break;
-        case 8:h.rest=re;break;
-        case 9:h.header=re;break;
-        case 10:h.body=re;break;
-        case 11:h.reg.path=re;break;
-        case 12:h.reg.name=re;break;
-        case 13:h.reg.reg=re;break;
-        case 14:h.reg.num=re;break;
-        case 15:h.reg.def=re;break;
-        case 16:h.ass.path=re;break;
-        case 17:h.ass.type=re;break;
-        case 18:h.ass.isigst=re;break;
-        case 19:h.ass.isfan=re;break;
-        case 20:h.ass.relation=re;break;
-        case 21:h.ass.pa=re;break;
-    }
-
 }
+
+// function addhttp(a,b,c,ishtml) {
+//     var re=''
+//     if(ishtml){
+//         re=$.trim($(a).html());
+//     }else{
+//       re=  $.trim($(a).text());
+//     }
+//     // https.base.method=$('#httpmethod').text();
+//     // https.base.http=$('#httpreq').text();
+//     // https.base.ip=$('#ip').text();
+//     // https.base.port=$('#port').text();
+//     // https.base.path=$('#path').text();
+//     // https.base.encode=$('#encoding').text();
+//     // https.base.reqt=$('#reqtiming').text();
+//     // https.base.rest=$('#restiming').text();
+// var h=https[c];
+//     switch (b){
+//         case 1:h.method=re;break;
+//         case 2:h.http=re;break;
+//         case 3:h.ip=re;break;
+//         case 4:h.port=re;break;
+//         case 5:h.path=re;break;
+//         case 6:h.encode=re;break;
+//         case 7:h.reqt=re;break;
+//         case 8:h.rest=re;break;
+//         case 9:h.header=re;break;
+//         case 10:h.body=re;break;
+//         case 11:h.reg.path=re;break;
+//         case 12:h.reg.name=re;break;
+//         case 13:h.reg.reg=re;break;
+//         case 14:h.reg.num=re;break;
+//         case 15:h.reg.def=re;break;
+//         case 16:h.ass.path=re;break;
+//         case 17:h.ass.type=re;break;
+//         case 18:h.ass.isigst=re;break;
+//         case 19:h.ass.isfan=re;break;
+//         case 20:h.ass.relation=re;break;
+//         case 21:h.ass.pa=re;break;
+//     }
+//
+// }
 function gethttpcon(a,b) {
 var h=https[b];
 
 switch (a){
     case 1:{
-        $('#'+b).attr('contenteditable','false');
         $('#'+b).unbind('input propertychange');
-        $('#'+b).html("<div><label style=\"float: left\"><b>>请求方法：</b></label><div oninput=\"addhttp(this,1,'"+b+"',false)\" contenteditable=\"true\" id='httpmethod' >"+h.method+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>请求协议：</b></label><div oninput=\"addhttp(this,2,'"+b+"',false)\" contenteditable=\"true\" id='httpreq'>"+h.http+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>请求地址：</b></label><div oninput=\"addhttp(this,3,'"+b+"',false)\" contenteditable=\"true\" id='ip'>"+h.ip+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>请求端口：</b></label><div oninput=\"addhttp(this,4,'"+b+"',false)\" contenteditable=\"true\" id='port'>"+h.port+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>请求路径：</b></label><div oninput=\"addhttp(this,5,'"+b+"',false)\" contenteditable=\"true\" id='path'>"+h.path+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>请求编码：</b></label><div oninput=\"addhttp(this,6,'"+b+"',false)\" contenteditable=\"true\" id='encoding'>"+h.encode+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>请求超时：</b></label><div oninput=\"addhttp(this,7,'"+b+"',false)\" contenteditable=\"true\" id='reqtiming'>"+h.reqt+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>响应超时：</b></label><div oninput=\"addhttp(this,8,'"+b+"',false)\" contenteditable=\"true\" id='restiming'>"+h.rest+"</div></div>" +
-            "<div><br></div>\n" );
+        $('#'+b).attr('contenteditable','false');
+                $('#'+b).html(form2div(getform(ffm,b)+getform(ffm1,b)+getform(ffm2,b)) );
+        $('.ui.dropdown').dropdown();
 
 
     }break;
-    case 2: $('#'+b).unbind('input propertychange');$('#'+b).attr('contenteditable','plaintext-only');$('#'+b).html(h.header);
+    case 2: $('#'+b).unbind('input propertychange');$('#'+b).attr('contenteditable','plaintext-only');$('#'+b).html(h.header);$('#'+b).attr('name',b);
     $('#'+b).bind('input propertychange', function() {
 
-        addhttp(this,9,b,true);
+        addhttp(9,this);
     });break;
-    case 3: $('#'+b).unbind('input propertychange');$('#'+b).attr('contenteditable','plaintext-only');$('#'+b).html(h.body);$('#'+b).bind('input propertychange', function() {
-        addhttp(this,10,b,true);
+    case 3: $('#'+b).unbind('input propertychange');$('#'+b).html(h.body);$('#'+b).attr('contenteditable','plaintext-only');$('#'+b).attr('name',b);
+    $('#'+b).bind('input propertychange', function() {
+        addhttp(10,this);
     });break;
     case 4:{
-        $('#'+b).attr('contenteditable','false');
+
+        // $('#'+b).html("<div><label style=\"float: left\"><b>>提取位置：</b></label><div oninput=\"addhttp(this,11,'"+b+"',false)\" contenteditable=\"true\" id='httpmethod' >"+h.reg.path+"</div></div>" +
+        //     "<div><label style=\"float: left\"><b>>参数名称：</b></label><div oninput=\"addhttp(this,12,'"+b+"',false)\" contenteditable=\"true\" id='httpreq'>"+h.reg.name+"</div></div>" +
+        //     "<div><label style=\"float: left\"><b>>正则提取：</b></label><div oninput=\"addhttp(this,13,'"+b+"',false)\" contenteditable=\"true\" id='ip'>"+h.reg.reg+"</div></div>" +
+        //     "<div><label style=\"float: left\"><b>>匹配序号：</b></label><div oninput=\"addhttp(this,14,'"+b+"',false)\" contenteditable=\"true\" id='port'>"+h.reg.num+"</div></div>" +
+        //     "<div><label style=\"float: left\"><b>>默认的值：</b></label><div oninput=\"addhttp(this,15,'"+b+"',false)\" contenteditable=\"true\" id='path'>"+h.reg.def+"</div></div>" +
+        //     "<div><br></div>\n" );
         $('#'+b).unbind('input propertychange');
-        $('#'+b).html("<div><label style=\"float: left\"><b>>提取位置：</b></label><div oninput=\"addhttp(this,11,'"+b+"',false)\" contenteditable=\"true\" id='httpmethod' >"+h.reg.path+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>参数名称：</b></label><div oninput=\"addhttp(this,12,'"+b+"',false)\" contenteditable=\"true\" id='httpreq'>"+h.reg.name+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>正则提取：</b></label><div oninput=\"addhttp(this,13,'"+b+"',false)\" contenteditable=\"true\" id='ip'>"+h.reg.reg+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>匹配序号：</b></label><div oninput=\"addhttp(this,14,'"+b+"',false)\" contenteditable=\"true\" id='port'>"+h.reg.num+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>默认的值：</b></label><div oninput=\"addhttp(this,15,'"+b+"',false)\" contenteditable=\"true\" id='path'>"+h.reg.def+"</div></div>" +
-            "<div><br></div>\n" );
+        $('#'+b).attr('contenteditable','false');
+        $('#'+b).html(form2div(getform(ffm3,b)+getform(ffm4,b)) );
+        $('.ui.dropdown').dropdown();
 
     }break;
     case 5:{
-        $('#'+b).attr('contenteditable','false');
         $('#'+b).unbind('input propertychange');
-        $('#'+b).html("<div><label style=\"float: left\"><b>>匹配位置：</b></label><div oninput=\"addhttp(this,16,'"+b+"',false)\" contenteditable=\"true\" id='httpmethod' >"+h.ass.paht+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>匹配方式：</b></label><div oninput=\"addhttp(this,17,'"+b+"',false)\" contenteditable=\"true\" id='httpreq'>"+h.ass.type+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>是否忽略：</b></label><div oninput=\"addhttp(this,18,'"+b+"',false)\" contenteditable=\"true\" id='httpreq'>"+h.ass.isigst+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>是否取反：</b></label><div oninput=\"addhttp(this,19,'"+b+"',false)\" contenteditable=\"true\" id='ip'>"+h.ass.isfan+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>多条关系：</b></label><div oninput=\"addhttp(this,20,'"+b+"',false)\" contenteditable=\"true\" id='port'>"+h.ass.relation+"</div></div>" +
-            "<div><label style=\"float: left\"><b>>匹配内容：</b></label><div oninput=\"addhttp(this,21,'"+b+"',false)\" contenteditable=\"true\" id='path'>"+h.ass.pa+"</div></div>" +
-            "<div><br></div>\n" );
+        $('#'+b).attr('contenteditable','false');
+        $('#'+b).html(form2div(getform(ffm5,b)+getform(ffm6,b)) );
+        $('.ui.dropdown').dropdown();
+        // $('#'+b).html("<div><label style=\"float: left\"><b>>匹配位置：</b></label><div oninput=\"addhttp(this,16,'"+b+"',false)\" contenteditable=\"true\" id='httpmethod' >"+h.ass.paht+"</div></div>" +
+        //     "<div><label style=\"float: left\"><b>>匹配方式：</b></label><div oninput=\"addhttp(this,17,'"+b+"',false)\" contenteditable=\"true\" id='httpreq'>"+h.ass.type+"</div></div>" +
+        //     "<div><label style=\"float: left\"><b>>是否忽略：</b></label><div oninput=\"addhttp(this,18,'"+b+"',false)\" contenteditable=\"true\" id='httpreq'>"+h.ass.isigst+"</div></div>" +
+        //     "<div><label style=\"float: left\"><b>>是否取反：</b></label><div oninput=\"addhttp(this,19,'"+b+"',false)\" contenteditable=\"true\" id='ip'>"+h.ass.isfan+"</div></div>" +
+        //     "<div><label style=\"float: left\"><b>>多条关系：</b></label><div oninput=\"addhttp(this,20,'"+b+"',false)\" contenteditable=\"true\" id='port'>"+h.ass.relation+"</div></div>" +
+        //     "<div><label style=\"float: left\"><b>>匹配内容：</b></label><div oninput=\"addhttp(this,21,'"+b+"',false)\" contenteditable=\"true\" id='path'>"+h.ass.pa+"</div></div>" +
+        //     "<div><br></div>\n" );
 
     }break;
 }
 }
 
-var ffm={size:4,i0:{name:'请求方法',des:'请求方法',type:'dropdown',length:3,con:['123:12312','123123:33']},i1:{name:'请求协议',des:'请求协议',type:'checkbox',length:3,con:['1231:123123','123:123123']},i2:{name:'请求超时',des:'0不做限制，时间单位毫秒',type:'input',length:5},i3:{name:'响应超时',des:'0不做限制，时间单位毫秒',type:'input',length:5}};
+var ffm={size:4,i0:{name:'请求方法',des:'请求方法',type:'dropdown',length:3,function:'addhttp(1,this)',con:['1:Get','2:POST','3:PUT','4:DELETE','5:HEAD','6:PATCH','7:OPTION','8:TRACE']},i1:{name:'请求协议',des:'请求协议',function:'addhttp(2,this)',type:'dropdown',length:3,con:['1:HTTP','2:HTTPS']},i2:{name:'请求超时',des:'0不做限制，时间单位毫秒',type:'input',length:5,function:'addhttp(3,this)'},i3:{name:'响应超时',des:'0不做限制，时间单位毫秒',type:'input',length:5,function:'addhttp(4,this)'}};
+var ffm1={size:3,i0:{name:'请求地址',des:'域名或者ip',type:'input',function:'addhttp(5,this)',length:10},i1:{name:'请求端口',des:'请求端口',type:'input',function:'addhttp(6,this)',length:3},i2:{name:'请求编码',des:'GB2312或者UTF-8或者其他',type:'input',function:'addhttp(7,this)',length:5}};
+var ffm2={size:1,i0:{name:'请求路径',des:'/',type:'input',function:'addhttp(8,this)',length:16}};
+var ffm3={size:3,i1:{name:'提取位置',des:'获取信息的来源',type:'dropdown',function:'addhttp(11,this)',length:4,
+    con:['1:响应正文','2:响应正文(转义)','3:响应头信息','4:响应代码','5:URL','6:请求头信息']},i0:{name:'参数名称',des:'(不能数字开头，${参数名}调用)',type:'input',function:'addhttp(12,this)',length:6},i2:{name:'默认值',des:'无提取值时替代',type:'input',function:'addhttp(13,this)',length:6}};
+var ffm4={size:2,i0:{name:'正则提取',des:'(正则表达式，使用（）表示提取部分)',type:'input',function:'addhttp(14,this)',length:14},i1:{name:'匹配序号',des:'0为随机',type:'input',function:'addhttp(15,this)',length:2}};
+var ffm5={size:5,i0:{name:'校验位置',des:'获取信息的来源',type:'dropdown',function:'addhttp(16,this)',length:4,con:['1:响应正文','2:响应代码','3:响应头信息','4:请求头信息','5:URL']}
+    ,i1:{name:'校验方式',des:'信息对比的方式',type:'dropdown',function:'addhttp(17,this)',length:4,con:['1:包含(可正则)','2:包含(不可正则)','3:全匹配(可正则)','4:全匹配(不可正则)']},
+    i2:{name:'忽略响应',type:'checkbox',des:'',length:2,function:'addhttp(18,this)'},i3:{name:'结果取反',des:'',type:'checkbox',length:2,function:'addhttp(19,this)'},i4:{name:'多条关系（和/或）',des:'或',type:'checkbox',length:4,function:'addhttp(20,this)'}
+}
+var ffm6={size:1,i0:{name:'检验内容',des:'(每一条数据完成后再回车)',function:'addhttp(21,this)',length:16,type:'div'}}
 function form2div(a) {
     var re="<div class='ui form'>";
     re+=a;
     re+="</div>";
     return re;
 }
-function getform(a) {
+function getform(a,b) {
+
     var re="<div class=\"fields\">";
     for(var i=0;i<a.size;i++){
         var va=a['i'+i];
@@ -299,20 +443,25 @@ function getform(a) {
                 for(var j=0;j<va.con.length;j++){
                     var v2=va.con[j];
                     var v3=v2.split(":");
-                    re+=" <div class=\"item\" data-value=\""+v3[0]+"\">"+v3[1]+"</div>"
+                    re+=" <div class=\"item\" name=\""+b+"\" onclick=\""+va.function+"\" data-value=\""+v3[0]+"\">"+v3[1]+"</div>"
                 }
                     re+=" </div></div>";
 
             }break;
             case 'input':{
-                re+="<input type=\"text\"   placeholder=\""+va.des+"\">";
+                re+="<input type=\"text\" name=\""+b+"\" onchange=\""+va.function+"\" placeholder=\""+va.des+"\">";
 
             }break;
             case 'checkbox':{
                 re+="<div class=\"ui toggle checkbox\" style=\"padding-top: 0.1rem;padding-left: 0.1rem;\">"+
-               " <input type=\"checkbox\"   >"+
-                "    <label></label>"+
+               " <input type=\"checkbox\"  name=\""+b+"\" onclick=\""+va.function+"\"  >"+
+                "    <label >"+va.des+"</label>"+
                " </div>";
+
+            }break;
+            case 'div':{
+
+                re+="<div name=\""+b+"\"  name=\""+b+"\" contenteditable='plaintext-only' oninput=\""+va.function+"\"  >"+va.des+"</div>";
 
             }break;
         }
