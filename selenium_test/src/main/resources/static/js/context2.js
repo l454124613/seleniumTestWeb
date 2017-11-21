@@ -168,22 +168,41 @@ $(document).ready(function () {
 
     });
 });
+function showhttphelp(){
+    var a=$.trim($('div.title.active').next().find('a.item.active').text());
 
-function diag(a,b)
+    var re="";
+    switch(a){
+        case '基础信息':re=" <h3>基础信息</h3><b>请求方法，请求协议</b>如下拉框选择<br><b>请求超时，响应超时</b>设置超时时间，超过该时间返回就是错，0为不限制<br>                        <b>请求地址</b>输入IP地址或者域名<br><b>请求端口</b>请求地址的端口号<br><b>请求编码</b>通常是GB2312或者UTF-8，具体按照输入<br><b>请求路径</b>路径以‘/’斜杠开始的一串字符";break;
+        case '信息头':re="<h3>信息头</h3>输入cookie，User-Agent...等信息，格式类似Cookie:（注意此处需要一个空格）JSESSIONID=2F9108AD49FCA0";break;
+        case '请求正文':re=" <h3>请求正文</h3>输入请求的请求体，get请求尽量别使用。一般可以使用键值对，格式类似：<br>name=alice<br>age=17<br>或者使用json字符串，格式类似：{\"name\":\"alice\",\"age\":17}";break;
+        case '正则提取':break;
+        case '响应断言':break;
+        default: re="请打开需要帮助的模块";
+    }
+$('#httphelp').html(re);
+}
+function diag(a,b,isshow,c)
 {
-    var str=prompt(a);
+    var str;
+    if(isshow){
+       str= prompt(a);
+    }else{
+        str=c;
+    }
+
     if(str)
     {
         b(str);
     }
 }
  var https={base:{name:'',num:0,base:{method:{key:'',value:''},http:{key:'',value:''},host:'',port:'',path:'',encoding:'',time4req:'',time4res:''},
-     header:'(格式是xxx:yyy，完成一条数据再回车)',
+     header:'(格式是xxx: yyy，完成一条数据再回车)',
      body:'(格式是xxx=yyy，完成一条数据再回车，或者使用json，{...})',
      reg:{path:{key:'',value:''},name:'',reg:'',num:'',def:''},
      ass:{path:{key:'',value:''},     isigst:false,type:{key:'',value:''},isfan:false,
      isor:false,pa:''}}
-     ,size:0};
+     ,size:0,del:[]};
 
 function addhttp(id,text) {
     var id2=$(text).attr('name');
@@ -357,16 +376,65 @@ function addhttp(id,text) {
 //     }
 //
 // }
+
+function copyhttp() {
+    diag('请输入复制的识别号',function (a) {
+    newhttpstep(true,'','','i'+a);
+
+    },true,'');
+
+}
+function deletehttp() {
+    diag('请输入删除的识别号',function (a) {
+        https.del.push(a);
+
+        shuahttps();
+
+
+    },true,'');
+    
+}
 function gethttpcon(a,b) {
 var h=https[b];
 
+
+
 switch (a){
     case 1:{
+
         $('#'+b).unbind('input propertychange');
         $('#'+b).attr('contenteditable','false');
                 $('#'+b).html(form2div(getform(ffm,b)+getform(ffm1,b)+getform(ffm2,b)) );
         $('.ui.dropdown').dropdown();
+        if(h.base.method.key!=''){
 
+            $('#'+b).find($('.ui.fluid.search')).eq(0).dropdown('set selected',h.base.method.key);
+        }
+
+        if(h.base.http.key!='')
+            $('#'+b).find($('.ui.fluid.search')).eq(1).dropdown('set selected',h.base.http.key);
+        if(h.base.time4req!='')
+        {
+            
+
+            var qq=h.base.time4req;
+            var qqq= $("input[name="+b+"]").eq(0);
+
+
+            qqq.val(qq);}
+
+
+
+        if(h.base.time4res!='')
+        $("input[name="+b+"]").eq(1).val(h.base.time4res);
+        if(h.base.host!='')
+        $("input[name="+b+"]:eq(2)").val(h.base.host);
+        if(h.base.port!='')
+        $("input[name="+b+"]:eq(3)").val(h.base.port);
+        if(h.base.encoding!='')
+        $("input[name="+b+"]:eq(4)").val(h.base.encoding);
+        if(h.base.path!='')
+        $("input[name="+b+"]:eq(5)").val(h.base.path);
 
     }break;
     case 2: $('#'+b).unbind('input propertychange');$('#'+b).attr('contenteditable','plaintext-only');$('#'+b).html(h.header);$('#'+b).attr('name',b);
@@ -380,30 +448,45 @@ switch (a){
     });break;
     case 4:{
 
-        // $('#'+b).html("<div><label style=\"float: left\"><b>>提取位置：</b></label><div oninput=\"addhttp(this,11,'"+b+"',false)\" contenteditable=\"true\" id='httpmethod' >"+h.reg.path+"</div></div>" +
-        //     "<div><label style=\"float: left\"><b>>参数名称：</b></label><div oninput=\"addhttp(this,12,'"+b+"',false)\" contenteditable=\"true\" id='httpreq'>"+h.reg.name+"</div></div>" +
-        //     "<div><label style=\"float: left\"><b>>正则提取：</b></label><div oninput=\"addhttp(this,13,'"+b+"',false)\" contenteditable=\"true\" id='ip'>"+h.reg.reg+"</div></div>" +
-        //     "<div><label style=\"float: left\"><b>>匹配序号：</b></label><div oninput=\"addhttp(this,14,'"+b+"',false)\" contenteditable=\"true\" id='port'>"+h.reg.num+"</div></div>" +
-        //     "<div><label style=\"float: left\"><b>>默认的值：</b></label><div oninput=\"addhttp(this,15,'"+b+"',false)\" contenteditable=\"true\" id='path'>"+h.reg.def+"</div></div>" +
-        //     "<div><br></div>\n" );
+
         $('#'+b).unbind('input propertychange');
         $('#'+b).attr('contenteditable','false');
         $('#'+b).html(form2div(getform(ffm3,b)+getform(ffm4,b)) );
         $('.ui.dropdown').dropdown();
-
+        if(h.reg.name!='')
+        $("input[name="+b+"]:eq(0)").val(h.reg.name);
+        if(h.reg.path.key!='')
+            $('#'+b).find($('.ui.fluid.search ')).dropdown('set selected',h.reg.path.key);
+        if(h.reg.def!='')
+        $("input[name="+b+"]:eq(1)").val(h.reg.def);
+        if(h.reg.reg!='')
+        $("input[name="+b+"]:eq(2)").val(h.reg.reg);
+        if(h.reg.num!='')
+        $("input[name="+b+"]:eq(3)").val(h.reg.num);
     }break;
     case 5:{
         $('#'+b).unbind('input propertychange');
         $('#'+b).attr('contenteditable','false');
         $('#'+b).html(form2div(getform(ffm5,b)+getform(ffm6,b)) );
         $('.ui.dropdown').dropdown();
-        // $('#'+b).html("<div><label style=\"float: left\"><b>>匹配位置：</b></label><div oninput=\"addhttp(this,16,'"+b+"',false)\" contenteditable=\"true\" id='httpmethod' >"+h.ass.paht+"</div></div>" +
-        //     "<div><label style=\"float: left\"><b>>匹配方式：</b></label><div oninput=\"addhttp(this,17,'"+b+"',false)\" contenteditable=\"true\" id='httpreq'>"+h.ass.type+"</div></div>" +
-        //     "<div><label style=\"float: left\"><b>>是否忽略：</b></label><div oninput=\"addhttp(this,18,'"+b+"',false)\" contenteditable=\"true\" id='httpreq'>"+h.ass.isigst+"</div></div>" +
-        //     "<div><label style=\"float: left\"><b>>是否取反：</b></label><div oninput=\"addhttp(this,19,'"+b+"',false)\" contenteditable=\"true\" id='ip'>"+h.ass.isfan+"</div></div>" +
-        //     "<div><label style=\"float: left\"><b>>多条关系：</b></label><div oninput=\"addhttp(this,20,'"+b+"',false)\" contenteditable=\"true\" id='port'>"+h.ass.relation+"</div></div>" +
-        //     "<div><label style=\"float: left\"><b>>匹配内容：</b></label><div oninput=\"addhttp(this,21,'"+b+"',false)\" contenteditable=\"true\" id='path'>"+h.ass.pa+"</div></div>" +
-        //     "<div><br></div>\n" );
+        if(h.ass.path.key!='')
+            $('#'+b).find($('.ui.fluid.search ')).eq(0).dropdown('set selected',h.ass.path.key);
+        if(h.ass.type.key!='')
+            $('#'+b).find($('.ui.fluid.search')).eq(1).dropdown('set selected',h.ass.type.key);
+        if(h.ass.isigst){
+            $('#'+b).find($('.ui.toggle.checkbox')).eq(0).checkbox('set checked');
+
+        }
+        if(h.ass.isfan){
+            $('#'+b).find($('.ui.toggle.checkbox')).eq(1).checkbox('set checked');
+
+        }
+        if(h.ass.isor){
+            $('#'+b).find($('.ui.toggle.checkbox')).eq(2).checkbox('set checked');
+
+        }
+        $("div[name="+b+"]:last").text(h.ass.pa);
+
 
     }break;
 }
@@ -414,7 +497,7 @@ var ffm1={size:3,i0:{name:'请求地址',des:'域名或者ip',type:'input',funct
 var ffm2={size:1,i0:{name:'请求路径',des:'/',type:'input',function:'addhttp(8,this)',length:16}};
 var ffm3={size:3,i1:{name:'提取位置',des:'获取信息的来源',type:'dropdown',function:'addhttp(11,this)',length:4,
     con:['1:响应正文','2:响应正文(转义)','3:响应头信息','4:响应代码','5:URL','6:请求头信息']},i0:{name:'参数名称',des:'(不能数字开头，${参数名}调用)',type:'input',function:'addhttp(12,this)',length:6},i2:{name:'默认值',des:'无提取值时替代',type:'input',function:'addhttp(13,this)',length:6}};
-var ffm4={size:2,i0:{name:'正则提取',des:'(正则表达式，使用（）表示提取部分)',type:'input',function:'addhttp(14,this)',length:14},i1:{name:'匹配序号',des:'0为随机',type:'input',function:'addhttp(15,this)',length:2}};
+var ffm4={size:2,i0:{name:'正则提取',des:'(正则表达式，使用（）表示提取部分)',type:'input',function:'addhttp(14,this)',length:14},i1:{name:'匹配识别号',des:'0为随机',type:'input',function:'addhttp(15,this)',length:2}};
 var ffm5={size:5,i0:{name:'校验位置',des:'获取信息的来源',type:'dropdown',function:'addhttp(16,this)',length:4,con:['1:响应正文','2:响应代码','3:响应头信息','4:请求头信息','5:URL']}
     ,i1:{name:'校验方式',des:'信息对比的方式',type:'dropdown',function:'addhttp(17,this)',length:4,con:['1:包含(可正则)','2:包含(不可正则)','3:全匹配(可正则)','4:全匹配(不可正则)']},
     i2:{name:'忽略响应',type:'checkbox',des:'',length:2,function:'addhttp(18,this)'},i3:{name:'结果取反',des:'',type:'checkbox',length:2,function:'addhttp(19,this)'},i4:{name:'多条关系（和/或）',des:'或',type:'checkbox',length:4,function:'addhttp(20,this)'}
@@ -425,6 +508,20 @@ function form2div(a) {
     re+=a;
     re+="</div>";
     return re;
+}
+function savenow() {
+    if(window.localStorage){
+        localStorage.setItem("https"+tid, j2s(https));
+        var a=localStorage.getItem("https"+tid);
+        if(a==j2s(https)){
+            alertf('保存成功');
+        }else{
+            alertf('保存失败');
+        }
+
+    }else{
+        alert('当前浏览器不支持此功能');
+    }
 }
 function getform(a,b) {
 
@@ -497,22 +594,40 @@ function num2en(a) {
         default: return '';
     }
 }
-function newhttpstep() {
+function newhttpstep(isshow,name,fromidnum,copy) {
+
     diag('请输入请求的名称，多于10个字将被截取，谢谢',function (a) {
         var a1=a;
         if(a.length>10){
             a1=a.substring(0,10);
         }
+        var id;
+        var num;
 
-        https.size++;
-        var id='i'+https.size;
-        https[id]= jQuery.extend(true,{}, https.base);
-        https[id].name=a1;
-        https[id].num=https.size;
-var o1=$('#httptitle').html();
-        o1+="<div class=\"title\">\n"+
+
+        if(isshow){
+            https.size++;
+            num=https.size;
+            id='i'+https.size;
+            if(copy){
+                https[id]=jQuery.extend(true,{}, https[copy]);
+            }else{
+                https[id]= jQuery.extend(true,{}, https.base);
+            }
+
+            https[id].name=a1;
+            https[id].num=https.size;
+        }else{
+            id='i'+fromidnum;
+            num=fromidnum;
+
+        }
+
+
+
+        var o1="<div class=\"title\">\n"+
             "                    <i class=\"dropdown icon\"></i>\n"+
-            "序号："+https.size+",名称："+a1+
+            "识别号："+num+",名称："+a1+
             "                </div>\n"+
             "                <div class=\"content\" >\n"+
             "                    <div class=\"ui grid\">\n"+
@@ -543,12 +658,14 @@ var o1=$('#httptitle').html();
             "                        </div>\n"+
             "                    </div>\n"+
             "                </div>";
-        $('#httptitle').html(o1);
+        $('#httptitle').append(o1);
         // $('.menu.ui').tab();
-        gethttpcon(1,id);
         semantic1();
 
-    });
+        gethttpcon(1,id);
+
+
+    },isshow,name);
 }
 
 function showmsg1(a) {
@@ -2785,8 +2902,14 @@ function  shuaitem() {
     
 }
 
-function contains(a,b) {
-    var a1=a.split(',');
+function contains(a,b,isArr) {
+    var a1;
+    if(isArr){
+    a1=a;
+    }else{
+        a1=a.split(',');
+    }
+
     var isok=false;
     for(var i=0;i<a1.length;i++){
         if(a1[i]==b){
@@ -2826,7 +2949,7 @@ if(cba==a){
                     switch (b){
                         case 'name':(ccs[i].name.indexOf(a)>=0)?ismatch=true:ismatch=false;break;
                         case 'des':(ccs[i].des.indexOf(a)>=0)?ismatch=true:ismatch=false;break;
-                        case 'label':contains(ccs[i].label,a)?ismatch=true:ismatch=false;break;
+                        case 'label':contains(ccs[i].label,a,false)?ismatch=true:ismatch=false;break;
                         case 'imp':ccs[i].important==a?ismatch=true:ismatch=false;break;
 
 

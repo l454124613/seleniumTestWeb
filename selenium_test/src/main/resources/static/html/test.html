@@ -104,12 +104,22 @@
 
                 </div>
                 <div class="ui  basic icon buttons right floated">
-                    <button class="ui button" onclick="newhttpstep()"><i class="file icon"></i></button>
-                    <button class="ui button"><i class="save icon"></i></button>
-                    <button class="ui button"><i class="upload icon"></i></button>
-                    <button class="ui button"><i class="download icon"></i></button>
-                    <button class="ui button"><i class="cloud download icon"></i></button>
-                    <button class="ui button"><i class="trash outline icon"></i></button>
+                    <button class="ui button" title="新建" onclick="newhttpstep(true)"><i class="file icon"></i></button>
+                    <button class="ui button"  title="保存"><i class="save icon"></i></button>
+                    <button class="ui button" title="上传jmx"><i class="upload icon"></i></button>
+                    <button class="ui button" title="下载jmx"><i class="download icon"></i></button>
+                    <button class="ui button" title="下载jmeter"><i class="cloud download icon"></i></button>
+
+                </div>
+                <div class="ui  basic icon buttons  floated">
+                    <button class="ui button" title="缓存" onclick="savenow()" ><i class="disk outline icon"></i></button>
+                    <button class="ui button"  title="复制" onclick="copyhttp()"><i class="copy icon"></i></button>
+
+                    <button class="ui button" title="删除"onclick="deletehttp()"><i class="trash outline icon"></i></button>
+                    <button class="ui button" title="疑问" onclick="showhttphelp()" ><i class="help circle outline icon"></i></button>
+                    <div class="ui custom3 popup" id="httphelp">
+                    </div>
+
                 </div>
 
                 <!--<div class="ui  icon buttons">-->
@@ -142,6 +152,7 @@
 <script src="../js/semantic.min.js" ></script>
 <script src="../components/menu.js" ></script>
 <script src="../js/js.cookie.js" ></script>
+
 <script src="../js/context2.js"></script>
 <script src="../js/httpr.js"></script>
 
@@ -218,11 +229,39 @@
     //        .sidebar('toggle')
     //    ;
 </script>
-
 <script>
+    $(function(){
+        tid=10;
+        var a=localStorage.getItem("https"+tid);
+        https=s2j(a);
+        shuahttps();
+        $('.ui.button').eq(10).popup({
+            popup : $('.custom3.popup'),
+            on:'click'
+
+        });
+    })
+
+    function shuahttps(){
 
 
-//    ;
+
+
+
+            $('#httptitle').html('');
+            for(var i=1;i<https.size+1;i++){
+
+                if(https.del.length>0&&contains(https.del,i,true)){
+                    continue;
+                }
+
+
+                newhttpstep(false,https['i'+i].name,i);
+            }
+
+    }
 </script>
+
+
 </body>
 </html>
