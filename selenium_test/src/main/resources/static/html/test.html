@@ -105,7 +105,7 @@
                 </div>
                 <div class="ui  basic icon buttons right floated">
                     <button class="ui button" title="新建" onclick="newhttpstep(true)"><i class="file icon"></i></button>
-                    <button class="ui button"  title="保存"><i class="save icon"></i></button>
+                    <button class="ui button"  title="保存" onclick="savehttps()"><i class="save icon"></i></button>
                     <button class="ui button" title="上传jmx"><i class="upload icon"></i></button>
                     <button class="ui button" title="下载jmx"><i class="download icon"></i></button>
                     <button class="ui button" title="下载jmeter"><i class="cloud download icon"></i></button>
@@ -232,7 +232,10 @@
     $(function(){
         tid=10;
         var a=localStorage.getItem("https"+tid);
-        https=s2j(a);
+        if(a!=null){
+            https=s2j(a);
+        }
+
         shuahttps();
         $('.ui.button').eq(10).popup({
             popup : $('.custom3.popup'),
@@ -248,14 +251,14 @@
 
 
             $('#httptitle').html('');
-            for(var i=1;i<https.size+1;i++){
+            for(var i=0;i<https.info.length;i++){
 
-                if(https.del.length>0&&contains(https.del,i,true)){
+                if(!https.info[i].isshow){
                     continue;
                 }
 
 
-                newhttpstep(false,https['i'+i].name,i);
+                newhttpstep(false,https.info[i].name,i+1);
             }
 
     }

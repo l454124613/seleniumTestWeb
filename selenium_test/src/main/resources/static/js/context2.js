@@ -173,12 +173,12 @@ function showhttphelp(){
 
     var re="";
     switch(a){
-        case '基础信息':re=" <h3>基础信息</h3><b>请求方法，请求协议</b>如下拉框选择<br><b>请求超时，响应超时</b>设置超时时间，超过该时间返回就是错，0为不限制<br>                        <b>请求地址</b>输入IP地址或者域名<br><b>请求端口</b>请求地址的端口号<br><b>请求编码</b>通常是GB2312或者UTF-8，具体按照输入<br><b>请求路径</b>路径以‘/’斜杠开始的一串字符";break;
+        case '基础信息':re=" <h3>基础信息</h3><b>请求方法，请求协议</b>如下拉框选择,必填<br><b>请求超时，响应超时</b>设置超时时间，超过该时间返回就是错，0为不限制<br><b>请求地址</b>输入IP地址或者域名，必填<br><b>请求端口</b>请求地址的端口号<br><b>请求编码</b>通常是GB2312或者UTF-8，具体按照输入<br><b>请求路径</b>路径以‘/’斜杠开始的一串字符，必填";break;
         case '信息头':re="<h3>信息头</h3>输入cookie，User-Agent...等信息，格式类似Cookie:（注意此处需要一个空格）JSESSIONID=2F9108AD49FCA0";break;
         case '请求正文':re=" <h3>请求正文</h3>输入请求的请求体，get请求尽量别使用。一般可以使用键值对，格式类似：<br>name=alice<br>age=17<br>或者使用json字符串，格式类似：{\"name\":\"alice\",\"age\":17}";break;
         case '正则提取':re="<h3>正则提取</h3><b>参数名称</b>参数引用时的名称，使用${参数名}进行引用。<br><b>提取位置</b>按照下拉框选择位置<br><b>默认值</b>当提取不到正则时，使用默认值，不填时，为空<br><b>正则提取</b>提取时，只选择（）括号内的部分，其余不想提取部分不要放在小括号中，规则为通用正则<br><b>匹配识别号</b>当同一个正则能够匹配到多个结果时，选择使用的序号，输入0为随机哪个";break;
         case '响应断言':re="  <h3>响应断言</h3><b>校验位置，校验方式</b>按照下拉框，选择想要的位置和方式<br><b>忽略响应</b>当选择后，响应代码为4xx和5xx的都不会默认为失败，不选择，则默认为失败<br><b>结果取反</b>当选择后，结果是匹配结果的相反结果<br><b>多条关系</b>当检验内容为多条时，不选择就要每条内容都正确才是正确，选择后，只要一条内容正确就是正确<br><b>校验内容</b>输入想要校验的内容，需要多条数据时，请使用回车分离";break;
-        default: re="请打开需要帮助的模块";
+        default: re="请打开需要帮助的模块，*为必填";
     }
 $('#httphelp').html(re);
 }
@@ -196,17 +196,17 @@ function diag(a,b,isshow,c)
         b(str);
     }
 }
- var https={base:{name:'',num:0,base:{method:{key:'',value:''},http:{key:'',value:''},host:'',port:'',path:'',encoding:'',time4req:'',time4res:''},
+ var https={demo:{name:'',num:0,isshow:true,base:{method:{key:'',value:''},http:{key:'',value:''},host:'',port:'',path:'',encoding:'',time4req:'',time4res:''},
      header:'(格式是xxx: yyy，完成一条数据再回车)',
      body:'(格式是xxx=yyy，完成一条数据再回车，或者使用json，{...})',
      reg:{path:{key:'',value:''},name:'',reg:'',num:'',def:''},
      ass:{path:{key:'',value:''},     isigst:false,type:{key:'',value:''},isfan:false,
      isor:false,pa:''}}
-     ,size:0,del:[]};
+     ,info:[]};
 
 function addhttp(id,text) {
     var id2=$(text).attr('name');
-    var h=https[id2];
+    var h=https.info[(parseInt(id2.substring(1))-1)];
     switch(id){
         case 1:{
 
@@ -379,7 +379,8 @@ function addhttp(id,text) {
 
 function copyhttp() {
     diag('请输入复制的识别号，无此识别号为新建，不输入为取消',function (a) {
-    newhttpstep(true,'','','i'+a);
+
+    newhttpstep(true,'','',a);
 
     },true,'');
 
@@ -409,7 +410,8 @@ if(!re){
     
 }
 function gethttpcon(a,b) {
-var h=https[b];
+var h=https.info[b];
+b='i'+(b+1);
 
 
 
@@ -499,24 +501,25 @@ switch (a){
             $('#'+b).find($('.ui.toggle.checkbox')).eq(2).checkbox('set checked');
 
         }
-        $("div[name="+b+"]:last").text(h.ass.pa);
+       if(h.ass.pa!='')
+        $("div[name='"+b+"']:last").text(h.ass.pa);
 
 
     }break;
 }
 }
 
-var ffm={size:4,i0:{name:'请求方法',des:'请求方法',type:'dropdown',length:3,function:'addhttp(1,this)',con:['1:Get','2:POST','3:PUT','4:DELETE','5:HEAD','6:PATCH','7:OPTION','8:TRACE']},i1:{name:'请求协议',des:'请求协议',function:'addhttp(2,this)',type:'dropdown',length:3,con:['1:HTTP','2:HTTPS']},i2:{name:'请求超时',des:'0不做限制，时间单位毫秒',type:'input',length:5,function:'addhttp(3,this)'},i3:{name:'响应超时',des:'0不做限制，时间单位毫秒',type:'input',length:5,function:'addhttp(4,this)'}};
-var ffm1={size:3,i0:{name:'请求地址',des:'域名或者ip',type:'input',function:'addhttp(5,this)',length:10},i1:{name:'请求端口',des:'请求端口',type:'input',function:'addhttp(6,this)',length:3},i2:{name:'请求编码',des:'GB2312或者UTF-8或者其他',type:'input',function:'addhttp(7,this)',length:5}};
-var ffm2={size:1,i0:{name:'请求路径',des:'/',type:'input',function:'addhttp(8,this)',length:16}};
+var ffm={size:4,i0:{name:'请求方法*',des:'请求方法',type:'dropdown',length:3,function:'addhttp(1,this)',con:['1:Get','2:POST','3:PUT','4:DELETE','5:HEAD','6:PATCH','7:OPTION','8:TRACE']},i1:{name:'请求协议*',des:'请求协议',function:'addhttp(2,this)',type:'dropdown',length:3,con:['1:HTTP','2:HTTPS']},i2:{name:'请求超时',des:'0不做限制，时间单位毫秒',type:'input',length:5,function:'addhttp(3,this)'},i3:{name:'响应超时',des:'0不做限制，时间单位毫秒',type:'input',length:5,function:'addhttp(4,this)'}};
+var ffm1={size:3,i0:{name:'请求地址*',des:'域名或者ip',type:'input',function:'addhttp(5,this)',length:10},i1:{name:'请求端口',des:'请求端口',type:'input',function:'addhttp(6,this)',length:3},i2:{name:'请求编码',des:'GB2312或者UTF-8或者其他',type:'input',function:'addhttp(7,this)',length:5}};
+var ffm2={size:1,i0:{name:'请求路径*',des:'/',type:'input',function:'addhttp(8,this)',length:16}};
 var ffm3={size:3,i1:{name:'提取位置',des:'获取信息的来源',type:'dropdown',function:'addhttp(11,this)',length:4,
     con:['1:响应正文','2:响应正文(转义)','3:响应头信息','4:响应代码','5:URL','6:请求头信息']},i0:{name:'参数名称',des:'(不能数字开头，${参数名}调用)',type:'input',function:'addhttp(12,this)',length:6},i2:{name:'默认值',des:'无提取值时替代',type:'input',function:'addhttp(13,this)',length:6}};
 var ffm4={size:2,i0:{name:'正则提取',des:'(正则表达式，使用（）表示提取部分)',type:'input',function:'addhttp(14,this)',length:14},i1:{name:'匹配识别号',des:'0为随机',type:'input',function:'addhttp(15,this)',length:2}};
-var ffm5={size:5,i0:{name:'校验位置',des:'获取信息的来源',type:'dropdown',function:'addhttp(16,this)',length:4,con:['1:响应正文','2:响应代码','3:响应头信息','4:请求头信息','5:URL']}
-    ,i1:{name:'校验方式',des:'信息对比的方式',type:'dropdown',function:'addhttp(17,this)',length:4,con:['1:包含(可正则)','2:包含(不可正则)','3:全匹配(可正则)','4:全匹配(不可正则)']},
+var ffm5={size:5,i0:{name:'校验位置*',des:'获取信息的来源',type:'dropdown',function:'addhttp(16,this)',length:4,con:['1:响应正文','2:响应代码','3:响应头信息','4:请求头信息','5:URL']}
+    ,i1:{name:'校验方式*',des:'信息对比的方式',type:'dropdown',function:'addhttp(17,this)',length:4,con:['1:包含(可正则)','2:包含(不可正则)','3:全匹配(可正则)','4:全匹配(不可正则)']},
     i2:{name:'忽略响应',type:'checkbox',des:'',length:2,function:'addhttp(18,this)'},i3:{name:'结果取反',des:'',type:'checkbox',length:2,function:'addhttp(19,this)'},i4:{name:'多条关系（和/或）',des:'或',type:'checkbox',length:4,function:'addhttp(20,this)'}
 }
-var ffm6={size:1,i0:{name:'检验内容',des:'(每一条数据完成后再回车)',function:'addhttp(21,this)',length:16,type:'div'}}
+var ffm6={size:1,i0:{name:'检验内容*',des:'(每一条数据完成后再回车)',function:'addhttp(21,this)',length:16,type:'div'}}
 function form2div(a) {
     var re="<div class='ui form'>";
     re+=a;
@@ -608,6 +611,31 @@ function num2en(a) {
         default: return '';
     }
 }
+function savehttps() {
+    var data={};
+    var j=1;
+    var isok=true;
+    for(var i=0;i<https.size;i++){
+
+            var h=https.info[i];
+            if(h.base.path==""||h.base.host==""||h.base.method.key==""||h.base.http.key==""||h.ass.path.key==""||h.ass.type.key==""||h.ass.pa==""){
+                isok=false;
+
+            }else{
+                data['j'+j]=h;
+                j++;
+            }
+
+    }
+    if(isok){
+        data[size]=j;
+        return data;
+    }else{
+        alertf("有必填项未填，请检查")
+    }
+
+    
+}
 function newhttpstep(isshow,name,fromidnum,copy) {
 
     diag('请输入请求的名称，多于10个字将被截取，不输入为取消',function (a) {
@@ -617,26 +645,28 @@ function newhttpstep(isshow,name,fromidnum,copy) {
         }
         var id;
         var num;
+var size=https.info.length;
 
 
         if(isshow){
-            https.size++;
-            num=https.size;
-            id='i'+https.size;
-            if(copy&&copy<id&&!contains(https.del,copy.substring(1),true)){
-                https[id]=jQuery.extend(true,{}, https[copy]);
+
+            num=size+1;
+
+
+            if(copy&&copy<=size&&https.info[(copy-1)].isshow){
+                https.info.push(jQuery.extend(true,{}, https.info[(copy-1)]));
             }else{
-                https[id]= jQuery.extend(true,{}, https.base);
+                https.info.push (jQuery.extend(true,{}, https.demo));
             }
 
-            https[id].name=a1;
-            https[id].num=https.size;
+            https.info[size].name=a1;
+            https.info[size].num=size+1;
         }else{
-            id='i'+fromidnum;
-            num=fromidnum;
+
+num=fromidnum;
 
         }
-
+        id='i'+num;
 
 
         var o1="<div class=\"title\">\n"+
@@ -647,20 +677,20 @@ function newhttpstep(isshow,name,fromidnum,copy) {
             "                    <div class=\"ui grid\">\n"+
             "                        <div class=\"three wide column\">\n"+
             "                            <div class=\"ui vertical fluid tabular menu\">\n"+
-            "                                <a class=\"item active\" onclick=\"gethttpcon(1,'"+id+"')\">\n"+
-            "                                    基础信息\n"+
+            "                                <a class=\"item active\" onclick=\"gethttpcon(1,"+(num-1)+")\">\n"+
+            "                                    基础信息*\n"+
             "                                </a>\n"+
-            "                                <a class=\"item\" onclick=\"gethttpcon(2,'"+id+"')\">\n"+
+            "                                <a class=\"item\" onclick=\"gethttpcon(2,"+(num-1)+")\">\n"+
             "                                    信息头\n"+
             "                                </a>\n"+
-            "                                <a class=\"item\"  onclick=\"gethttpcon(3,'"+id+"')\">\n"+
+            "                                <a class=\"item\"  onclick=\"gethttpcon(3,"+(num-1)+")\">\n"+
             "                                    请求正文\n"+
             "                                </a>\n"+
-            "                                <a class=\"item\"  onclick=\"gethttpcon(4,'"+id+"')\">\n"+
+            "                                <a class=\"item\"  onclick=\"gethttpcon(4,"+(num-1)+")\">\n"+
             "                                    正则提取\n"+
             "                                </a>\n"+
-            "                                <a class=\"item\"  onclick=\"gethttpcon(5,'"+id+"')\">\n"+
-            "                                    响应断言\n"+
+            "                                <a class=\"item\"  onclick=\"gethttpcon(5,"+(num-1)+")\">\n"+
+            "                                    响应断言*\n"+
             "                                </a>\n"+
             "                            </div>\n"+
             "                        </div>\n"+
@@ -676,7 +706,7 @@ function newhttpstep(isshow,name,fromidnum,copy) {
         // $('.menu.ui').tab();
         semantic1();
 
-        gethttpcon(1,id);
+        gethttpcon(1,(num-1));
 
 
     },isshow,name);
