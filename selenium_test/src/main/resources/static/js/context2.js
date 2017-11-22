@@ -176,8 +176,8 @@ function showhttphelp(){
         case '基础信息':re=" <h3>基础信息</h3><b>请求方法，请求协议</b>如下拉框选择<br><b>请求超时，响应超时</b>设置超时时间，超过该时间返回就是错，0为不限制<br>                        <b>请求地址</b>输入IP地址或者域名<br><b>请求端口</b>请求地址的端口号<br><b>请求编码</b>通常是GB2312或者UTF-8，具体按照输入<br><b>请求路径</b>路径以‘/’斜杠开始的一串字符";break;
         case '信息头':re="<h3>信息头</h3>输入cookie，User-Agent...等信息，格式类似Cookie:（注意此处需要一个空格）JSESSIONID=2F9108AD49FCA0";break;
         case '请求正文':re=" <h3>请求正文</h3>输入请求的请求体，get请求尽量别使用。一般可以使用键值对，格式类似：<br>name=alice<br>age=17<br>或者使用json字符串，格式类似：{\"name\":\"alice\",\"age\":17}";break;
-        case '正则提取':break;
-        case '响应断言':break;
+        case '正则提取':re="<h3>正则提取</h3><b>参数名称</b>参数引用时的名称，使用${参数名}进行引用。<br><b>提取位置</b>按照下拉框选择位置<br><b>默认值</b>当提取不到正则时，使用默认值，不填时，为空<br><b>正则提取</b>提取时，只选择（）括号内的部分，其余不想提取部分不要放在小括号中，规则为通用正则<br><b>匹配识别号</b>当同一个正则能够匹配到多个结果时，选择使用的序号，输入0为随机哪个";break;
+        case '响应断言':re="  <h3>响应断言</h3><b>校验位置，校验方式</b>按照下拉框，选择想要的位置和方式<br><b>忽略响应</b>当选择后，响应代码为4xx和5xx的都不会默认为失败，不选择，则默认为失败<br><b>结果取反</b>当选择后，结果是匹配结果的相反结果<br><b>多条关系</b>当检验内容为多条时，不选择就要每条内容都正确才是正确，选择后，只要一条内容正确就是正确<br><b>校验内容</b>输入想要校验的内容，需要多条数据时，请使用回车分离";break;
         default: re="请打开需要帮助的模块";
     }
 $('#httphelp').html(re);
@@ -378,17 +378,31 @@ function addhttp(id,text) {
 // }
 
 function copyhttp() {
-    diag('请输入复制的识别号',function (a) {
+    diag('请输入复制的识别号，无此识别号为新建，不输入为取消',function (a) {
     newhttpstep(true,'','','i'+a);
 
     },true,'');
 
 }
 function deletehttp() {
-    diag('请输入删除的识别号',function (a) {
-        https.del.push(a);
+    diag('请输入删除的识别号，不输入为取消',function (a) {
+        var aa=https.del;
+       var  re=false;
+        if(a>https.size){
+            re=true;
+        }
+        for(var i=0;i<aa.length;i++){
+            if(a==aa[i]){
+                re=true;
+                break;
+            }
+        }
+if(!re){
+    https.del.push(a);
 
-        shuahttps();
+    shuahttps();
+}
+
 
 
     },true,'');
@@ -596,7 +610,7 @@ function num2en(a) {
 }
 function newhttpstep(isshow,name,fromidnum,copy) {
 
-    diag('请输入请求的名称，多于10个字将被截取，谢谢',function (a) {
+    diag('请输入请求的名称，多于10个字将被截取，不输入为取消',function (a) {
         var a1=a;
         if(a.length>10){
             a1=a.substring(0,10);
@@ -609,7 +623,7 @@ function newhttpstep(isshow,name,fromidnum,copy) {
             https.size++;
             num=https.size;
             id='i'+https.size;
-            if(copy){
+            if(copy&&copy<id&&!contains(https.del,copy.substring(1),true)){
                 https[id]=jQuery.extend(true,{}, https[copy]);
             }else{
                 https[id]= jQuery.extend(true,{}, https.base);
@@ -2903,6 +2917,7 @@ function  shuaitem() {
 }
 
 function contains(a,b,isArr) {
+
     var a1;
     if(isArr){
     a1=a;
