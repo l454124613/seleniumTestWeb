@@ -591,102 +591,102 @@ private Header[] getheaders(String head){
             lh=jdbcTemplate.query("SELECT a type,b url,c con, d eq ,e value from exp where sid=(select sid from caseres where id="+resid+")",new BeanPropertyRowMapper<>(HttpCase.class));
         }
 
-        if(lh.size()>0) {
-             if(lh.get(0).getType().equals("1")){
-                    Header[] headers=null;
-                 if(lh.get(0).getCon().contains("HEAD")){
-                     String head=lh.get(0).getCon();
-                     int st=  head.indexOf("HEAD{");
-                     int et=  head.indexOf("}",st);
-                     head=head.substring(st+5,et);
-                    headers= getheaders(head);
-
-
-
-                 }
-
-
-                String res= getHttpCon(lh.get(0).getUrl(),headers,"get","");
-                 boolean isok=false;
-                 String eq="";
-                 switch (lh.get(0).getEq()){
-                     case "1":if(res.equals(lh.get(0).getValue()))isok=true;eq="等于";break;
-                     case "2":if(!res.equals(lh.get(0).getValue()))isok=true;eq="不等于";break;
-                     case "3":if(res.contains(lh.get(0).getValue()))isok=true;eq="包含";break;
-                     case "4":if(!res.contains(lh.get(0).getValue()))isok=true;eq="不包含";break;
-                     case "5":isok=true;break;
-                     default: isok=false;
-                 }
-                if (isok){
-                     if(res.split("\\$\\$\\$666").length>3){
-                         updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
-
-                     }else {
-
-                         updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
-                         throw  new MyException("");
-
-                     }
-
-
-                }else {
-                    updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
-                    throw  new MyException("");
-
-                }
-
-
-
-
-
-             }else {
-                 String head = "";
-                 Header[] headers = null;
-                 if (lh.get(0).getCon().contains("HEAD")) {
-                     head = lh.get(0).getCon();
-                     int st = head.indexOf("HEAD{");
-                     int et = head.indexOf("}", st);
-                     head = head.substring(st + 5, et);
-                     headers = getheaders(head);
-
-
-                 }
-                 String con = lh.get(0).getCon().replace(head, "").replace("HEAD{}", "").replace("<br/>","").replace("&amp;","&").replace("&lt;","<").replace("&gt;",">").replace("&quot;","\"").replace("&apos;","'").replace("\n","");
-                 String res = getHttpCon(lh.get(0).getUrl(), headers, "post", con);
-                 boolean isok=false;
-                 String eq="";
-                 switch (lh.get(0).getEq()){
-                     case "1":if(res.equals(lh.get(0).getValue()))isok=true;eq="等于";break;
-                     case "2":if(!res.equals(lh.get(0).getValue()))isok=true;eq="不等于";break;
-                     case "3":if(res.contains(lh.get(0).getValue()))isok=true;eq="包含";break;
-                     case "4":if(!res.contains(lh.get(0).getValue()))isok=true;eq="不包含";break;
-                     case "5":isok=true;break;
-                     default: isok=false;
-                 }
-                 if (isok){
-                     if(res.split("\\$\\$\\$666").length>4){
-                         updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
-
-                     }else {
-                         updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
-                         throw  new MyException("");
-                     }
-
-                 }else {
-                     updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
-                     throw  new MyException("");
-
-                 }
-
-             }
-
-      }      else {
-
-
-             // updateCaseresRes("3","运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤",resid);
-             throw new Exception("运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤");
-
-      }
+//        if(lh.size()>0) {
+//             if(lh.get(0).getType().equals("1")){
+//                    Header[] headers=null;
+//                 if(lh.get(0).getCon().contains("HEAD")){
+//                     String head=lh.get(0).getCon();
+//                     int st=  head.indexOf("HEAD{");
+//                     int et=  head.indexOf("}",st);
+//                     head=head.substring(st+5,et);
+//                    headers= getheaders(head);
+//
+//
+//
+//                 }
+//
+//
+//                String res= getHttpCon(lh.get(0).getUrl(),headers,"get","");
+//                 boolean isok=false;
+//                 String eq="";
+//                 switch (lh.get(0).getEq()){
+//                     case "1":if(res.equals(lh.get(0).getValue()))isok=true;eq="等于";break;
+//                     case "2":if(!res.equals(lh.get(0).getValue()))isok=true;eq="不等于";break;
+//                     case "3":if(res.contains(lh.get(0).getValue()))isok=true;eq="包含";break;
+//                     case "4":if(!res.contains(lh.get(0).getValue()))isok=true;eq="不包含";break;
+//                     case "5":isok=true;break;
+//                     default: isok=false;
+//                 }
+//                if (isok){
+//                     if(res.split("\\$\\$\\$666").length>3){
+//                         updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
+//
+//                     }else {
+//
+//                         updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
+//                         throw  new MyException("");
+//
+//                     }
+//
+//
+//                }else {
+//                    updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
+//                    throw  new MyException("");
+//
+//                }
+//
+//
+//
+//
+//
+//             }else {
+//                 String head = "";
+//                 Header[] headers = null;
+//                 if (lh.get(0).getCon().contains("HEAD")) {
+//                     head = lh.get(0).getCon();
+//                     int st = head.indexOf("HEAD{");
+//                     int et = head.indexOf("}", st);
+//                     head = head.substring(st + 5, et);
+//                     headers = getheaders(head);
+//
+//
+//                 }
+//                 String con = lh.get(0).getCon().replace(head, "").replace("HEAD{}", "").replace("<br/>","").replace("&amp;","&").replace("&lt;","<").replace("&gt;",">").replace("&quot;","\"").replace("&apos;","'").replace("\n","");
+//                 String res = getHttpCon(lh.get(0).getUrl(), headers, "post", con);
+//                 boolean isok=false;
+//                 String eq="";
+//                 switch (lh.get(0).getEq()){
+//                     case "1":if(res.equals(lh.get(0).getValue()))isok=true;eq="等于";break;
+//                     case "2":if(!res.equals(lh.get(0).getValue()))isok=true;eq="不等于";break;
+//                     case "3":if(res.contains(lh.get(0).getValue()))isok=true;eq="包含";break;
+//                     case "4":if(!res.contains(lh.get(0).getValue()))isok=true;eq="不包含";break;
+//                     case "5":isok=true;break;
+//                     default: isok=false;
+//                 }
+//                 if (isok){
+//                     if(res.split("\\$\\$\\$666").length>4){
+//                         updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
+//
+//                     }else {
+//                         updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
+//                         throw  new MyException("");
+//                     }
+//
+//                 }else {
+//                     updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
+//                     throw  new MyException("");
+//
+//                 }
+//
+//             }
+//
+//      }      else {
+//
+//
+//             // updateCaseresRes("3","运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤",resid);
+//             throw new Exception("运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤");
+//
+//      }
         //CloseableHttpClient client = HttpClients.createDefault();
 
 

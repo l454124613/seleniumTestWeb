@@ -2,30 +2,19 @@ package com.ciic.test.controller;
 
 import com.ciic.test.bean.*;
 import com.ciic.test.service.*;
-import com.ciic.test.tools.SocketProxy;
 import com.ciic.test.tools.mycode;
-import com.sun.net.httpserver.HttpsConfigurator;
-import org.apache.tomcat.util.http.fileupload.FileUploadBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by lixuecheng on 2017/7/4.
@@ -308,6 +297,39 @@ private Map<String,Thread> map4thread=new HashMap();
 
         }else {
            // return "{\"isok\":1,\"msg\":\"文件信息错误\",\"to\":\"/\"}";
+            if(ddf.equals("jmeter")){
+                res.setHeader("content-type", "application/octet-stream");
+                res.setContentType("application/octet-stream");
+                try {
+                    res.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(name,"UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                byte[] buff = new byte[1024];
+                BufferedInputStream bis = null;
+                OutputStream os = null;
+                try {
+                    os = res.getOutputStream();
+                    bis = new BufferedInputStream(new FileInputStream(new File(filePath+"basetools/apache-jmeter-3.3.zip")));
+                    int i = bis.read(buff);
+                    while (i != -1) {
+                        os.write(buff, 0, buff.length);
+                        os.flush();
+                        i = bis.read(buff);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (bis != null) {
+                        try {
+                            bis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
         }
 
 
@@ -351,6 +373,25 @@ private Map<String,Thread> map4thread=new HashMap();
 
 
         return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\"}";
+    }
+
+
+    @RequestMapping("/http/{cid}")
+    Object addhttps(@RequestBody Http4j[] Http4js,@PathVariable String cid){
+        HttpCase httpCase=new HttpCase();
+        httpCase.setCid(cid);
+        httpCase.setTime(System.currentTimeMillis()+"");
+        httpCase.setCon(Arrays.asList(Http4js).toString());
+      int a=  caseService.updateHttpCase(httpCase);
+
+
+        if(a==1){
+            return "{\"isok\":0,\"msg\":\"保存成功\",\"to\":\"/\"}";
+        }else {
+            return "{\"isok\":1,\"msg\":\"保存失败\",\"to\":\"/\"}";
+        }
+
+       // return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\"}";
     }
 
     /**
@@ -1566,34 +1607,7 @@ if(step.isEmpty()||pagename.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmp
 
         }}
 
-    /**
-     *
-     * @param type
-     * @param url
-     * @param con
-     * @param eq
-     * @param value
-     * @param cid
-     * @return
-     */
-    @RequestMapping("/upatehttp")
-    String updateHttp( String type,String url,String con,String eq,String value,String cid){
-        if(cid.isEmpty()||type.isEmpty()||url.isEmpty()||eq.isEmpty()||value.isEmpty()){
-            return "{\"isok\":1,\"msg\":\"参数获取不全\",\"to\":\"/\"}";
-        }else {
 
-
-            int  a   = caseService.updateHttpCase(type,url,con,eq,value,cid);
-
-
-
-            if(a==1){
-                return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
-            }else {
-                return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
-            }
-
-        }}
 
     /**
      *

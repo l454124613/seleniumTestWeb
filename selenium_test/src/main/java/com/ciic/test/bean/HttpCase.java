@@ -4,27 +4,21 @@ package com.ciic.test.bean;
  * Created by lixuecheng on 2017/8/24.
  */
 public class HttpCase {
-    private String cid;
-    private String type;
-    private String url;
+    private String id;
     private String con;
-    private String eq;
+    private String time;
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
-        sb.append("\"cid\":\"")
-                .append(cid).append('\"');
-        sb.append(",\"type\":\"")
-                .append(type).append('\"');
-        sb.append(",\"url\":\"")
-                .append(url).append('\"');
+        sb.append("\"id\":\"")
+                .append(id).append('\"');
         sb.append(",\"con\":\"")
                 .append(con).append('\"');
-        sb.append(",\"eq\":\"")
-                .append(eq).append('\"');
-        sb.append(",\"value\":\"")
-                .append(value).append('\"');
+        sb.append(",\"time\":\"")
+                .append(time).append('\"');
+        sb.append(",\"cid\":\"")
+                .append(cid).append('\"');
         sb.append('}');
         return sb.toString();
     }
@@ -37,20 +31,15 @@ public class HttpCase {
         this.cid = cid;
     }
 
-    public String getType() {
-        return type;
+    private String cid;
+
+
+    public String getId() {
+        return id;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCon() {
@@ -61,22 +50,11 @@ public class HttpCase {
         this.con = con;
     }
 
-    public String getEq() {
-        return eq;
+    public String getTime() {
+        return time;
     }
 
-    public void setEq(String eq) {
-        this.eq = eq;
+    public void setTime(String time) {
+        this.time = time;
     }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    private String value;
-
 }

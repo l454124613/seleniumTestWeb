@@ -89,8 +89,8 @@ List<CaseresList> getCaseresList(String seriesid);
 
 int updateLabel(String id ,String labels);
 
-int addHttpCase(String tid);
-int updateHttpCase(String type,String url,String con,String eq,String value,String cid);
+
+int updateHttpCase(HttpCase httpCase);
     List<HttpCase> getHttpCase(String cid);
 
     void test(String cid);

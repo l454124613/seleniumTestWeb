@@ -128,14 +128,10 @@ return list;
         int n=  jdbcTemplate.update("INSERT INTO \"main\".\"caselist\" ( \"name\", \"des\", \"important\", \"tid\", \"type\") VALUES ( ?, ?, ?, ?,?)",mycode.prase(new Object[]{name,des,important,tid,type}));
         if(n==1){
             int n2=jdbcTemplate.update("INSERT INTO \"precondition\" ( \"type\", \"a\", \"b\", \"c\",\"cid\") VALUES (4, -1, -1, -1, (SELECT max(id) from caselist where isused=1 and tid=?))",mycode.prase(new Object[]{tid}));
-            int n3=0;
-            if(type.equals("2")){
-                 n3=addHttpCase(tid);
-            }else {
-                n3=1;
-            }
 
-        if(n2==1&&n3==1){
+
+
+        if(n2==1){
             return n2;
         }else {
             return 0;
@@ -220,7 +216,9 @@ return list;
                  return 0;
              }else {
                  HttpCase httpCase=lh.get(0);
-               return   jdbcTemplate.update("UPDATE httpcase SET \"type\"="+httpCase.getType()+", \"url\"='"+httpCase.getUrl()+"', \"con\"='"+httpCase.getCon()+"', \"eq\"="+httpCase.getEq()+", \"value\"='"+httpCase.getValue()+"'  WHERE cid=? ",new Object[]{mid});
+                 httpCase.setCid(mid);
+                 httpCase.setTime(System.currentTimeMillis()+"");
+               return   updateHttpCase(httpCase);
              }
 
           }
@@ -556,24 +554,24 @@ return thread;
         return jdbcTemplate.update("UPDATE caselist set label=? where id=?",mycode.prase(new Object[]{labels,id}));
     }
 
-    @Override
-    public int addHttpCase(String tid) {
-       return jdbcTemplate.update("INSERT INTO \"httpcase\" (\"type\", \"url\", \"con\", \"eq\", \"value\", \"cid\") VALUES (-1, -1, -1, -1, -1, (SELECT max(id) from caselist where type=2 and isused=1 and tid=?))",new Object[]{tid});
-    }
+
 
     @Override
-    public int updateHttpCase(String type, String url, String con, String eq, String value, String cid) {
-        return jdbcTemplate.update("UPDATE \"httpcase\" SET \"type\"=?, \"url\"=?, \"con\"=?, \"eq\"=?, \"value\"=? WHERE (\"cid\"=?)",new Object[]{type,url,con,eq,value,cid});
+    public int updateHttpCase(HttpCase httpCase) {
+        String cid=httpCase.getCid();
+        List<Tmp1> tmp1=jdbcTemplate.query("select 1 value from httpcase where cid=?",new Object[]{cid},new BeanPropertyRowMapper<Tmp1>(Tmp1.class));
+        if(tmp1.size()>0){
+         return    jdbcTemplate.update("UPDATE httpcase SET  \"con\"=?, \"time\"=?  WHERE (\"cid\"=? )",new Object[]{httpCase.getCon(),httpCase.getTime(),cid});
+        }else {
+          return   jdbcTemplate.update("INSERT INTO httpcase ( con, time,cid) VALUES (?, ?,?)",new Object[]{httpCase.getCon(),httpCase.getTime(),cid});
+        }
     }
 
     @Override
     public List<HttpCase> getHttpCase(String cid) {
-        List<HttpCase> lh= jdbcTemplate.query("select * from httpcase where cid=?",new Object[]{cid},new BeanPropertyRowMapper(HttpCase.class));
-        HttpCase httpCase=lh.get(0);
-        httpCase.setCon(httpCase.getCon() .replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"));
-httpCase.setValue(httpCase.getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"));
-        lh.set(0,httpCase);
-        return lh;
+        return    jdbcTemplate.query("select * from httpcase where cid=?",new Object[]{cid},new BeanPropertyRowMapper(HttpCase.class));
+
+
     }
 
     @Override

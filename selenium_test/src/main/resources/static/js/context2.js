@@ -12,6 +12,7 @@ var pages1={};
 var user1={};
 var isshuaitem=true;
 var cid=0;
+var hid=0;
 
 var eles2={};
 var acttionnum=0;
@@ -387,21 +388,26 @@ function copyhttp() {
 }
 function deletehttp() {
     diag('请输入删除的识别号，不输入为取消',function (a) {
-        var aa=https.del;
+
        var  re=false;
-        if(a>https.size){
-            re=true;
-        }
-        for(var i=0;i<aa.length;i++){
-            if(a==aa[i]){
-                re=true;
-                break;
+a=parseInt(a);
+        try {
+            if (a <= https.info.length
+                && https.info[(a-1)].isshow) {
+
+            } else {
+                re = true;
             }
+        }catch(e){
+            re = true;
         }
+
 if(!re){
-    https.del.push(a);
+    https.info[(a-1)].isshow=false;
 
     shuahttps();
+}else{
+    alertf('删除失败，请确认')
 }
 
 
@@ -528,8 +534,9 @@ function form2div(a) {
 }
 function savenow() {
     if(window.localStorage){
-        localStorage.setItem("https"+tid, j2s(https));
-        var a=localStorage.getItem("https"+tid);
+        https['time']=Date.parse(new Date());
+        localStorage.setItem("https"+tid+''+cid, j2s(https));
+        var a=localStorage.getItem("https"+tid+''+cid);
         if(a==j2s(https)){
             alertf('保存成功');
         }else{
@@ -612,23 +619,33 @@ function num2en(a) {
     }
 }
 function savehttps() {
-    var data={};
-    var j=1;
+    var data=[];
+
     var isok=true;
-    for(var i=0;i<https.size;i++){
+    if(https.info.length<1){
+        alertf('没有可保存的数据，请检查')
+        return ;
+    }
+    for(var i=0;i<https.info.length;i++){
 
             var h=https.info[i];
-            if(h.base.path==""||h.base.host==""||h.base.method.key==""||h.base.http.key==""||h.ass.path.key==""||h.ass.type.key==""||h.ass.pa==""){
+            if(h.base.path==""||h.base.host==""||h.base.method.key==""||h.base.http.key==""||h.ass.path.key==""||h.ass.type.key==""||h.ass.pa==""||!h.isshow){
                 isok=false;
 
             }else{
-                data['j'+j]=h;
-                j++;
+                data.push(h);
+
             }
 
     }
     if(isok){
-        data[size]=j;
+        localStorage.removeItem("https"+tid+''+cid);
+        https.info=[];
+        $.postJSON('http://localhost:8081/http/'+cid,j2s(data),function(a){
+            alertf(a.msg);
+        },function(a){
+
+        })
         return data;
     }else{
         alertf("有必填项未填，请检查")

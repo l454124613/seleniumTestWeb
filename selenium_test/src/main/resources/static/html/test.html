@@ -108,7 +108,7 @@
                     <button class="ui button"  title="保存" onclick="savehttps()"><i class="save icon"></i></button>
                     <button class="ui button" title="上传jmx"><i class="upload icon"></i></button>
                     <button class="ui button" title="下载jmx"><i class="download icon"></i></button>
-                    <button class="ui button" title="下载jmeter"><i class="cloud download icon"></i></button>
+                    <a class="ui button" href="/Download/0/jmeter3.3.zip/jmeter" title="下载jmeter"><i class="cloud download icon"></i></a>
 
                 </div>
                 <div class="ui  basic icon buttons  floated">
@@ -231,7 +231,7 @@
 <script>
     $(function(){
         tid=10;
-        var a=localStorage.getItem("https"+tid);
+        var a=localStorage.getItem("https"+tid+''+cid);
         if(a!=null){
             https=s2j(a);
         }
