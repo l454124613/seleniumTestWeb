@@ -43,7 +43,7 @@ public class Element {
     private String waitvalue;
     private String pid;
     private  String pagename;
-    private  String vid;
+
 
     @Override
     public String toString() {
@@ -72,18 +72,8 @@ public class Element {
                 .append(pid).append('\"');
         sb.append(",\"pagename\":\"")
                 .append(pagename).append('\"');
-        sb.append(",\"vid\":\"")
-                .append(vid).append('\"');
         sb.append('}');
         return sb.toString();
-    }
-
-    public String getVid() {
-        return vid;
-    }
-
-    public void setVid(String vid) {
-        this.vid = vid;
     }
 
     public String getPagename() {

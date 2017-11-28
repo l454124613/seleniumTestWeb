@@ -76,11 +76,11 @@ private List<Element> list;
         List<tmp> lt=jdbcTemplate.query("select isfinish value ,id value2 from casehome where tid=? and isused=1 and isnow=1",new Object[]{tid},new BeanPropertyRowMapper<>(tmp.class));
 if(lt.size()>0){
     if(lt.get(0).getValue().equals("0")){
-        return jdbcTemplate.query("SELECT element.id,pid,num,isframe,locationMethod,value,element.name,lastupdatetime,updater,topage,toframe,waitid,waitvalue,page.pagename,page.vid from element join page on element.pid=page.id  where element.isused=1 and page.isused=1 and page.tid=? and (vid=\"\" or vid is null)\n ",new Object[]{tid},new BeanPropertyRowMapper<>(Element.class));
+        return jdbcTemplate.query("SELECT element.id,pid,num,isframe,locationMethod,value,element.name,lastupdatetime,updater,topage,toframe,waitid,waitvalue,page.pagename from element join page on element.pid=page.id  where element.isused=1 and page.isused=1 and page.tid=? ",new Object[]{tid},new BeanPropertyRowMapper<>(Element.class));
 
 
     }else {
-        return jdbcTemplate.query("SELECT element.id,pid,num,isframe,locationMethod,value,element.name,lastupdatetime,updater,topage,toframe,waitid,waitvalue,page.pagename,page.vid from element join page on element.pid=page.id  where element.isused=1 and page.isused=1 and page.tid=? and vid="+lt.get(0).getValue2(),new Object[]{tid},new BeanPropertyRowMapper<>(Element.class));
+        return jdbcTemplate.query("SELECT element.id,pid,num,isframe,locationMethod,value,element.name,lastupdatetime,updater,topage,toframe,waitid,waitvalue,page.pagename from element join page on element.pid=page.id  where element.isused=1 and page.isused=1 and page.tid=?",new Object[]{tid},new BeanPropertyRowMapper<>(Element.class));
 
     }
 

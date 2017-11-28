@@ -121,11 +121,7 @@
                     </div>
                 </div>
 
-                <!--<div class="ui  icon buttons">-->
-                    <!--<button class="ui basic button" title="编辑撤回" onclick=" document.execCommand('undo', false, null)"><i class="chevron left icon"></i></button>-->
-                    <!--<button class="ui basic button" title="编辑再做" onclick=" document.execCommand('redo', false, null)"><i class="chevron right icon"></i></button>-->
 
-                <!--</div>-->
             </div>
 
 
@@ -230,7 +226,7 @@
 </script>
 <script>
     $(function(){
-        tid=10;
+
         var a=localStorage.getItem("https"+tid+''+cid);
         if(a!=null){
             https=s2j(a);
@@ -244,24 +240,7 @@
         });
     })
 
-    function shuahttps(){
 
-
-
-
-
-            $('#httptitle').html('');
-            for(var i=0;i<https.info.length;i++){
-
-                if(!https.info[i].isshow){
-                    continue;
-                }
-
-
-                newhttpstep(false,https.info[i].name,i+1);
-            }
-
-    }
 </script>
 
 

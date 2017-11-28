@@ -91,34 +91,7 @@ return list;
     public int finishCasehome(String id) {
 
 
-            tmp t2=jdbcTemplate.query("select tid value2  from casehome where id=?",new Object[]{id},new BeanPropertyRowMapper<>(tmp.class)).get(0);
-            List<Page> lp=  jdbcTemplate.query("select * from page where (vid =\"\"  or vid is null ) and isused=1 and tid=?",new Object[]{t2.getValue2()},new BeanPropertyRowMapper<>(Page.class));
-            for (int i = 0; i < lp.size(); i++) {
-                int a2= jdbcTemplate.update("INSERT INTO page ( \"pagename\", \"pagetitle\", \"parentid\", \"isused\", \"tid\", \"vid\") select pagename, pagetitle, parentid, isused, tid, ? from page where id="+lp.get(i).getId(),new Object[]{id});
-                if(a2>0){
-                    tmp t=jdbcTemplate.query("select max(id) value from page where vid="+id,new BeanPropertyRowMapper<>(tmp.class)).get(0);
-                    int a3= jdbcTemplate.update("INSERT INTO element ( \"num\", \"pid\", \"locationMethod\", \"value\", \"name\", \"toframe\", \"topage\", \"createtime\", \"lastupdatetime\", \"creater\", \"waitid\", \"waitvalue\", \"updater\", \"isused\", \"isframe\") select num, ?, locationMethod, value, name, toframe, topage, createtime, lastupdatetime, creater, waitid, waitvalue, updater, isused, isframe from element where pid= "+lp.get(i).getId(),new Object[]{t.getValue()});
-                    if(a3>0){
 
-
-
-
-                    }else {
-                        return 0;
-                    }
-                }else {
-                    return 0;
-                }
-
-
-            }
-          List<CaseInfo> lc=  jdbcTemplate.query("select * from caselist where (vid =\"\"  or vid is null ) and isused=1 and tid="+t2.getValue2(),new BeanPropertyRowMapper<>(CaseInfo.class));
-        for (int i = 0; i <lc.size() ; i++) {
-            CaseInfo c=lc.get(i);
-            if(c.getType().equals("1")){
-               // jdbcTemplate.query("select * from step")
-            }
-        }
 
         return jdbcTemplate.update("update casehome set isfinish=1 where id=?",new Object[]{id});
     }
@@ -414,7 +387,7 @@ return "0";
         List<Caseres>lc= jdbcTemplate.query("select * from caseres where listid in (SELECT id from casereslist where seriesid=?) ",new Object[]{seriesid},new BeanPropertyRowMapper<>(Caseres.class));
       int ss=lc.size();
         List<Caseres> lc2=new ArrayList<>();
-        for (int i = lc.size()-1; i >0 ; i--) {
+        for (int i = lc.size()-1; i >=0 ; i--) {
 
             if(lc.get(i).getWord().equals("预期结果")){
                lc2.add(lc.get(i));

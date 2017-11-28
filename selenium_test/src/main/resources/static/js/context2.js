@@ -174,11 +174,11 @@ function showhttphelp(){
 
     var re="";
     switch(a){
-        case '基础信息':re=" <h3>基础信息</h3><b>请求方法，请求协议</b>如下拉框选择,必填<br><b>请求超时，响应超时</b>设置超时时间，超过该时间返回就是错，0为不限制<br><b>请求地址</b>输入IP地址或者域名，必填<br><b>请求端口</b>请求地址的端口号<br><b>请求编码</b>通常是GB2312或者UTF-8，具体按照输入<br><b>请求路径</b>路径以‘/’斜杠开始的一串字符，必填";break;
+        case '基础信息*':re=" <h3>基础信息</h3><b>请求方法，请求协议</b>如下拉框选择,必填<br><b>请求超时，响应超时</b>设置超时时间，超过该时间返回就是错，0为不限制<br><b>请求地址</b>输入IP地址或者域名，必填<br><b>请求端口</b>请求地址的端口号<br><b>请求编码</b>通常是GB2312或者UTF-8，具体按照输入<br><b>请求路径</b>路径以‘/’斜杠开始的一串字符，必填";break;
         case '信息头':re="<h3>信息头</h3>输入cookie，User-Agent...等信息，格式类似Cookie:（注意此处需要一个空格）JSESSIONID=2F9108AD49FCA0";break;
         case '请求正文':re=" <h3>请求正文</h3>输入请求的请求体，get请求尽量别使用。一般可以使用键值对，格式类似：<br>name=alice<br>age=17<br>或者使用json字符串，格式类似：{\"name\":\"alice\",\"age\":17}";break;
         case '正则提取':re="<h3>正则提取</h3><b>参数名称</b>参数引用时的名称，使用${参数名}进行引用。<br><b>提取位置</b>按照下拉框选择位置<br><b>默认值</b>当提取不到正则时，使用默认值，不填时，为空<br><b>正则提取</b>提取时，只选择（）括号内的部分，其余不想提取部分不要放在小括号中，规则为通用正则<br><b>匹配识别号</b>当同一个正则能够匹配到多个结果时，选择使用的序号，输入0为随机哪个";break;
-        case '响应断言':re="  <h3>响应断言</h3><b>校验位置，校验方式</b>按照下拉框，选择想要的位置和方式<br><b>忽略响应</b>当选择后，响应代码为4xx和5xx的都不会默认为失败，不选择，则默认为失败<br><b>结果取反</b>当选择后，结果是匹配结果的相反结果<br><b>多条关系</b>当检验内容为多条时，不选择就要每条内容都正确才是正确，选择后，只要一条内容正确就是正确<br><b>校验内容</b>输入想要校验的内容，需要多条数据时，请使用回车分离";break;
+        case '响应断言*':re="  <h3>响应断言</h3><b>校验位置，校验方式</b>按照下拉框，选择想要的位置和方式<br><b>忽略响应</b>当选择后，响应代码为4xx和5xx的都不会默认为失败，不选择，则默认为失败<br><b>结果取反</b>当选择后，结果是匹配结果的相反结果<br><b>多条关系</b>当检验内容为多条时，不选择就要每条内容都正确才是正确，选择后，只要一条内容正确就是正确<br><b>校验内容</b>输入想要校验的内容，需要多条数据时，请使用回车分离";break;
         default: re="请打开需要帮助的模块，*为必填";
     }
 $('#httphelp').html(re);
@@ -547,6 +547,24 @@ function savenow() {
         alert('当前浏览器不支持此功能');
     }
 }
+
+
+
+function shuahttps(){
+
+    $('#httptitle').html('');
+    for(var i=0;i<https.info.length;i++){
+
+
+        if(!https.info[i].isshow){
+            continue;
+        }
+
+
+        newhttpstep(false,https.info[i].name,i+1);
+    }
+
+}
 function getform(a,b) {
 
     var re="<div class=\"fields\">";
@@ -721,6 +739,10 @@ num=fromidnum;
             "                </div>";
         $('#httptitle').append(o1);
         // $('.menu.ui').tab();
+        $('.ui.modal').modal();
+
+        $('.ui.accordion').accordion();
+        $('.ui.dropdown').dropdown();
         semantic1();
 
         gethttpcon(1,(num-1));
@@ -2394,14 +2416,17 @@ function  updatestep(a,b,c,d,e,f) {
         if(o.isok!=0){
             alertf(o.msg);
         }else {
+
             if(o.pid>0){
                 pid=o.pid;
             }
+            shuapageinfo(d,e,f);
         }
 
 
     });
-    shuapageinfo(d,e,f);
+
+
 
 
 
@@ -4052,7 +4077,7 @@ function searchcase() {
                 "                        <th style=\"width: 60px\">使用情况</th>\n" +
                 // "                        <th style=\"width: 60px\">查看用例</th>\n" +
 
-                "                        <th style=\"width: 80px\">操作按钮</th>",6,'addcasehome()','添加用例小库','casehomeid');
+                "                        <th style=\"width: 80px\">操作按钮</th>",6,'addcasehome()','添加版本','casehomeid');
 
 
             $('#context').html(re);
@@ -4327,7 +4352,7 @@ function addcids(b) {
               "  <input type=\"hidden\" name=\"casehome\" onchange='changecasehome(this)'>\n"+
               "  <i class=\"dropdown icon\" ></i>\n"+
               "  <div class=\"default text\">选择用例库...</div>\n"+
-              "  <div class=\"menu\" id='casehomemenu'>\n"+
+              "  <div class=\"menu\" id='casehomemenu2'>\n"+
 
               "  </div>\n"+
               "</div>"+
@@ -4354,7 +4379,7 @@ function addcids(b) {
           $('#context').html(re1);
           $('.ui.dropdown').dropdown();
           $.get('/getcasehome/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-              re="";
+             var re="";
               var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
               var cc=o.casehomes;
             //  console.log(cc);
@@ -4363,7 +4388,7 @@ function addcids(b) {
 
               }
               re+="<div class=\"item\" data-value=\"-1\">总库</div>";
-              $('#casehomemenu').html(re);
+              $('#casehomemenu2').html(re);
               
           });
           $.get('/getusedlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
@@ -4907,98 +4932,81 @@ if(b){
     $('#context').html(re);
     shuastep();
 }else {
-    var re=" <div class=\"ui segment\" style='margin: 1rem'><div class=\"ui form\">\n"+
-        "            <div class=\"field\">\n"+
-        "                <div class=\"fields\">\n"+
-        "\n"+
-        "                    <div class=\"two wide field\">\n"+
-        "                        <div class=\"ui fluid search selection  dropdown\" id='sehttp'>\n"+
-        "                            <input type=\"hidden\" name=\"country\" id='http'>\n"+
-        "                            <i class=\"dropdown icon\"></i>\n"+
-        "                            <div class=\"default text\">发送方式</div>\n"+
-        "                            <div class=\"menu\" >\n"+
-        "                                <div class=\"item\" data-value=\"1\">get</div>\n"+
-        "                                <div class=\"item\" data-value=\"2\">post</div>\n"+
-        "                                <div class=\"item\" data-value=\"3\">put</div>\n"+
-        "                                <div class=\"item\" data-value=\"4\">delete</div>\n"+
-
-
-        "\n"+
-        "\n"+
-        "                            </div>\n"+
-        "                        </div>\n"+
-        "                    </div>\n"+
-        "\n"+
-        "                    <div class=\"fourteen wide field \" id='urlid'>\n"+
-        "                        <input type=\"text\"   placeholder=\"链接:http(s):\" id='urlv'>\n"+
-        "                    </div>\n"+
+    var re="<div style=\"margin-bottom: 5px;\">\n"+
+        "                <div class=\"ui  basic buttons\">\n"+
+        "                    <button class=\"ui  button\" title=\"返回\" onclick='clickcase()' ><i class=\"long arrow left icon\"></i>离开</button>\n"+
         "\n"+
         "                </div>\n"+
-        "            <div class=\"field\">\n"+
-        "<label>传输内容，如有头文件，使用格式：HEAD{xxx:aaa&ccc:222}xxx=111&ccc=222</label>"+
-        "<textarea id='areaid'></textarea>"+
-        "                </div>\n"+
-        "            <div class=\"field\">\n"+
-        "                <label>值</label>\n"+
-        "                <div class=\"fields\">\n"+
-        "\n"+
-        "                    <div class=\"two wide field\">\n"+
-        "                        <div class=\"ui fluid search selection  dropdown\" id='setype3'>\n"+
-        "                            <input type=\"hidden\" name=\"country\" id='type3'>\n"+
-        "                            <i class=\"dropdown icon\"></i>\n"+
-        "                            <div class=\"default text\">选择类型</div>\n"+
-        "                            <div class=\"menu\">\n"+
-        "                                <div class=\"item\" data-value=\"1\">等于</div>\n"+
-        "                                <div class=\"item\" data-value=\"2\">不等于</div>\n"+
-        "                                <div class=\"item\" data-value=\"3\">包含</div>\n"+
-        "                                <div class=\"item\" data-value=\"4\">不包含</div>\n"+
-        "\n"+
-        "\n"+
-        "                            </div>\n"+
-        "                        </div>\n"+
-        "                    </div>\n"+
-        "\n"+
-        "                    <div class=\"eleven wide field \" id='input2'>\n"+
-        "                        <input type=\"text\"   placeholder=\"值的内容\" id='inputv3'>\n"+
-        "                    </div>\n"+
-        "                    <div class=\"two wide field \" id='input2'>\n"+
-        "<div class=\"ui buttons\">\n"+
-        "<button class=\"ui small button\" onclick=\"clickcase()\">\n"+
-        "  返回\n"+
-        "</button>"+
-        "  <div class=\"or\"></div>\n"+
-        "<button class=\"ui small primary button\" onclick='updatehttpcase("+cid+")'>\n"+
-        "  保存\n"+
-        "</button>"+
-        "</div>"+
-
-
-        "                    </div>\n"+
+        "                <div class=\"ui  basic icon buttons right floated\">\n"+
+        "                    <button class=\"ui button\" title=\"新建\" onclick=\"newhttpstep(true)\"><i class=\"file icon\"></i></button>\n"+
+        "                    <button class=\"ui button\"  title=\"保存\" onclick=\"savehttps()\"><i class=\"save icon\"></i></button>\n"+
+        "                    <button class=\"ui button\" title=\"上传jmx\"><i class=\"upload icon\"></i></button>\n"+
+        "                    <button class=\"ui button\" title=\"下载jmx\"><i class=\"download icon\"></i></button>\n"+
+        "                    <a class=\"ui button\" href=\"/Download/0/jmeter3.3.zip/jmeter\" title=\"下载jmeter\"><i class=\"cloud download icon\"></i></a>\n"+
         "\n"+
         "                </div>\n"+
+        "                <div class=\"ui  basic icon buttons  floated\">\n"+
+        "                    <button class=\"ui button\" title=\"缓存\" onclick=\"savenow()\" ><i class=\"disk outline icon\"></i></button>\n"+
+        "                    <button class=\"ui button\"  title=\"复制\" onclick=\"copyhttp()\"><i class=\"copy icon\"></i></button>\n"+
+        "\n"+
+        "                    <button class=\"ui button\" title=\"删除\"onclick=\"deletehttp()\"><i class=\"trash outline icon\"></i></button>\n"+
+        "                    <button class=\"ui button\" title=\"疑问\" onclick=\"showhttphelp()\" ><i class=\"help circle outline icon\"></i></button>\n"+
+        "                    <div class=\"ui custom3 popup\" id=\"httphelp\">\n"+
+        "                    </div>\n"+
+        "                </div>\n"+
+        "\n"+
+        "\n"+
         "            </div>\n"+
-
-        "    </div></div>";
+        "\n"+
+        "\n"+
+        "\n"+
+        "            <div class=\"ui styled fluid accordion\"  id=\"httptitle\">\n"+
+        "\n"+
+        "            </div>";
     $('#context').html(re);
-    $('.ui.dropdown').dropdown();
+    $('.ui.button').eq(10).popup({
+        popup : $('.custom3.popup'),
+        on:'click'
 
-    $.get('/gethttpcase/'+cid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
-        if(o.isok!=0){
-            alertf(o.msg);
-        }else{
-           var cs= o.cases;
-           if(cs.length==1&&cs[0].type!='-1'){
-               $('#sehttp').dropdown('set selected',cs[0].type);
-               $('#setype3').dropdown('set selected',cs[0].eq);
-               $('#areaid').val(cs[0].con.toString().replace(/<br\/>/g,"\n").replace(/&quot;/g,"\"").replace(/&apos;/g,"'").replace(/&dakuohao1/g,"{").replace(/&dakuohao2/g,"}").replace(/&fanxiegang/g,"\\"));
-               $('#urlv').val(cs[0].url);
-               $('#inputv3').val(cs[0].value.replace(/<br\/>/g,"\n").replace(/&quot;/g,"\"").replace(/&apos;/g,"'").replace(/&dakuohao1/g,"{").replace(/&dakuohao2/g,"}").replace(/&fanxiegang/g,"\\"));
+    });
+$.GetJSON('/http/'+cid,'version=0.2',function(a){
+    var b=localStorage.getItem("https"+tid+''+cid);
+  var   islocal=false;
+  var h;
+    if(b!=null){
+        islocal=true;
+        h=s2j(b);
+    }
+    if(a.length>0){
+        if(islocal){
+           if(a[0].time<h.time){
+https=h;
+           }else {
+               localStorage.removeItem("https"+tid+''+cid);
+               https.info=s2j(a[0].con);
            }
+        }else {
+            https.info=s2j(a[0].con);
+        }
 
-       // .replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang")
+    }else{
+        if(islocal){
+            https=h;
+        }
 
-        }});
+    }
+    shuahttps();
+},function (a) {
+    alertf('系统出错，请联系管理员')
+})
+
+
+
+
+
+
+
+
 
 
 }
@@ -5262,7 +5270,7 @@ function  addele() {
 
 
 function returnpage() {
-    $('#mpage').click();
+    clickpage();
     pid=0;
     elements1={};
 }

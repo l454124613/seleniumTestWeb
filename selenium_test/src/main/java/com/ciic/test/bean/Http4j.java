@@ -26,11 +26,11 @@ public class Http4j {
                 .append(name).append('\"');
         sb.append(",\"num\":\"")
                 .append(num).append('\"');
-        sb.append(",\"Reg\":")
+        sb.append(",\"reg\":")
                 .append(Reg);
-        sb.append(",\"Ass\":")
+        sb.append(",\"ass\":")
                 .append(Ass);
-        sb.append(",\"Base\":")
+        sb.append(",\"base\":")
                 .append(Base);
         sb.append('}');
         return sb.toString();

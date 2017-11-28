@@ -61,13 +61,13 @@ private Proxy proxy;
      * @return
      * @throws IOException
      */
-//    @Bean
-//public int proxy() throws IOException {
-//		proxy.run();
-//
-//
-//		return 1;
-//}
+    @Bean
+public int proxy() throws IOException {
+		proxy.run();
+
+
+		return 1;
+}
 
 
 //	@Bean

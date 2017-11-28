@@ -376,7 +376,7 @@ private Map<String,Thread> map4thread=new HashMap();
     }
 
 
-    @RequestMapping("/http/{cid}")
+    @RequestMapping(value="/http/{cid}",method= RequestMethod.POST)
     Object addhttps(@RequestBody Http4j[] Http4js,@PathVariable String cid){
         HttpCase httpCase=new HttpCase();
         httpCase.setCid(cid);
@@ -392,6 +392,17 @@ private Map<String,Thread> map4thread=new HashMap();
         }
 
        // return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\"}";
+    }
+
+    @RequestMapping(value="/http/{cid}",method= RequestMethod.GET)
+    Object gethttps(@PathVariable String cid){
+
+
+
+
+       return caseService.getHttpCase(cid);
+
+        // return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\"}";
     }
 
     /**

@@ -884,7 +884,7 @@ throw new NoSuchElementException("元素等不到");
                     }
 
                     try {
-                        waitElementExist(element1).clear();
+                        waitElementExist(element1).getLocation();
                     } catch (InvalidElementStateException e) {
                         element1.getText();
                     }
@@ -906,7 +906,7 @@ throw new NoSuchElementException("元素等不到");
                         element1=driver.findElement(by);
                     }
                     try {
-                        element1.clear();
+                        element1.getLocation();
                     } catch (InvalidElementStateException e) {
                         element1.getText();
                     }
@@ -961,8 +961,13 @@ throw new NoSuchElementException("元素等不到");
 
 
   private Object action(WebElement webElement,String catid,WebDriver driver,String value){
+      try {
+          Thread.sleep(100);
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
 
-          switch (catid){
+      switch (catid){
               case "1": click(driver,webElement);return 0;
               case "2": webElement.clear();webElement.sendKeys(value);return 0;
 
