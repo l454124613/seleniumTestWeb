@@ -943,13 +943,14 @@ function base( table,num,addmethod,addname,tableid,ss) {
 }
 
 
-function clickurl() {
+function clickurl(a) {
 
     if(tid<1){
         alertf("请先选择项目~")
 
     }else {
         forfirstfun();
+        $(a).css('color','aqua');
 var re2="备注：可以使用正则表达式，正则部分使用（）包括，例如：http://www.baidu.com/(.*)"
         var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
             "                        <th  >URL</th>\n" +
@@ -1266,13 +1267,13 @@ function shualabel() {
     });
 }
 
-    function clicklabel() {
+    function clicklabel(a) {
         if(tid<1){
             alertf("请先选择项目~")
 
         }else {
             forfirstfun();
-
+            $(a).css('color','aqua');
             var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
                 "                        <th  style=\"width: 25%\">标签名称</th>\n" +
                 "                        <th   style='min-width: 100px'>标签描述</th>\n" +
@@ -1540,6 +1541,7 @@ function getyan3() {
 
 function forfirstfun(a) {
     ueswidth();
+    $('.i3').each(function(){$(this).css('color','')});
     if(a===1){
 
     }else {
@@ -1552,8 +1554,9 @@ function up() {
     $("html,body").animate({scrollTop:0}, 500);
 }
 
-function clicklog() {
+function clicklog(a) {
     forfirstfun();
+    $(a).css('color','aqua');
     var log1=base("                        <th style=\"width: 40px\">#</th>\n" +
         "                        <th >用户名称</th>\n" +
         "                        <th >用户邮箱</th>\n" +
@@ -1565,11 +1568,12 @@ function clicklog() {
 
 }
 
-function clickfile() {
+function clickfile(a) {
     if(tid<1){
         alertf("请先选择项目~")
     }else{
         forfirstfun();
+        $(a).css('color','aqua');
         var log1=base("                        <th style=\"width: 40px\">#</th>\n" +
             "                        <th >文件名称</th>\n" +
             "                        <th >文件大小</th>\n" +
@@ -1707,8 +1711,9 @@ function removefile(a) {
 
     
 }
-function clickslog() {
+function clickslog(a) {
     forfirstfun();
+    $(a).css('color','aqua');
     var log1=base("                        <th style=\"width: 40px\">#</th>\n" +
         "                        <th >用户名称</th>\n" +
         "                        <th >用户邮箱</th>\n" +
@@ -4021,12 +4026,13 @@ function searchcase() {
             
         }
 
-  function clickcase()
+  function clickcase(a)
   {
       if(tid<1){
           alertf("请先选择项目~")
       }else{
           forfirstfun();
+          $(a).css('color','aqua');
           pid=0;
           var re1="<div class=\"ui action input\"><div id='seq'>\n"+
               "  <input type=\"text\" id='seaca' onclick=\"backclear('seaca')\" placeholder=\"Search...\"></div>\n"+
@@ -4062,14 +4068,14 @@ function searchcase() {
   }  
 
 
-    function clickcasehome()
+    function clickcasehome(a)
     {
         if(tid<1){
             alertf("请先选择项目~")
 
     }else {
             forfirstfun();
-
+            $(a).css('color','aqua');
             var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
                 "                        <th  style=\"width: 25%\">版本库名称</th>\n" +
                 "                        <th   style='min-width: 100px'>版本库描述</th>\n" +
@@ -4163,11 +4169,13 @@ re+="<td  ></td></tr>";
 }
 
 
-    function clickdatasource() {
+    function clickdatasource(a) {
         if(tid<1){
             alertf("请先选择项目~")
         }else{
+
             forfirstfun();
+            $(a).css('color','aqua');
             var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
                 "                        <th  style=\"width: 25%\">数据库名称</th>\n" +
                 "                        <th   style='min-width: 40px'>描述</th>\n" +
@@ -4205,11 +4213,12 @@ function changecasehm(a) {
 
 
 
-    function clickpage() {
+    function clickpage(a) {
         if(tid<1){
             alertf("请先选择项目~")
         }else {
             forfirstfun();
+            $(a).css('color','aqua');
             mele=0;
             var re=base( "                        <th style=\"width: 80px\">#</th>\n" +
                 "                        <th  style=\"width: 25%\">页面名称</th>\n" +
@@ -4340,11 +4349,12 @@ function addcids(b) {
 
 
 
-  function clicktest() {
+  function clicktest(a) {
       if(tid<1){
           alertf("请先选择项目~")
       }else {
           forfirstfun();
+          $(a).css('color','aqua');
           var re1="<div class=\"ui horizontal compact segments\">\n"+
               "  <div class=\"ui segment\">\n"+
               "    <div class=\"ui positive check button\">全选</div><div class=\"ui negative uncheck button\">全部取消</div><div class=\"ui toggle button\">反转</div>"+
@@ -4432,11 +4442,12 @@ function changecasehome(a) {
 
 }
 
-    function clicklook() {
+    function clicklook(a) {
         if(tid<1){
             alertf("请先选择项目~")
         }else {
             forfirstfun(1);
+            $(a).css('color','aqua');
 var re="<div class=\"ui top attached tabular   menu\">\n"+
     "  <a class=\"item active\" data-tab=\"first\" id='uone'>尚未运行</a>\n"+
     "  <a class=\"item\" data-tab=\"second\" id='utwo'>等待运行</a>\n"+
@@ -4890,11 +4901,12 @@ function addtestcase() {
 
 }
 
-function clickelemnet() {
+function clickelemnet(a) {
     if(tid<1){
         alertf("请先选择项目~")
     }else{
         forfirstfun();
+        $(a).css('color','aqua');
         mele=1;
         var re =base( "<th style=\"width: 40px\">#</th>\n" +
             "                        <th style=\"width: 15%\">页面名称</th>" +
