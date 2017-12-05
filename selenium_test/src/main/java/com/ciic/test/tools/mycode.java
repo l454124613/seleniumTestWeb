@@ -4,7 +4,8 @@ import com.ciic.test.dao.SeleniumDao;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -66,6 +67,13 @@ public class mycode {
     }
 
     public  static String decode(String so){
+        if(so.startsWith("%")){
+            try {
+               so= URLDecoder.decode(so,"UTF-8");
+            } catch (UnsupportedEncodingException e) {
+
+            }
+        }
 
         String re="";
         int n1=0;
@@ -178,4 +186,18 @@ public class mycode {
 
 
     }
+
+
+    public static void write(String path, String content, String encoding)
+            throws IOException {
+
+        File file = new File(path);
+        file.delete();
+        file.createNewFile();
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(file), encoding));
+        writer.write(content);
+        writer.close();
+    }
+
 }

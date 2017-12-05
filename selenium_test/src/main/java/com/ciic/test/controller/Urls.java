@@ -1238,6 +1238,12 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
 
     }
+
+    /**
+     *
+     * @param chid
+     * @return
+     */
     @RequestMapping("/finishcasehome/{chid}")
     String finishCaseHome( @PathVariable String chid){
         int n=  caseService.finishCasehome(chid);
@@ -1250,6 +1256,18 @@ String getcase(@PathVariable String tid,@PathVariable String all){
         }else {
             return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
         }
+
+
+
+    }
+    @RequestMapping(value="/getjmeter/{rid}",method= RequestMethod.POST)
+    Object getJmeter(@RequestBody Http4res[] http4res,@PathVariable String rid){
+        caseService.stopHttpCase(http4res);
+
+        System.out.println(Arrays.asList(http4res));
+
+
+        return "ok";
 
 
 

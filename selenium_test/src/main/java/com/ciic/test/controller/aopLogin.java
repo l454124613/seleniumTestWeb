@@ -36,7 +36,7 @@ public class aopLogin {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Pointcut("execution(* com.ciic.test.controller..*(..)) && !execution(* com.ciic.test.controller.Urls.login(..))")
+    @Pointcut("execution(* com.ciic.test.controller..*(..)) && !execution(* com.ciic.test.controller.Urls.login(..)) && !execution(* com.ciic.test.controller.Urls.getJmeter(..))")
     public void  execaop(){};
 
     @Around("execaop()")

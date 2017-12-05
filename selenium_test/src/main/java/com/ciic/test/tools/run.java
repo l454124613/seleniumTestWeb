@@ -4,6 +4,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 /**
  * Created by lixuecheng on 2017/7/20.
  */
@@ -49,7 +52,12 @@ return "11";
     }
 
     public static void main(String[] args) {
-        new run().aa();
+
+        String aa="aabbcc";
+        String[] vv= aa.split("\\d{5}");
+        System.out.println(Arrays.toString(vv));
+        System.out.println(vv.length);
+
     }
 
 }

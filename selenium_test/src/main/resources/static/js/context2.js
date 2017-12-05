@@ -176,12 +176,21 @@ function showhttphelp(){
     switch(a){
         case '基础信息*':re=" <h3>基础信息</h3><b>请求方法，请求协议</b>如下拉框选择,必填<br><b>请求超时，响应超时</b>设置超时时间，超过该时间返回就是错，0为不限制<br><b>请求地址</b>输入IP地址或者域名，必填<br><b>请求端口</b>请求地址的端口号<br><b>请求编码</b>通常是GB2312或者UTF-8，具体按照输入<br><b>请求路径</b>路径以‘/’斜杠开始的一串字符，必填";break;
         case '信息头':re="<h3>信息头</h3>输入cookie，User-Agent...等信息，格式类似Cookie:（注意此处需要一个空格）JSESSIONID=2F9108AD49FCA0";break;
-        case '请求正文':re=" <h3>请求正文</h3>输入请求的请求体，get请求尽量别使用。一般可以使用键值对，格式类似：<br>name=alice<br>age=17<br>或者使用json字符串，格式类似：{\"name\":\"alice\",\"age\":17}";break;
+        case '请求正文':re=" <h3>请求正文</h3>输入请求的请求体，get请求尽量别使用。可以使用键值对，格式类似：<br>name=alice<br>age=17<br>或者使用json字符串，格式类似：{\"name\":\"alice\",\"age\":17},不过在第一行标明#JSON";break;
         case '正则提取':re="<h3>正则提取</h3><b>参数名称</b>参数引用时的名称，使用${参数名}进行引用。<br><b>提取位置</b>按照下拉框选择位置<br><b>默认值</b>当提取不到正则时，使用默认值，不填时，为空<br><b>正则提取</b>提取时，只选择（）括号内的部分，其余不想提取部分不要放在小括号中，规则为通用正则<br><b>匹配识别号</b>当同一个正则能够匹配到多个结果时，选择使用的序号，输入0为随机哪个";break;
         case '响应断言*':re="  <h3>响应断言</h3><b>校验位置，校验方式</b>按照下拉框，选择想要的位置和方式<br><b>忽略响应</b>当选择后，响应代码为4xx和5xx的都不会默认为失败，不选择，则默认为失败<br><b>结果取反</b>当选择后，结果是匹配结果的相反结果<br><b>多条关系</b>当检验内容为多条时，不选择就要每条内容都正确才是正确，选择后，只要一条内容正确就是正确<br><b>校验内容</b>输入想要校验的内容，需要多条数据时，请使用回车分离";break;
         default: re="请打开需要帮助的模块，*为必填";
     }
 $('#httphelp').html(re);
+}
+
+function s2h(a) {
+    a=h2s(a);
+  return  a.replace(/&/g,"&amp;").replace(/\"/g,"&quot;").replace(/\'/g,"&apos;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"&#xd;");
+}
+
+function h2s(a) {
+   return a.replace(/&quot;/g,"\"").replace(/&apos;/g,"\'").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&#xd;/g,"\n").replace(/&amp;/g,"&");
 }
 function diag(a,b,isshow,c)
 {
@@ -198,11 +207,10 @@ function diag(a,b,isshow,c)
     }
 }
  var https={demo:{name:'',num:0,isshow:true,base:{method:{key:'',value:''},http:{key:'',value:''},host:'',port:'',path:'',encoding:'',time4req:'',time4res:''},
-     header:'(格式是xxx: yyy，完成一条数据再回车)',
-     body:'(格式是xxx=yyy，完成一条数据再回车，或者使用json，{...})',
+     header:'(格式是xxx: (注意此处空格)yyy，完成一条数据再回车)',
+     body:'(格式是xxx=yyy，完成一条数据再回车，或者使用json，{...},在第一行标明#JSON)',
      reg:{path:{key:'',value:''},name:'',reg:'',num:'',def:''},
-     ass:{path:{key:'',value:''},     isigst:false,type:{key:'',value:''},isfan:false,
-     isor:false,pa:''}}
+     ass:{path:{key:'',value:''},     isigst:false,type:{key:'',value:''},isfan:false,pa:''}}
      ,info:[]};
 
 function addhttp(id,text) {
@@ -253,12 +261,12 @@ function addhttp(id,text) {
         }break;
         case 9:{
 
-            h.header=$(text).html();
+            h.header=s2h($(text).html());
 
         }break;
         case 10:{
 
-            h.body=$(text).html();
+            h.body=s2h($(text).html());
 
         }break;
         case 11:{
@@ -328,7 +336,7 @@ function addhttp(id,text) {
 
             // h.ass.type.key=$(text).attr('data-value');
             // h.ass.type.value=$(text).text();
-            h.ass.pa= $(text).html();
+            h.ass.pa= s2h($(text).html());
 
 
         }break;
@@ -459,12 +467,12 @@ switch (a){
         $("input[name="+b+"]:eq(5)").val(h.base.path);
 
     }break;
-    case 2: $('#'+b).unbind('input propertychange');$('#'+b).attr('contenteditable','plaintext-only');$('#'+b).html(h.header);$('#'+b).attr('name',b);
+    case 2: $('#'+b).unbind('input propertychange');$('#'+b).attr('contenteditable','plaintext-only');$('#'+b).html(h2s(h.header));$('#'+b).attr('name',b);
     $('#'+b).bind('input propertychange', function() {
 
         addhttp(9,this);
     });break;
-    case 3: $('#'+b).unbind('input propertychange');$('#'+b).html(h.body);$('#'+b).attr('contenteditable','plaintext-only');$('#'+b).attr('name',b);
+    case 3: $('#'+b).unbind('input propertychange');$('#'+b).html(h2s(h.body));$('#'+b).attr('contenteditable','plaintext-only');$('#'+b).attr('name',b);
     $('#'+b).bind('input propertychange', function() {
         addhttp(10,this);
     });break;
@@ -508,24 +516,23 @@ switch (a){
 
         }
        if(h.ass.pa!='')
-        $("div[name='"+b+"']:last").text(h.ass.pa);
+        $("div[name='"+b+"']:last").text(h2s(h.ass.pa));
 
 
     }break;
 }
 }
 
-var ffm={size:4,i0:{name:'请求方法*',des:'请求方法',type:'dropdown',length:3,function:'addhttp(1,this)',con:['1:Get','2:POST','3:PUT','4:DELETE','5:HEAD','6:PATCH','7:OPTION','8:TRACE']},i1:{name:'请求协议*',des:'请求协议',function:'addhttp(2,this)',type:'dropdown',length:3,con:['1:HTTP','2:HTTPS']},i2:{name:'请求超时',des:'0不做限制，时间单位毫秒',type:'input',length:5,function:'addhttp(3,this)'},i3:{name:'响应超时',des:'0不做限制，时间单位毫秒',type:'input',length:5,function:'addhttp(4,this)'}};
+var ffm={size:4,i0:{name:'请求方法*',des:'请求方法',type:'dropdown',length:3,function:'addhttp(1,this)',con:['1:GET','2:POST','4:PUT','7:DELETE','3:HEAD','8:PATCH','5:OPTIONS','6:TRACE','9:PROPFIND','10:PROPPATCH','11:MKCOL','12:COPY','13:MOVE','14:LOCK','15:UNLOCK','16:REPORT','17:MKCALENDAR','18:SEARCH']},i1:{name:'请求协议*',des:'请求协议',function:'addhttp(2,this)',type:'dropdown',length:3,con:['1:HTTP','2:HTTPS']},i2:{name:'请求超时',des:'0不做限制，时间单位毫秒',type:'input',length:5,function:'addhttp(3,this)'},i3:{name:'响应超时',des:'0不做限制，时间单位毫秒',type:'input',length:5,function:'addhttp(4,this)'}};
 var ffm1={size:3,i0:{name:'请求地址*',des:'域名或者ip',type:'input',function:'addhttp(5,this)',length:10},i1:{name:'请求端口',des:'请求端口',type:'input',function:'addhttp(6,this)',length:3},i2:{name:'请求编码',des:'GB2312或者UTF-8或者其他',type:'input',function:'addhttp(7,this)',length:5}};
 var ffm2={size:1,i0:{name:'请求路径*',des:'/',type:'input',function:'addhttp(8,this)',length:16}};
 var ffm3={size:3,i1:{name:'提取位置',des:'获取信息的来源',type:'dropdown',function:'addhttp(11,this)',length:4,
-    con:['1:响应正文','2:响应正文(转义)','3:响应头信息','4:响应代码','5:URL','6:请求头信息']},i0:{name:'参数名称',des:'(不能数字开头，${参数名}调用)',type:'input',function:'addhttp(12,this)',length:6},i2:{name:'默认值',des:'无提取值时替代',type:'input',function:'addhttp(13,this)',length:6}};
+    con:['false:响应正文','true:响应头信息','code:响应代码','URL:URL','request_headers:请求头信息']},i0:{name:'参数名称',des:'(不能数字开头，${参数名}调用)',type:'input',function:'addhttp(12,this)',length:6},i2:{name:'默认值',des:'无提取值时替代',type:'input',function:'addhttp(13,this)',length:6}};
 var ffm4={size:2,i0:{name:'正则提取',des:'(正则表达式，使用（）表示提取部分)',type:'input',function:'addhttp(14,this)',length:14},i1:{name:'匹配识别号',des:'0为随机',type:'input',function:'addhttp(15,this)',length:2}};
-var ffm5={size:5,i0:{name:'校验位置*',des:'获取信息的来源',type:'dropdown',function:'addhttp(16,this)',length:4,con:['1:响应正文','2:响应代码','3:响应头信息','4:请求头信息','5:URL']}
-    ,i1:{name:'校验方式*',des:'信息对比的方式',type:'dropdown',function:'addhttp(17,this)',length:4,con:['1:包含(可正则)','2:包含(不可正则)','3:全匹配(可正则)','4:全匹配(不可正则)']},
-    i2:{name:'忽略响应',type:'checkbox',des:'',length:2,function:'addhttp(18,this)'},i3:{name:'结果取反',des:'',type:'checkbox',length:2,function:'addhttp(19,this)'},i4:{name:'多条关系（和/或）',des:'或',type:'checkbox',length:4,function:'addhttp(20,this)'}
-}
-var ffm6={size:1,i0:{name:'检验内容*',des:'(每一条数据完成后再回车)',function:'addhttp(21,this)',length:16,type:'div'}}
+var ffm5={size:4,i0:{name:'校验位置*',des:'获取信息的来源',type:'dropdown',function:'addhttp(16,this)',length:5,con:['1:响应正文','2:响应代码','3:响应头信息','4:请求头信息','5:URL']}
+    ,i1:{name:'校验方式*',des:'信息对比的方式',type:'dropdown',function:'addhttp(17,this)',length:5,con:['1:包含(可正则)','2:匹配(可正则)']},
+    i2:{name:'忽略响应',type:'checkbox',des:'',length:3,function:'addhttp(18,this)'},i3:{name:'结果取反',des:'',type:'checkbox',length:3,function:'addhttp(19,this)'}}
+var ffm6={size:1,i0:{name:'检验内容*',des:'(请输入)',function:'addhttp(21,this)',length:16,type:'div'}}
 function form2div(a) {
     var re="<div class='ui form'>";
     re+=a;
@@ -658,7 +665,7 @@ function savehttps() {
     }
     if(isok){
         localStorage.removeItem("https"+tid+''+cid);
-        https.info=[];
+
         $.postJSON('http://localhost:8081/http/'+cid,j2s(data),function(a){
             alertf(a.msg);
         },function(a){
@@ -4998,7 +5005,8 @@ https=h;
                https.info=s2j(a[0].con);
            }
         }else {
-            https.info=s2j(a[0].con);
+
+            https.info=s2j(a[0].con.replace(/\n/g,"\\n"));
         }
 
     }else{

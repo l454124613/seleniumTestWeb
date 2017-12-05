@@ -1,5 +1,6 @@
 package com.ciic.test.dao;
 
+import com.alibaba.fastjson.JSON;
 import com.ciic.test.bean.*;
 import com.ciic.test.service.*;
 import com.ciic.test.tools.SocketProxy;
@@ -15,6 +16,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
+import org.apache.regexp.RE;
 import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Proxy;
@@ -47,9 +49,23 @@ public class SeleniumDao implements SeleniumService {
     private  List<tmp3> ls       =null;//所有step
     private String      seidStop ="0";
     private String      isWin ="0";
-@Autowired
+    private  Http4res[] http4res;
+
+    public boolean isIshttpStop() {
+        return ishttpStop;
+    }
+
+    public void setIshttpStop(boolean ishttpStop) {
+        this.ishttpStop = ishttpStop;
+    }
+
+    private boolean ishttpStop =false;
+
+
+
+    @Autowired
     private JdbcTemplate jdbcTemplate;
-@Autowired
+    @Autowired
 private ConfigService configService;
 
 @Autowired
@@ -59,6 +75,9 @@ private com.ciic.test.service.Proxy proxy;
 private String driverPath;
     @Value("${test.picture.path}")
 private String picPath;
+    @Value("${test.file.path}")
+    private String filePath;
+
 
     @Override
     public void run(String tid,String seriesid) {
@@ -413,7 +432,7 @@ if(isok){
 
                                 break;
                                 case  "2":checkSql(sid,lt6.get(0).getValue());break;
-                                case  "3":runHttpCase(lt6.get(0).getValue(),4);break;
+
                                 case  "4":jdbcTemplate.update("DELETE from caseres where id="+lt6.get(0).getValue());break;
                             }
                         }else {
@@ -440,12 +459,7 @@ if(isok){
 
 
 
-                    }else if(type.equals("5")){
-                    runHttpCase(nowCaseresid[0],1);//1,预置条件2,用例3，
-
-
-
-                } else {
+                    }else {
                         throw new Exception("no case!");
                     }
 
@@ -484,210 +498,429 @@ public void test(String cid) {
 
 }
 
-
-private String getHttpCon(String url, Header[] head, String type, String con){
-    CloseableHttpClient client = HttpClients.createDefault();
-    StringBuffer stringBuffer=new StringBuffer();
-    RequestConfig config = RequestConfig.custom().setConnectTimeout(20000).setSocketTimeout(20000).build();
-    try {
-        if(type.equals("get")){
-            HttpGet httpGet=new HttpGet(url);
-
-            httpGet.setConfig(config);
-            if(head!=null){
-                httpGet.setHeaders(head);
-            }
+    @Override
+    public void stopHttpCase(Http4res[] http4res) {
+        this.http4res=http4res;
+        setIshttpStop(true);
+    }
 
 
-            stringBuffer.append("请求信息："+httpGet.getRequestLine().toString());
-            stringBuffer.append("$$$666");
-            stringBuffer.append("请求信息头："+ Arrays.asList(httpGet.getAllHeaders()));
-            stringBuffer.append("$$$666");
-            HttpResponse response= client.execute(httpGet);
-            HttpEntity entity = response.getEntity();
-            String  temp= EntityUtils.toString(entity,"UTF-8");
-            stringBuffer.append("响应信息："+response.getStatusLine());
-            stringBuffer.append("$$$666");
-            stringBuffer.append("响应信息头："+Arrays.asList(response.getAllHeaders()));
-            stringBuffer.append("$$$666");
-            stringBuffer.append("响应内容："+temp);
-          //  stringBuffer.append("--------------------------------------------------\n");
+//private String getHttpCon(String url, Header[] head, String type, String con){
+//    CloseableHttpClient client = HttpClients.createDefault();
+//    StringBuffer stringBuffer=new StringBuffer();
+//    RequestConfig config = RequestConfig.custom().setConnectTimeout(20000).setSocketTimeout(20000).build();
+//    try {
+//        if(type.equals("get")){
+//            HttpGet httpGet=new HttpGet(url);
+//
+//            httpGet.setConfig(config);
+//            if(head!=null){
+//                httpGet.setHeaders(head);
+//            }
+//
+//
+//            stringBuffer.append("请求信息："+httpGet.getRequestLine().toString());
+//            stringBuffer.append("$$$666");
+//            stringBuffer.append("请求信息头："+ Arrays.asList(httpGet.getAllHeaders()));
+//            stringBuffer.append("$$$666");
+//            HttpResponse response= client.execute(httpGet);
+//            HttpEntity entity = response.getEntity();
+//            String  temp= EntityUtils.toString(entity,"UTF-8");
+//            stringBuffer.append("响应信息："+response.getStatusLine());
+//            stringBuffer.append("$$$666");
+//            stringBuffer.append("响应信息头："+Arrays.asList(response.getAllHeaders()));
+//            stringBuffer.append("$$$666");
+//            stringBuffer.append("响应内容："+temp);
+//          //  stringBuffer.append("--------------------------------------------------\n");
+//
+//
+//        }else {
+//            HttpPost httpPost=new HttpPost(url);
+//            httpPost.setConfig(config);
+//
+//
+//            StringEntity entity = new StringEntity(con,"utf-8");
+//            if(con.charAt(0)=='{'){
+//                entity.setContentType("application/json");
+//            }else {
+//                entity.setContentType("application/x-www-form-urlencoded");
+//            }
+//            if(head!=null){
+//                httpPost.setHeaders(head);
+//            }
+//            httpPost.setEntity(entity);
+//            stringBuffer.append("请求信息："+httpPost.getRequestLine().toString());
+//            stringBuffer.append("$$$666");
+//            stringBuffer.append("请求信息头："+Arrays.asList(httpPost.getAllHeaders()));
+//            stringBuffer.append(httpPost.getEntity());
+//            stringBuffer.append("$$$666");
+//            stringBuffer.append("请求内容："+con);
+//            stringBuffer.append("$$$666");
+//            HttpResponse response= client.execute(httpPost);
+//            HttpEntity entity2 = response.getEntity();
+//            String  temp= EntityUtils.toString(entity2,"UTF-8");
+//            stringBuffer.append("响应信息："+response.getStatusLine());
+//            stringBuffer.append("$$$666");
+//            stringBuffer.append("响应信息头："+Arrays.asList(response.getAllHeaders()));
+//            stringBuffer.append("$$$666");
+//            stringBuffer.append("响应内容："+temp);
+//            //stringBuffer.append("--------------------------------------------------\n");
+//        }
+//    } catch (Exception e) {
+//       stringBuffer.append(e.getCause()==null?e.getLocalizedMessage():e.getCause().getLocalizedMessage());
+//    } finally {
+//        try {
+//            client.close();
+//        } catch (IOException e) {
+//
+//        }
+//    }
+//    return  stringBuffer.toString();
+//
+//}
+//private Header[] getheaders(String head){
+//    String[] a=head.split("&");
+//    if(a.length>0){
+//        Header[] headers=new Header[a.length];
+//        for (int i = 0; i <a.length ; i++) {
+//            String[] b=a[i].split(":");
+//            headers[i]=new BasicHeader(b[0],b[1]);
+//        }
+//        return headers;
+//    }else {
+//        return null;
+//    }
+//
+//
+//}
 
 
-        }else {
-            HttpPost httpPost=new HttpPost(url);
-            httpPost.setConfig(config);
-
-
-            StringEntity entity = new StringEntity(con,"utf-8");
-            if(con.charAt(0)=='{'){
-                entity.setContentType("application/json");
+    private String getjm(int a,Http4j h,String resid){
+        switch (a){
+            case 1:return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<jmeterTestPlan version=\"1.2\" properties=\"3.2\" jmeter=\"3.3 r1808647\">\n" +
+                    "\t <hashTree>\n" +
+                    "\t   <TestPlan guiclass=\"TestPlanGui\" testclass=\"TestPlan\" testname=\"测试计划\" enabled=\"true\">\n" +
+                    "      <stringProp name=\"TestPlan.comments\"></stringProp>\n" +
+                    "      <boolProp name=\"TestPlan.functional_mode\">true</boolProp>\n" +
+                    "      <boolProp name=\"TestPlan.serialize_threadgroups\">true</boolProp>\n" +
+                    "      <elementProp name=\"TestPlan.user_defined_variables\" elementType=\"Arguments\" guiclass=\"ArgumentsPanel\" testclass=\"Arguments\" testname=\"用户定义的变量\" enabled=\"true\">\n" +
+                    "        <collectionProp name=\"Arguments.arguments\"/>\n" +
+                    "      </elementProp>\n" +
+                    "      <stringProp name=\"TestPlan.user_define_classpath\"></stringProp>\n" +
+                    "    </TestPlan>\n" +
+                    "\t<hashTree>\n" +
+                    "\t <CookieManager guiclass=\"CookiePanel\" testclass=\"CookieManager\" testname=\"HTTP Cookie 管理器\" enabled=\"true\">\n" +
+                    "        <collectionProp name=\"CookieManager.cookies\"/>\n" +
+                    "        <boolProp name=\"CookieManager.clearEachIteration\">false</boolProp>\n" +
+                    "      </CookieManager>\n" +
+                    "\t  <hashTree/>\n" +
+                    "\t  <ThreadGroup guiclass=\"ThreadGroupGui\" testclass=\"ThreadGroup\" testname=\"线程组\" enabled=\"true\">\n" +
+                    "        <stringProp name=\"ThreadGroup.on_sample_error\">continue</stringProp>\n" +
+                    "        <elementProp name=\"ThreadGroup.main_controller\" elementType=\"LoopController\" guiclass=\"LoopControlPanel\" testclass=\"LoopController\" testname=\"循环控制器\" enabled=\"true\">\n" +
+                    "          <boolProp name=\"LoopController.continue_forever\">false</boolProp>\n" +
+                    "          <stringProp name=\"LoopController.loops\">1</stringProp>\n" +
+                    "        </elementProp>\n" +
+                    "        <stringProp name=\"ThreadGroup.num_threads\">1</stringProp>\n" +
+                    "        <stringProp name=\"ThreadGroup.ramp_time\">1</stringProp>\n" +
+                    "        <longProp name=\"ThreadGroup.start_time\">1511918674000</longProp>\n" +
+                    "        <longProp name=\"ThreadGroup.end_time\">1511918674000</longProp>\n" +
+                    "        <boolProp name=\"ThreadGroup.scheduler\">false</boolProp>\n" +
+                    "        <stringProp name=\"ThreadGroup.duration\"></stringProp>\n" +
+                    "        <stringProp name=\"ThreadGroup.delay\"></stringProp>\n" +
+                    "      </ThreadGroup>\n" +
+                    "\t  <hashTree>\n" +
+                    "\t  <BeanShellSampler guiclass=\"BeanShellSamplerGui\" testclass=\"BeanShellSampler\" testname=\"BeanShell Sampler\" enabled=\"true\">\n" +
+                    "          <stringProp name=\"BeanShellSampler.query\">List l=new ArrayList();\n" +
+                    "vars.putObject(&quot;dat&quot;,l);\n" +
+                    "SampleResult.setResponseCodeOK();</stringProp>\n" +
+                    "          <stringProp name=\"BeanShellSampler.filename\"></stringProp>\n" +
+                    "          <stringProp name=\"BeanShellSampler.parameters\"></stringProp>\n" +
+                    "          <boolProp name=\"BeanShellSampler.resetInterpreter\">false</boolProp>\n" +
+                    "        </BeanShellSampler>\n" +
+                    "\t\t<hashTree/>";
+            case 2:{ String re= "<HTTPSamplerProxy guiclass=\"HttpTestSampleGui\" testclass=\"HTTPSamplerProxy\" testname=\""+h.getName()+"\" enabled=\"true\">\n" ;
+            String body=h.getBody();
+            if(body.trim().isEmpty()||body.contains("(格式是xxx=yyy，完成一条数据再回车，或者使用json，{...},在第一行标明#JSON)")){
+                re+="\t\t <elementProp name=\"HTTPsampler.Arguments\" elementType=\"Arguments\" guiclass=\"HTTPArgumentsPanel\" testclass=\"Arguments\" testname=\"用户定义的变量\" enabled=\"true\">\n" +
+                        "            <collectionProp name=\"Arguments.arguments\"/>\n" +
+                        "          </elementProp>\n";
+            }else if(body.startsWith("#JSON&#xd;")){
+                re+= "          <boolProp name=\"HTTPSampler.postBodyRaw\">true</boolProp>\n" +
+                        "          <elementProp name=\"HTTPsampler.Arguments\" elementType=\"Arguments\">\n" +
+                        "            <collectionProp name=\"Arguments.arguments\">\n" +
+                        "              <elementProp name=\"\" elementType=\"HTTPArgument\">\n" +
+                        "                <boolProp name=\"HTTPArgument.always_encode\">false</boolProp>\n" +
+                        "                <stringProp name=\"Argument.value\">"+body.replace("#JSON&#xd;","")+"</stringProp>\n" +
+                        "                <stringProp name=\"Argument.metadata\">=</stringProp>\n" +
+                        "              </elementProp>\n" +
+                        "            </collectionProp>\n" +
+                        "          </elementProp>\n";
             }else {
-                entity.setContentType("application/x-www-form-urlencoded");
+               String[] b2= body.split("&#xd;");
+                re+="\t\t <elementProp name=\"HTTPsampler.Arguments\" elementType=\"Arguments\" guiclass=\"HTTPArgumentsPanel\" testclass=\"Arguments\" testname=\"用户定义的变量\" enabled=\"true\">\n" +
+                        "            <collectionProp name=\"Arguments.arguments\">\n";
+                for(String b3:b2){
+                    String[] b4=b3.split("=");
+                    re+="              <elementProp name=\""+b4[0]+"\" elementType=\"HTTPArgument\">\n" +
+                            "                <boolProp name=\"HTTPArgument.always_encode\">false</boolProp>\n" +
+                            "                <stringProp name=\"Argument.value\">"+b3.replace(b4[0]+"=","")+"</stringProp>\n" +
+                            "                <stringProp name=\"Argument.metadata\">=</stringProp>\n" +
+                            "                <boolProp name=\"HTTPArgument.use_equals\">true</boolProp>\n" +
+                            "                <stringProp name=\"Argument.name\">"+b4[0]+"</stringProp>\n" +
+                            "              </elementProp>\n";
+                }
+                re+= "            </collectionProp>\n" +
+                        "          </elementProp>\n";
+
             }
-            if(head!=null){
-                httpPost.setHeaders(head);
-            }
-            httpPost.setEntity(entity);
-            stringBuffer.append("请求信息："+httpPost.getRequestLine().toString());
-            stringBuffer.append("$$$666");
-            stringBuffer.append("请求信息头："+Arrays.asList(httpPost.getAllHeaders()));
-            stringBuffer.append(httpPost.getEntity());
-            stringBuffer.append("$$$666");
-            stringBuffer.append("请求内容："+con);
-            stringBuffer.append("$$$666");
-            HttpResponse response= client.execute(httpPost);
-            HttpEntity entity2 = response.getEntity();
-            String  temp= EntityUtils.toString(entity2,"UTF-8");
-            stringBuffer.append("响应信息："+response.getStatusLine());
-            stringBuffer.append("$$$666");
-            stringBuffer.append("响应信息头："+Arrays.asList(response.getAllHeaders()));
-            stringBuffer.append("$$$666");
-            stringBuffer.append("响应内容："+temp);
-            //stringBuffer.append("--------------------------------------------------\n");
-        }
-    } catch (Exception e) {
-       stringBuffer.append(e.getCause()==null?e.getLocalizedMessage():e.getCause().getLocalizedMessage());
-    } finally {
-        try {
-            client.close();
-        } catch (IOException e) {
+            re+="          <stringProp name=\"HTTPSampler.domain\">"+h.getBase().getHost()+"</stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.port\">"+h.getBase().getPort()+"</stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.protocol\">"+h.getBase().getHttp().getValue()+"</stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.contentEncoding\">"+h.getBase().getEncoding()+"</stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.path\">"+h.getBase().getPath()+"</stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.method\">"+h.getBase().getMethod().getValue()+"</stringProp>\n" +
+                    "          <boolProp name=\"HTTPSampler.follow_redirects\">false</boolProp>\n" +
+                    "          <boolProp name=\"HTTPSampler.auto_redirects\">false</boolProp>\n" +
+                    "          <boolProp name=\"HTTPSampler.use_keepalive\">false</boolProp>\n" +
+                    "          <boolProp name=\"HTTPSampler.DO_MULTIPART_POST\">false</boolProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.embedded_url_re\"></stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.connect_timeout\">"+h.getBase().getTime4req()+"</stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.response_timeout\">"+h.getBase().getTime4res()+"</stringProp>\n";
+            re+= "        </HTTPSamplerProxy>\n" +
+                    "        <hashTree>\n" +
+                    "          <BeanShellPostProcessor guiclass=\"TestBeanGUI\" testclass=\"BeanShellPostProcessor\" testname=\"BeanShell PostProcessor\" enabled=\"true\">\n" +
+                    "            <boolProp name=\"resetInterpreter\">false</boolProp>\n" +
+                    "            <stringProp name=\"parameters\"></stringProp>\n" +
+                    "            <stringProp name=\"filename\"></stringProp>\n" +
+                    "            <stringProp name=\"script\">String name=&quot;"+h.getName()+"&quot;;\n" +
+                    "String reqh=prev.getRequestHeaders().replace(&quot;\\n&quot;,&quot;\\\\n&quot;);\n" +
+                    "String rescode=prev.getResponseCode();\n" +
+                    "String resds=prev.getResponseDataAsString().replace(&quot;\\&quot;&quot;,&quot;\\\\\\&quot;&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot; &quot;,&quot;&quot;).replace(&quot;\\r&quot;,&quot;&quot;).replace(&quot;\\t&quot;,&quot;&quot;);\n" +
+                    "String resh=prev.getResponseHeaders().replace(&quot;\\n&quot;,&quot;\\\\n&quot;);\n" +
+                    "String resmsg=prev.getResponseMessage().replace(&quot;\\&quot;&quot;,&quot;\\\\\\&quot;&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot;\\r&quot;,&quot;&quot;);\n" +
+                    "String reqb=prev.getSamplerData().replace(&quot;\\&quot;&quot;,&quot;\\\\\\&quot;&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;);\n" +
+                    "long sby=prev.getSentBytes();\n" +
+                    "long rby=prev.getBytesAsLong();\n" +
+                    "String url=prev.getUrlAsString();\n" +
+                    "boolean isok=prev.isSuccessful();\n" +
+                    " StringBuilder sb = new StringBuilder(&quot;{&quot;);\n" +
+                    "        sb.append(&quot;\\&quot;requestHeaders\\&quot;:\\&quot;&quot;)\n" +
+                    "                .append(reqh).append(&apos;\\&quot;&apos;);\n" +
+                    "                sb.append(&quot;,\\&quot;requestdata\\&quot;:\\&quot;&quot;)\n" +
+                    "                .append(reqb).append(&apos;\\&quot;&apos;);\n" +
+                    "        sb.append(&quot;,\\&quot;responseCode\\&quot;:\\&quot;&quot;)\n" +
+                    "                .append(rescode).append(&apos;\\&quot;&apos;);\n" +
+                    "                sb.append(&quot;,\\&quot;name\\&quot;:\\&quot;&quot;)\n" +
+                    "                .append(name).append(&apos;\\&quot;&apos;);\n" +
+                    "        sb.append(&quot;,\\&quot;responseDataAsString\\&quot;:\\&quot;&quot;)\n" +
+                    "                .append(resds).append(&apos;\\&quot;&apos;);\n" +
+                    "        sb.append(&quot;,\\&quot;responseHeaders\\&quot;:\\&quot;&quot;)\n" +
+                    "                .append(resh).append(&apos;\\&quot;&apos;);\n" +
+                    "        sb.append(&quot;,\\&quot;responseMessage\\&quot;:\\&quot;&quot;)\n" +
+                    "                .append(resmsg).append(&apos;\\&quot;&apos;);\n" +
+                    "         sb.append(&quot;,\\&quot;sentBytes\\&quot;:\\&quot;&quot;)\n" +
+                    "                .append(sby).append(&apos;\\&quot;&apos;);\n" +
+                    "                sb.append(&quot;,\\&quot;bytesAsLong\\&quot;:\\&quot;&quot;)\n" +
+                    "                .append(rby).append(&apos;\\&quot;&apos;);\n" +
+                    "                sb.append(&quot;,\\&quot;urlAsString\\&quot;:\\&quot;&quot;)\n" +
+                    "                .append(url).append(&apos;\\&quot;&apos;);\n" +
+                    "                sb.append(&quot;,\\&quot;isok\\&quot;:&quot;)\n" +
+                    "                .append(isok);\n" +
+                    "        sb.append(&apos;}&apos;);\n" +
+                    " List l=vars.getObject(&quot;dat&quot;);\n" +
+                    " l.add(sb);\n" +
+                    " vars.putObject(&quot;dat&quot;,l);\n" +
+                    "</stringProp>\n" +
+                    "          </BeanShellPostProcessor>\n" +
+                    "          <hashTree/>\n";
 
+            String head= h.getHeader();
+            if(head.trim().isEmpty()||head.contains("(格式是xxx: (注意此处空格)yyy，完成一条数据再回车)")){
+                re+= "          <HeaderManager guiclass=\"HeaderPanel\" testclass=\"HeaderManager\" testname=\"HTTP信息头管理器\" enabled=\"true\">\n" +
+                        "            <collectionProp name=\"HeaderManager.headers\"/>\n" +
+                        "          </HeaderManager>\n";
+            }else {
+                re+="\t\t  <HeaderManager guiclass=\"HeaderPanel\" testclass=\"HeaderManager\" testname=\"HTTP信息头管理器\" enabled=\"true\">\n" +
+                        "            <collectionProp name=\"HeaderManager.headers\">\n";
+                String[] h1=head.split("&#xd;");
+                for(String h2:h1){
+                    String[] h3=h2.split(": ");
+                    re+="              <elementProp name=\"\" elementType=\"Header\">\n" +
+                            "                <stringProp name=\"Header.name\">"+h3[0]+"</stringProp>\n" +
+                            "                <stringProp name=\"Header.value\">"+h3[1]+"</stringProp>\n" +
+                            "              </elementProp>\n";
+
+                }
+                re+="            </collectionProp>\n" +
+                        "          </HeaderManager>\n";
+                        }
+                        re+= "\t\t  <hashTree/>\n";
+                        if(h.getReg().getDef().trim().isEmpty()){
+                re+="<RegexExtractor guiclass=\"RegexExtractorGui\" testclass=\"RegexExtractor\" testname=\"正则表达式提取器\" enabled=\"true\">\n" +
+                        "            <stringProp name=\"RegexExtractor.useHeaders\">"+h.getReg().getPath().getKey()+"</stringProp>\n" +
+                        "            <stringProp name=\"RegexExtractor.refname\">"+h.getReg().getName()+"</stringProp>\n" +
+                        "            <stringProp name=\"RegexExtractor.regex\">"+h.getReg().getReg()+"</stringProp>\n" +
+                        "            <stringProp name=\"RegexExtractor.template\">$1$</stringProp>\n" +
+                        "            <stringProp name=\"RegexExtractor.default\"></stringProp>\n" +
+                        "            <stringProp name=\"RegexExtractor.match_number\">"+h.getReg().getNum()+"</stringProp>\n"+
+                        "\t\t\t <boolProp name=\"RegexExtractor.default_empty_value\">true</boolProp>\n";
+                        }else {
+                            re+="<RegexExtractor guiclass=\"RegexExtractorGui\" testclass=\"RegexExtractor\" testname=\"正则表达式提取器\" enabled=\"true\">\n" +
+                                    "            <stringProp name=\"RegexExtractor.useHeaders\">"+h.getReg().getPath().getKey()+"</stringProp>\n" +
+                                    "            <stringProp name=\"RegexExtractor.refname\">"+h.getReg().getName()+"</stringProp>\n" +
+                                    "            <stringProp name=\"RegexExtractor.regex\">"+h.getReg().getReg()+"</stringProp>\n" +
+                                    "            <stringProp name=\"RegexExtractor.template\">$1$</stringProp>\n" +
+                                    "            <stringProp name=\"RegexExtractor.default\">"+h.getReg().getDef()+"</stringProp>\n" +
+                                    "            <stringProp name=\"RegexExtractor.match_number\">"+h.getReg().getNum()+"</stringProp>\n";
+                        }
+
+                        re+="          </RegexExtractor>\n" +
+                                "          <hashTree/>\n" +
+                                "        </hashTree>";
+
+                  return re;}
+            case 3:return "<HTTPSamplerProxy guiclass=\"HttpTestSampleGui\" testclass=\"HTTPSamplerProxy\" testname=\"HTTP请求\" enabled=\"true\">\n" +
+                    "          <boolProp name=\"HTTPSampler.postBodyRaw\">true</boolProp>\n" +
+                    "          <elementProp name=\"HTTPsampler.Arguments\" elementType=\"Arguments\">\n" +
+                    "            <collectionProp name=\"Arguments.arguments\">\n" +
+                    "              <elementProp name=\"\" elementType=\"HTTPArgument\">\n" +
+                    "                <boolProp name=\"HTTPArgument.always_encode\">false</boolProp>\n" +
+                    "                <stringProp name=\"Argument.value\">${ddd}</stringProp>\n" +
+                    "                <stringProp name=\"Argument.metadata\">=</stringProp>\n" +
+                    "              </elementProp>\n" +
+                    "            </collectionProp>\n" +
+                    "          </elementProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.domain\">localhost</stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.port\">8081</stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.protocol\">http</stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.contentEncoding\">UTF-8</stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.path\">/getjmeter/"+resid+"</stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.method\">POST</stringProp>\n" +
+                    "          <boolProp name=\"HTTPSampler.follow_redirects\">false</boolProp>\n" +
+                    "          <boolProp name=\"HTTPSampler.auto_redirects\">true</boolProp>\n" +
+                    "          <boolProp name=\"HTTPSampler.use_keepalive\">false</boolProp>\n" +
+                    "          <boolProp name=\"HTTPSampler.DO_MULTIPART_POST\">false</boolProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.embedded_url_re\"></stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.connect_timeout\"></stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.response_timeout\"></stringProp>\n" +
+                    "        </HTTPSamplerProxy>\n" +
+                    "        <hashTree>\n" +
+                    "          <BeanShellPreProcessor guiclass=\"TestBeanGUI\" testclass=\"BeanShellPreProcessor\" testname=\"BeanShell PreProcessor\" enabled=\"true\">\n" +
+                    "            <boolProp name=\"resetInterpreter\">false</boolProp>\n" +
+                    "            <stringProp name=\"parameters\"></stringProp>\n" +
+                    "            <stringProp name=\"filename\"></stringProp>\n" +
+                    "            <stringProp name=\"script\">List l=vars.getObject(&quot;dat&quot;);\n" +
+                    "vars.put(&quot;ddd&quot;,l.toString());\n" +
+                    "System.out.println(&quot;111111111111111111&quot;);</stringProp>\n" +
+                    "          </BeanShellPreProcessor>\n" +
+                    "          <hashTree/>\n" +
+                    "          <HeaderManager guiclass=\"HeaderPanel\" testclass=\"HeaderManager\" testname=\"HTTP信息头管理器\" enabled=\"true\">\n" +
+                    "            <collectionProp name=\"HeaderManager.headers\">\n" +
+                    "              <elementProp name=\"Content-Type\" elementType=\"Header\">\n" +
+                    "                <stringProp name=\"Header.name\">Content-Type</stringProp>\n" +
+                    "                <stringProp name=\"Header.value\">application/json</stringProp>\n" +
+                    "              </elementProp>\n" +
+                    "            </collectionProp>\n" +
+                    "          </HeaderManager>\n" +
+                    "          <hashTree/>\n" +
+                    "        </hashTree>\n" +
+                    "\t </hashTree>\n" +
+                    "\t </hashTree>\n" +
+                    "\t </hashTree>\n" +
+                    "</jmeterTestPlan>";
+                    default:return "";
         }
+
     }
-    return  stringBuffer.toString();
 
-}
-private Header[] getheaders(String head){
-    String[] a=head.split("&");
-    if(a.length>0){
-        Header[] headers=new Header[a.length];
-        for (int i = 0; i <a.length ; i++) {
-            String[] b=a[i].split(":");
-            headers[i]=new BasicHeader(b[0],b[1]);
-        }
-        return headers;
-    }else {
-        return null;
-    }
-
-
-}
 
     private void  runHttpCase(String resid,int type) throws Exception {
-    //jdbcTemplate.query("select word value from ")
+
         List<HttpCase> lh=null;
         if (type==2) {
             lh = jdbcTemplate.query("select * from httpcase where cid=(SELECT cid from caseres where id="+resid+")",new BeanPropertyRowMapper<>(HttpCase.class));
-        } else if(type==3){
+        } else {
 
             lh = jdbcTemplate.query("select * from httpcase where cid=(select a from  precondition where cid=( SELECT cid from caseres where id="+resid+"))",new BeanPropertyRowMapper<>(HttpCase.class));
 
-        }else if(type==1){
-            lh = jdbcTemplate.query("SELECT a type,b url,c con, '5' eq ,'' value from precondition where cid=(SELECT cid from caseres where id="+resid+" )",new BeanPropertyRowMapper<>(HttpCase.class));
-
-
-        }else if(type==4){
-            lh=jdbcTemplate.query("SELECT a type,b url,c con, d eq ,e value from exp where sid=(select sid from caseres where id="+resid+")",new BeanPropertyRowMapper<>(HttpCase.class));
         }
 
-//        if(lh.size()>0) {
-//             if(lh.get(0).getType().equals("1")){
-//                    Header[] headers=null;
-//                 if(lh.get(0).getCon().contains("HEAD")){
-//                     String head=lh.get(0).getCon();
-//                     int st=  head.indexOf("HEAD{");
-//                     int et=  head.indexOf("}",st);
-//                     head=head.substring(st+5,et);
-//                    headers= getheaders(head);
-//
-//
-//
-//                 }
-//
-//
-//                String res= getHttpCon(lh.get(0).getUrl(),headers,"get","");
-//                 boolean isok=false;
-//                 String eq="";
-//                 switch (lh.get(0).getEq()){
-//                     case "1":if(res.equals(lh.get(0).getValue()))isok=true;eq="等于";break;
-//                     case "2":if(!res.equals(lh.get(0).getValue()))isok=true;eq="不等于";break;
-//                     case "3":if(res.contains(lh.get(0).getValue()))isok=true;eq="包含";break;
-//                     case "4":if(!res.contains(lh.get(0).getValue()))isok=true;eq="不包含";break;
-//                     case "5":isok=true;break;
-//                     default: isok=false;
-//                 }
-//                if (isok){
-//                     if(res.split("\\$\\$\\$666").length>3){
-//                         updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
-//
-//                     }else {
-//
-//                         updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
-//                         throw  new MyException("");
-//
-//                     }
-//
-//
-//                }else {
-//                    updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
-//                    throw  new MyException("");
-//
-//                }
-//
-//
-//
-//
-//
-//             }else {
-//                 String head = "";
-//                 Header[] headers = null;
-//                 if (lh.get(0).getCon().contains("HEAD")) {
-//                     head = lh.get(0).getCon();
-//                     int st = head.indexOf("HEAD{");
-//                     int et = head.indexOf("}", st);
-//                     head = head.substring(st + 5, et);
-//                     headers = getheaders(head);
-//
-//
-//                 }
-//                 String con = lh.get(0).getCon().replace(head, "").replace("HEAD{}", "").replace("<br/>","").replace("&amp;","&").replace("&lt;","<").replace("&gt;",">").replace("&quot;","\"").replace("&apos;","'").replace("\n","");
-//                 String res = getHttpCon(lh.get(0).getUrl(), headers, "post", con);
-//                 boolean isok=false;
-//                 String eq="";
-//                 switch (lh.get(0).getEq()){
-//                     case "1":if(res.equals(lh.get(0).getValue()))isok=true;eq="等于";break;
-//                     case "2":if(!res.equals(lh.get(0).getValue()))isok=true;eq="不等于";break;
-//                     case "3":if(res.contains(lh.get(0).getValue()))isok=true;eq="包含";break;
-//                     case "4":if(!res.contains(lh.get(0).getValue()))isok=true;eq="不包含";break;
-//                     case "5":isok=true;break;
-//                     default: isok=false;
-//                 }
-//                 if (isok){
-//                     if(res.split("\\$\\$\\$666").length>4){
-//                         updateCaseresRes("1","运行成功,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
-//
-//                     }else {
-//                         updateCaseresRes("2","运行失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
-//                         throw  new MyException("");
-//                     }
-//
-//                 }else {
-//                     updateCaseresRes("2","校验失败,详细信息：$$$666"+mycode.praseString2(res)+"$$$666"+eq+lh.get(0).getValue().replace("\"","&quot;").replace("'","&apos;").replace("\n","<br/>").replace("{","&dakuohao1").replace("}","&dakuohao2").replace("\\","&fanxiegang"),resid);
-//                     throw  new MyException("");
-//
-//                 }
-//
-//             }
-//
-//      }      else {
-//
-//
-//             // updateCaseresRes("3","运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤",resid);
-//             throw new Exception("运行失败,详细信息：$$$666未找到可执行的用例，请查看具体步骤");
-//
-//      }
-        //CloseableHttpClient client = HttpClients.createDefault();
+        List<Http4j> lh4=JSON.parseArray(lh.get(0).getCon(),Http4j.class);
+        StringBuffer sb=new StringBuffer();
+        sb.append(getjm(1,null,null));
+        if(lh.size()>0){
+            for(Http4j http4j:lh4){
+                sb.append(getjm(2,http4j,null));
+            }
+            sb.append(getjm(3,null,resid));
+            mycode.write(filePath+"basetools/run.jmx",sb.toString(),"UTF-8");
+
+//            Process p=   Runtime.getRuntime().exec(aasd,new String[]{filePath+"basetools/run.jmx","-n"});
+
+            Process p1= Runtime.getRuntime().exec("cmd /k  start  "+filePath+"basetools/run.bat");
+            while (!ishttpStop){
+                Thread.sleep(1000);
+            }
+
+            p1.destroy();
+            p1=null;
+            Runtime.getRuntime().exec("cmd.exe /C start wmic process where name='cmd.exe' call terminate");
+
+            boolean isok=false;
+            for(Http4j http4j:lh4){
+                for(Http4res h41:http4res ){
+                   if(h41.getName().equals(http4j.getName())){
+                       if(!http4j.getAss().isIsigst()){
+                           if(!h41.isIsok()){
+                               updateCaseresRes("2","1"+Arrays.toString(http4res),resid);
+                               break;
+                           }
+                       }
+                       String mubiao="";
+                       switch (http4j.getAss().getPath().getKey()){
+                           case "1":mubiao=h41.getResponseDataAsString();break;
+                           case "2":mubiao=h41.getResponseCode();break;
+                           case "3":mubiao=h41.getRequestHeaders();break;
+                           case "4":mubiao=h41.getRequestHeaders();break;
+                           case "5":mubiao=h41.getUrlAsString();break;
+                       }
+
+                       switch (http4j.getAss().getType().getKey()){
+                           case "1":{String v[]=mubiao.split(http4j.getAss().getPa());
+                           if(v.length>1||v.length==0){
+                               isok=true;
+                           }
+                           break;}
+
+                           case "2":isok=mubiao.matches(http4j.getAss().getPa());break;
+
+
+                       }
+                       if(http4j.getAss().isIsfan()){
+                           isok=!isok;
+                       }
+                       break;
+                   }
+                }
+            }
+        if(isok){
+            updateCaseresRes("1","2"+Arrays.toString(http4res),resid);
+        }else {
+            updateCaseresRes("2","3"+Arrays.toString(http4res),resid);
+        }
+
+
+        }else{
+            updateCaseresRes("3","请求数据出错，请检查",resid);
+
+
+        }
+
+
+
+
+
 
 
     }

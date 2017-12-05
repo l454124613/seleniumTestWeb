@@ -1,14 +1,33 @@
 package com.ciic.test.bean;
 
+import java.util.ArrayList;
+
 public  class Ass {
     private String pa;
     private KeyValue path;
     private KeyValue type;
     private boolean isfan;
     private boolean isigst;
-    private boolean isor;
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append("\"pa\":\"")
+                .append(pa).append('\"');
+        sb.append(",\"path\":")
+                .append(path);
+        sb.append(",\"type\":")
+                .append(type);
+        sb.append(",\"isfan\":")
+                .append(isfan);
+        sb.append(",\"isigst\":")
+                .append(isigst);
+        sb.append('}');
+        return sb.toString();
+    }
 
     public String getPa() {
+
         return pa;
     }
 
@@ -48,30 +67,6 @@ public  class Ass {
         this.isigst = isigst;
     }
 
-    public boolean isIsor() {
-        return isor;
-    }
 
-    public void setIsor(boolean isor) {
-        this.isor = isor;
-    }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("{");
-        sb.append("\"pa\":\"")
-                .append(pa).append('\"');
-        sb.append(",\"path\":")
-                .append(path);
-        sb.append(",\"type\":")
-                .append(type);
-        sb.append(",\"isfan\":")
-                .append(isfan);
-        sb.append(",\"isigst\":")
-                .append(isigst);
-        sb.append(",\"isor\":")
-                .append(isor);
-        sb.append('}');
-        return sb.toString();
-    }
 }

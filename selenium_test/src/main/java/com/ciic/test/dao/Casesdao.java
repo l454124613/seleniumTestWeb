@@ -552,6 +552,11 @@ return thread;
         seleniumService.test(cid);
     }
 
+    @Override
+    public void stopHttpCase(Http4res[] http4res) {
+        seleniumService.stopHttpCase(http4res);
+    }
+
     private void updateSeriesStime(String seriesid){
         jdbcTemplate.update("update series set sttime='"+LocalDate.now()+" "+LocalTime.now()+"'  where id="+seriesid );
     }
@@ -640,18 +645,18 @@ private void map2Sql(Map<String,Set<String>> map,String tid){
             while(true){
 
              List<tmp> l4=   jdbcTemplate.query("select type value ,a value2 from precondition where cid="+cid1, new BeanPropertyRowMapper<>(tmp.class));
-            if(l4.size()==1){
+                if(l4.size()==1){
                     //如果是用例。判断是否还有预置条件
                     if(l4.get(0).getValue().equals("1")){
                         List<tmp> lt3=jdbcTemplate.query("SELECT type value from caselist where id="+l4.get(0).getValue2(),new BeanPropertyRowMapper<>(tmp.class));
-if(lt3.size()==1){
-    if(lt3.get(0).getValue().equals("1")){
-        l3.add(cid1+":1");
-    }else {
-        l3.add(cid1+":4");
-    }
+                        if(lt3.size()==1){
+                            if(lt3.get(0).getValue().equals("1")){
+                                l3.add(cid1+":1");
+                            }else {
+                                l3.add(cid1+":4");
+                            }
 
-}else throw new Exception("no case type");
+                        }else throw new Exception("no case type");
 
                         cid1=l4.get(0).getValue2();
 
@@ -664,7 +669,7 @@ if(lt3.size()==1){
 
                         }else {
                             if(l4.get(0).getValue().equals("3")){
-                              //  updateHttpcase0(cid1);
+                                //  updateHttpcase0(cid1);
                                 l3.add(cid1+":3");
                             }
                         }
@@ -673,9 +678,9 @@ if(lt3.size()==1){
                     }
 
 
-            }else {
-                break;
-            }
+                }else {
+                    break;
+                }
             }
             Collections.reverse(l3);
             try {
@@ -765,7 +770,7 @@ void addCase2res(String cid,String seriesid,String[] precids) throws Exception {
                 switch (res1[1]){
                     case "1" :jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\",type)  SELECT cid,step.id sid,'' pic,''''||ename||''''||cat.name||value||'_预置条件' word,'-1' res ,'-1' restext ,'' time ,"+lt.get(0).getValue()+" listid ,'1' type from step join cat on cat.id=step.catid where cid=(SELECT a from precondition where cid="+res1[0]+") and step.isused=1 ORDER BY step");break;
                     case "2" :jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\",type) SELECT '"+res1[0]+"' cid,'0' sid,'' pic,'修改数据库_预置条件' word,'-1' res,'-1' restext,'' time,'"+lt.get(0).getValue()+"' listid ,'2' type");break;
-                    case  "3":jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\",type) SELECT '"+res1[0]+"' cid,'0' sid,'' pic,'接口请求_预置条件' word,'-1' res,'-1' restext,'' time,'"+lt.get(0).getValue()+"' listid ,'5' type");break;
+
                     case  "4":jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\",type) SELECT '"+res1[0]+"' cid,'0' sid,'' pic,'接口请求_预置条件' word,'-1' res,'-1' restext,'' time,'"+lt.get(0).getValue()+"' listid ,'4' type");break;
                 }
 
@@ -779,7 +784,7 @@ void addCase2res(String cid,String seriesid,String[] precids) throws Exception {
         }
 
     }else {
-        int a=    jdbcTemplate.update("INSERT INTO \"casereslist\" ( \"cid\", \"res\", \"runnum\", \"allnum\", \"cname\", \"cdes\", \"seriesid\", \"status\") SELECT cid,'-1' res,'0' runnum,'1' allnum, name cname,des cdes,'"+seriesid+"' seriesid,0 status from caselist join httpcase on httpcase.cid=caselist.id where httpcase.type !='-1' and  caselist.isused=1  and  caselist.id="+cid);
+        int a=    jdbcTemplate.update("INSERT INTO \"casereslist\" ( \"cid\", \"res\", \"runnum\", \"allnum\", \"cname\", \"cdes\", \"seriesid\", \"status\") SELECT cid,'-1' res,'0' runnum,'1' allnum, name cname,des cdes,'"+seriesid+"' seriesid,0 status from caselist join httpcase on httpcase.cid=caselist.id where   caselist.isused=1  and  caselist.id="+cid);
         if(a>0){
             lt= jdbcTemplate.query("select id value from casereslist where cid="+cid+" and seriesid = "+seriesid +" order by id desc",new BeanPropertyRowMapper<tmp>(tmp.class));
             for (int i = 0; i <precids.length ; i++) {
@@ -788,14 +793,14 @@ void addCase2res(String cid,String seriesid,String[] precids) throws Exception {
                 switch (res1[1]){
                     case "1" :jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\",type)  SELECT cid,step.id sid,'' pic,''''||ename||''''||cat.name||value||'_预置条件' word,'-1' res ,'-1' restext ,'' time ,"+lt.get(0).getValue()+" listid ,'1' type from step join cat on cat.id=step.catid where cid=(SELECT a from precondition where cid="+res1[0]+") and step.isused=1  ORDER BY step");break;
                     case "2" :jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\",type) SELECT '"+res1[0]+"' cid,'0' sid,'' pic,'修改数据库_预置条件' word,'-1' res,'-1' restext,'' time,'"+lt.get(0).getValue()+"' listid ,'2' type");break;
-                    case  "3":jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\",type) SELECT '"+res1[0]+"' cid,'0' sid,'' pic,'接口请求_预置条件' word,'-1' res,'-1' restext,'' time,'"+lt.get(0).getValue()+"' listid ,'5' type");break;
+
                     case  "4":jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\",type) SELECT '"+res1[0]+"' cid,'0' sid,'' pic,'接口请求_预置条件' word,'-1' res,'-1' restext,'' time,'"+lt.get(0).getValue()+"' listid ,'4' type");break;
                 }
 
             }
             jdbcTemplate.update("INSERT INTO \"caseres\" ( \"cid\", \"sid\", \"pic\", \"word\", \"res\", \"restext\", \"time\", \"listid\",type) SELECT '"+cid+"' cid,'0' sid,'' pic,'接口请求' word,'-1' res,'-1' restext,'' time,'"+lt.get(0).getValue()+"'  listid ,'3' type ");
 
-
+//res 1yemian ,2sql,3http,4httppre
         }else {
             throw new Exception("no case");
         }
