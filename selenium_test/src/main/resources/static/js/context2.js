@@ -184,14 +184,7 @@ function showhttphelp(){
 $('#httphelp').html(re);
 }
 
-function s2h(a) {
-    a=h2s(a);
-  return  a.replace(/&/g,"&amp;").replace(/\"/g,"&quot;").replace(/\'/g,"&apos;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"&#xd;");
-}
 
-function h2s(a) {
-   return a.replace(/&quot;/g,"\"").replace(/&apos;/g,"\'").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&#xd;/g,"\n").replace(/&amp;/g,"&");
-}
 function diag(a,b,isshow,c)
 {
     var str;
@@ -215,6 +208,7 @@ function diag(a,b,isshow,c)
 
 function addhttp(id,text) {
     var id2=$(text).attr('name');
+
     var h=https.info[(parseInt(id2.substring(1))-1)];
     switch(id){
         case 1:{
@@ -311,7 +305,8 @@ function addhttp(id,text) {
 
             // h.ass.type.key=$(text).attr('data-value');
             // h.ass.type.value=$(text).text();
-            h.ass.isigst= $(text).parent().checkbox('is checked');
+            h.ass.isigst=! h.ass.isigst;
+
 
 
 
@@ -320,7 +315,7 @@ function addhttp(id,text) {
 
             // h.ass.type.key=$(text).attr('data-value');
             // h.ass.type.value=$(text).text();
-            h.ass.isfan=  $(text).parent().checkbox('is checked');
+            h.ass.isfan=!h.ass.isfan  ;
 
 
         }break;
@@ -599,8 +594,8 @@ function getform(a,b) {
 
             }break;
             case 'checkbox':{
-                re+="<div class=\"ui toggle checkbox\" style=\"padding-top: 0.1rem;padding-left: 0.1rem;\">"+
-               " <input type=\"checkbox\"  name=\""+b+"\" onclick=\""+va.function+"\"  >"+
+                re+="<div class=\"ui toggle checkbox\" name=\""+b+"\" onclick=\""+va.function+"\" style=\"padding-top: 0.1rem;padding-left: 0.1rem;\">"+
+               " <input type=\"checkbox\"    >"+
                 "    <label >"+va.des+"</label>"+
                " </div>";
 

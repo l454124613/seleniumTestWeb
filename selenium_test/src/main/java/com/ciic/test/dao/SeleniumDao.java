@@ -696,10 +696,10 @@ public void test(String cid) {
                     "            <stringProp name=\"script\">String name=&quot;"+h.getName()+"&quot;;\n" +
                     "String reqh=prev.getRequestHeaders().replace(&quot;\\n&quot;,&quot;\\\\n&quot;);\n" +
                     "String rescode=prev.getResponseCode();\n" +
-                    "String resds=prev.getResponseDataAsString().replace(&quot;\\&quot;&quot;,&quot;\\\\\\&quot;&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot; &quot;,&quot;&quot;).replace(&quot;\\r&quot;,&quot;&quot;).replace(&quot;\\t&quot;,&quot;&quot;);\n" +
+                    "String resds=prev.getResponseDataAsString().replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot; &quot;,&quot;&quot;).replace(&quot;\\r&quot;,&quot;&quot;).replace(&quot;\\t&quot;,&quot;&quot;);\n" +
                     "String resh=prev.getResponseHeaders().replace(&quot;\\n&quot;,&quot;\\\\n&quot;);\n" +
                     "String resmsg=prev.getResponseMessage().replace(&quot;\\&quot;&quot;,&quot;\\\\\\&quot;&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot;\\r&quot;,&quot;&quot;);\n" +
-                    "String reqb=prev.getSamplerData().replace(&quot;\\&quot;&quot;,&quot;\\\\\\&quot;&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;);\n" +
+                    "String reqb=prev.getSamplerData().replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot;\\r&quot;,&quot;&quot;);\n" +
                     "long sby=prev.getSentBytes();\n" +
                     "long rby=prev.getBytesAsLong();\n" +
                     "String url=prev.getUrlAsString();\n" +
@@ -867,52 +867,83 @@ public void test(String cid) {
             p1=null;
             Runtime.getRuntime().exec("cmd.exe /C start wmic process where name='cmd.exe' call terminate");
 
-            boolean isok=false;
+            boolean isok=true;
             for(Http4j http4j:lh4){
-                for(Http4res h41:http4res ){
-                   if(h41.getName().equals(http4j.getName())){
-                       if(!http4j.getAss().isIsigst()){
-                           if(!h41.isIsok()){
-                               updateCaseresRes("2","1"+Arrays.toString(http4res),resid);
-                               break;
-                           }
-                       }
-                       String mubiao="";
-                       switch (http4j.getAss().getPath().getKey()){
-                           case "1":mubiao=h41.getResponseDataAsString();break;
-                           case "2":mubiao=h41.getResponseCode();break;
-                           case "3":mubiao=h41.getRequestHeaders();break;
-                           case "4":mubiao=h41.getRequestHeaders();break;
-                           case "5":mubiao=h41.getUrlAsString();break;
-                       }
+                for (int i = 0; i < http4res.length; i++) {
+                    boolean isok2=true;
 
-                       switch (http4j.getAss().getType().getKey()){
-                           case "1":{String v[]=mubiao.split(http4j.getAss().getPa());
-                           if(v.length>1||v.length==0){
-                               isok=true;
-                           }
-                           break;}
-
-                           case "2":isok=mubiao.matches(http4j.getAss().getPa());break;
+                    if(http4res[i].getName().equals(http4j.getName())){
+                        String bu="";
+                        if(http4j.getAss().isIsfan()){
+                            bu="不";
+                        }
+                        http4res[i].setRestype(http4j.getAss().getPath().getValue()+bu+http4j.getAss().getType().getValue());
+                        http4res[i].setRes(http4j.getAss().getPa());
+                        if(!http4j.getAss().isIsigst()){
+                            if(!http4res[i].isIsok()){
 
 
-                       }
-                       if(http4j.getAss().isIsfan()){
-                           isok=!isok;
-                       }
-                       break;
-                   }
+                                http4res[i].setResid("1");
+
+                                updateCaseresRes("2",Arrays.toString(http4res).replace("\"","\\\"").replace("\n","\\n").replace(" ",""),resid);
+                               throw  new MyException("");
+
+                            }
+                        }
+                        String mubiao="";
+
+                        switch (http4j.getAss().getPath().getKey()){
+                            case "1":mubiao=http4res[i].getResponseDataAsString();break;
+                            case "2":mubiao=http4res[i].getResponseCode();break;
+                            case "3":mubiao=http4res[i].getRequestHeaders();break;
+                            case "4":mubiao=http4res[i].getRequestHeaders();break;
+                            case "5":mubiao=http4res[i].getUrlAsString();break;
+                        }
+
+                        switch (http4j.getAss().getType().getKey()){
+                            case "1":{String v[]=mubiao.split(http4j.getAss().getPa());
+                                if(v.length==1){
+                                    isok2=false;
+                                }
+
+                                break;}
+
+                            case "2":isok2=mubiao.matches(http4j.getAss().getPa());
+
+                            break;
+
+
+                        }
+                        if(http4j.getAss().isIsfan()){
+                            isok2=!isok;
+                        }
+                        isok=isok2&isok;
+                        if(isok2){
+                            http4res[i].setResid("2");
+                        }else {
+                            http4res[i].setResid("3");
+                        }
+                        break;
+
+
+                    }
                 }
+
             }
         if(isok){
-            updateCaseresRes("1","2"+Arrays.toString(http4res),resid);
+
+            updateCaseresRes("1",Arrays.toString(http4res).replace("\"","\\\"").replace("\n","\\n").replace(" ",""),resid);
         }else {
-            updateCaseresRes("2","3"+Arrays.toString(http4res),resid);
+
+            updateCaseresRes("2",Arrays.toString(http4res).replace("\"","\\\"").replace("\n","\\n").replace(" ",""),resid);
+            throw  new MyException("");
         }
 
 
         }else{
             updateCaseresRes("3","请求数据出错，请检查",resid);
+            throw new Exception("请求数据出错，请检查");
+
 
 
         }

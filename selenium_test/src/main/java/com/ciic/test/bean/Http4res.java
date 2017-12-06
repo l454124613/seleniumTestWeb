@@ -13,6 +13,23 @@ public class Http4res {
     private String sentBytes;
     private String bytesAsLong;
     private String urlAsString;
+    private String restype;
+
+    public String getRestype() {
+        return restype;
+    }
+
+    public void setRestype(String restype) {
+        this.restype = restype;
+    }
+
+    public String getResid() {
+        return resid;
+    }
+
+    public void setResid(String resid) {
+        this.resid = resid;
+    }
 
     @Override
     public String toString() {
@@ -35,6 +52,12 @@ public class Http4res {
                 .append(bytesAsLong).append('\"');
         sb.append(",\"urlAsString\":\"")
                 .append(urlAsString).append('\"');
+        sb.append(",\"restype\":\"")
+                .append(restype).append('\"');
+        sb.append(",\"resid\":\"")
+                .append(resid).append('\"');
+        sb.append(",\"res\":\"")
+                .append(res).append('\"');
         sb.append(",\"isok\":")
                 .append(isok);
         sb.append(",\"name\":\"")
@@ -42,6 +65,18 @@ public class Http4res {
         sb.append('}');
         return sb.toString();
     }
+
+    private String resid;
+
+    public String getRes() {
+        return res;
+    }
+
+    public void setRes(String res) {
+        this.res = res;
+    }
+
+    private String res;
 
     public boolean isIsok() {
         return isok;

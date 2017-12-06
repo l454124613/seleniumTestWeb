@@ -1261,13 +1261,14 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
     }
     @RequestMapping(value="/getjmeter/{rid}",method= RequestMethod.POST)
-    Object getJmeter(@RequestBody Http4res[] http4res,@PathVariable String rid){
+    void getJmeter(@RequestBody Http4res[] http4res,@PathVariable String rid){
+
         caseService.stopHttpCase(http4res);
 
-        System.out.println(Arrays.asList(http4res));
+       // System.out.println(Arrays.asList(http4res));
 
 
-        return "ok";
+
 
 
 

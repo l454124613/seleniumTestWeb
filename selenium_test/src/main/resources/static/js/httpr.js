@@ -23,7 +23,14 @@ $.GetJSON = function (url,data,callback,callback2){
         }
     });
 };
+function s2h(a) {
+    a=h2s(a);
+    return  a.replace(/&/g,"&amp;").replace(/\"/g,"&quot;").replace(/\'/g,"&apos;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"&#xd;");
+}
 
+function h2s(a) {
+    return a.replace(/&quot;/g,"\"").replace(/&apos;/g,"\'").replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&#xd;/g,"\n").replace(/&amp;/g,"&");
+}
 /**
  * 提交json数据的post请求
  *
