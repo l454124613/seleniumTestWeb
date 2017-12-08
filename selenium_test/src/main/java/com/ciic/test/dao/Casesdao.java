@@ -553,8 +553,8 @@ return thread;
     }
 
     @Override
-    public void stopHttpCase(Http4res[] http4res) {
-        seleniumService.stopHttpCase(http4res);
+    public void stopHttpCase(Http4res[] http4res,String rid) {
+        seleniumService.stopHttpCase(http4res,rid);
     }
 
     private void updateSeriesStime(String seriesid){

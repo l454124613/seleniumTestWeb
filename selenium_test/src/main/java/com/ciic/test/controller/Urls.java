@@ -1263,7 +1263,7 @@ String getcase(@PathVariable String tid,@PathVariable String all){
     @RequestMapping(value="/getjmeter/{rid}",method= RequestMethod.POST)
     void getJmeter(@RequestBody Http4res[] http4res,@PathVariable String rid){
 
-        caseService.stopHttpCase(http4res);
+        caseService.stopHttpCase(http4res,rid);
 
        // System.out.println(Arrays.asList(http4res));
 

@@ -11,7 +11,7 @@ public interface SeleniumService {
     void closeDriver(WebDriver driver);
     void stopRun(String seid);
     void test(String cid);
-    void stopHttpCase(Http4res[] http4res);
+    void stopHttpCase(Http4res[] http4res,String rid);
 
 
 }

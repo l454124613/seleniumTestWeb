@@ -95,7 +95,7 @@ int updateHttpCase(HttpCase httpCase);
 
     void test(String cid);
 
-    void stopHttpCase(Http4res[] http4res);
+    void stopHttpCase(Http4res[] http4res,String rid);
 
 
 

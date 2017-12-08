@@ -50,13 +50,15 @@ public class SeleniumDao implements SeleniumService {
     private String      seidStop ="0";
     private String      isWin ="0";
     private  Http4res[] http4res;
+    private String rid="-1";
 
     public boolean isIshttpStop() {
         return ishttpStop;
     }
 
-    public void setIshttpStop(boolean ishttpStop) {
+    public void setIshttpStop(boolean ishttpStop,String rid) {
         this.ishttpStop = ishttpStop;
+        this.rid=rid;
     }
 
     private boolean ishttpStop =false;
@@ -499,9 +501,9 @@ public void test(String cid) {
 }
 
     @Override
-    public void stopHttpCase(Http4res[] http4res) {
+    public void stopHttpCase(Http4res[] http4res,String rid) {
         this.http4res=http4res;
-        setIshttpStop(true);
+        setIshttpStop(true,rid);
     }
 
 
@@ -694,11 +696,11 @@ public void test(String cid) {
                     "            <stringProp name=\"parameters\"></stringProp>\n" +
                     "            <stringProp name=\"filename\"></stringProp>\n" +
                     "            <stringProp name=\"script\">String name=&quot;"+h.getName()+"&quot;;\n" +
-                    "String reqh=prev.getRequestHeaders().replace(&quot;\\n&quot;,&quot;\\\\n&quot;);\n" +
-                    "String rescode=prev.getResponseCode();\n" +
+                    "String reqh=prev.getRequestHeaders().replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;);\n" +
+                    "String rescode=prev.getResponseCode().replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;);\n" +
                     "String resds=prev.getResponseDataAsString().replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot; &quot;,&quot;&quot;).replace(&quot;\\r&quot;,&quot;&quot;).replace(&quot;\\t&quot;,&quot;&quot;);\n" +
-                    "String resh=prev.getResponseHeaders().replace(&quot;\\n&quot;,&quot;\\\\n&quot;);\n" +
-                    "String resmsg=prev.getResponseMessage().replace(&quot;\\&quot;&quot;,&quot;\\\\\\&quot;&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot;\\r&quot;,&quot;&quot;);\n" +
+                    "String resh=prev.getResponseHeaders().replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;);\n" +
+                    "String resmsg=prev.getResponseMessage().replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot;\\r&quot;,&quot;&quot;).replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;);\n" +
                     "String reqb=prev.getSamplerData().replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot;\\r&quot;,&quot;&quot;);\n" +
                     "long sby=prev.getSentBytes();\n" +
                     "long rby=prev.getBytesAsLong();\n" +
@@ -859,7 +861,7 @@ public void test(String cid) {
 //            Process p=   Runtime.getRuntime().exec(aasd,new String[]{filePath+"basetools/run.jmx","-n"});
 
             Process p1= Runtime.getRuntime().exec("cmd /k  start  "+filePath+"basetools/run.bat");
-            while (!ishttpStop){
+            while (!ishttpStop||!resid.equals(rid)){
                 Thread.sleep(1000);
             }
 

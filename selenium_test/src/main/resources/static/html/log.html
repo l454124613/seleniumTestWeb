@@ -122,14 +122,14 @@ function getimg(a,b,f,c,d) {
                     "      <a class=\"item\" onclick=\"showinfo('f7"+a+i+"')\"><i class=\"circle icon\"></i>校验信息</a><div id='f7"+a+i+"' style='display: none'></div>\n"+
                     "    </div>");
 
-                $('#f1'+a+i).text(rr[i].requestHeaders);
+                $('#f1'+a+i).text(rr[i].requestHeaders.replace(/%shuang/g,"\"").replace(/%dan/g,"\'"));
                 $('#f2'+a+i).text(rr[i].requestdata.replace(/%shuang/g,"\"").replace(/%dan/g,"\'"));
-                $('#f3'+a+i).text(rr[i].responseCode);
+                $('#f3'+a+i).text(rr[i].responseCode.replace(/%shuang/g,"\"").replace(/%dan/g,"\'"));
                 $('#f4'+a+i).text(rr[i].responseDataAsString.replace(/%shuang/g,"\"").replace(/%dan/g,"\'"));
-                $('#f5'+a+i).text(rr[i].responseMessage);
+                $('#f5'+a+i).text(rr[i].responseMessage.replace(/%shuang/g,"\"").replace(/%dan/g,"\'"));
                 $('#f6'+a+i).text("发送字节："+rr[i].sentBytes+",接收字节："+rr[i].bytesAsLong);
                 $('#f7'+a+i).text(rr[i].restype+":"+rr[i].res);
-                $('#f8'+a+i).text((rr[i].responseHeaders==""?"无信息":rr[i].responseHeaders));
+                $('#f8'+a+i).text((rr[i].responseHeaders==""?"无信息":rr[i].responseHeaders.replace(/%shuang/g,"\"").replace(/%dan/g,"\'")));
             }
 
 

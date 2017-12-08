@@ -649,11 +649,14 @@ function savehttps() {
     for(var i=0;i<https.info.length;i++){
 
             var h=https.info[i];
-            if(h.base.path==""||h.base.host==""||h.base.method.key==""||h.base.http.key==""||h.ass.path.key==""||h.ass.type.key==""||h.ass.pa==""||!h.isshow){
+            if(h.base.path==""||h.base.host==""||h.base.method.key==""||h.base.http.key==""||h.ass.path.key==""||h.ass.type.key==""||h.ass.pa==""){
                 isok=false;
 
             }else{
-                data.push(h);
+                if(h.isshow){
+                    data.push(h);
+                }
+
 
             }
 
