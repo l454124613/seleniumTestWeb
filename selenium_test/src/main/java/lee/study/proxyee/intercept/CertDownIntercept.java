@@ -1,0 +1,73 @@
+package lee.study.proxyee.intercept;
+
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.DefaultHttpResponse;
+import io.netty.handler.codec.http.DefaultLastHttpContent;
+import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpVersion;
+import java.net.InetSocketAddress;
+import lee.study.proxyee.crt.CertUtil;
+import lee.study.proxyee.util.ProtoUtil;
+
+/**
+ * 处理证书下载页面 http://proxyServerIp:proxyServerPort
+ */
+public class CertDownIntercept extends HttpProxyIntercept {
+
+  private boolean crtFlag = false;
+
+  @Override
+  public void beforeRequest(ChannelHandlerContext chc, HttpRequest httpRequest,
+                            HttpProxyInterceptPipeline pipeline) throws Exception {
+    ProtoUtil.RequestProto requestProto = ProtoUtil.getRequestProto(httpRequest);
+    InetSocketAddress inetSocketAddress = (InetSocketAddress) chc.channel().localAddress();
+    if (requestProto.getHost().equals(inetSocketAddress.getHostString()) &&
+        requestProto.getPort() == inetSocketAddress.getPort()) {
+      crtFlag = true;
+      if (httpRequest.uri().matches("^.*/ca.crt.*$")) {  //下载证书
+        HttpResponse httpResponse = new DefaultHttpResponse(HttpVersion.HTTP_1_1,
+            HttpResponseStatus.OK);
+        byte[] bts = CertUtil
+            .loadCert(Thread.currentThread().getContextClassLoader().getResourceAsStream("ca.crt"))
+            .getEncoded();
+        httpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/x-x509-ca-cert");
+        httpResponse.headers().set(HttpHeaderNames.CONTENT_LENGTH, bts.length);
+        httpResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+        HttpContent httpContent = new DefaultLastHttpContent();
+        httpContent.content().writeBytes(bts);
+        chc.channel().writeAndFlush(httpResponse);
+        chc.channel().writeAndFlush(httpContent);
+        chc.channel().close();
+      } else if (httpRequest.uri().matches("^.*/favicon.ico$")) {
+        chc.channel().close();
+      } else {  //跳转下载页面
+        HttpResponse httpResponse = new DefaultHttpResponse(HttpVersion.HTTP_1_1,
+            HttpResponseStatus.OK);
+        String html = "<html><body><div style=\"margin-top:100px;text-align:center;\"><a href=\"ca.crt\">ProxyeeRoot ca.crt</a></div></body></html>";
+        httpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html;charset=utf-8");
+        httpResponse.headers().set(HttpHeaderNames.CONTENT_LENGTH, html.getBytes().length);
+        httpResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+        HttpContent httpContent = new DefaultLastHttpContent();
+        httpContent.content().writeBytes(html.getBytes());
+        chc.channel().writeAndFlush(httpResponse);
+        chc.channel().writeAndFlush(httpContent);
+      }
+    } else {
+      super.beforeRequest(chc, httpRequest, pipeline);
+    }
+  }
+
+  @Override
+  public void beforeRequest(ChannelHandlerContext chc, HttpContent httpContent,
+      HttpProxyInterceptPipeline pipeline) throws Exception {
+    if (!crtFlag) {
+      super.beforeRequest(chc, httpContent, pipeline);
+    }
+  }
+}

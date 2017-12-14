@@ -69,7 +69,7 @@
 <div class="pusher">
 
     <div class="ui  menu" id="menu5" style="position: fixed;width: 100%;z-index: 20;top: 0px;">
-        <a class="active item" onclick="toggle()">菜单 </a>
+        <a class="active item" onclick="toggle()" id="togmenu">隐藏菜单 </a>
         <div class="ui scrolling dropdown  item" id="choosei">
             <input type="hidden" name="gender">
             <div class="default text" id="chooseitem">请选择项目</div>
@@ -707,6 +707,8 @@
 //                $('.pusher').css('width', ww-150);
 //                $('#menu5').css('width', ww-150);
                 $('.pusher').animate({width:ww-152},450);
+                $('#togmenu').text('隐藏菜单');
+
                 //   $('#menu7').animate({width:v1+"px"});
 
 
@@ -718,6 +720,7 @@
                 //   $('.pusher').animate('width', ww);
                 $('.pusher').animate({width:ww},150);
                 //   $('#menu7').css('width', v1);
+                $('#togmenu').text('展开菜单');
             }
         })
         //            .sidebar('setting', {transition:'overlay'})

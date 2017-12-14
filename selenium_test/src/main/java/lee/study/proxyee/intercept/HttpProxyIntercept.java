@@ -6,19 +6,43 @@ import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 
-import java.util.List;
-import java.util.Map;
+public class HttpProxyIntercept {
 
-public interface HttpProxyIntercept {
-    boolean beforeRequest(ChannelHandlerContext ctx, HttpRequest httpRequest);
+  protected HttpRequest httpRequest;
+  protected HttpResponse httpResponse;
 
-    boolean beforeRequest(Channel channel, HttpContent httpContent);
+  /**
+   * 拦截代理服务器到目标服务器的请求头
+   */
+  public void beforeRequest(ChannelHandlerContext chc, HttpRequest httpRequest,
+                            HttpProxyInterceptPipeline pipeline) throws Exception {
+    this.httpRequest = httpRequest;
+    pipeline.beforeRequest(chc,httpRequest);
+  }
 
-    boolean afterResponse(Channel channel, HttpResponse httpResponse);
+  /**
+   * 拦截代理服务器到目标服务器的请求体
+   */
+  public void beforeRequest(ChannelHandlerContext chc, HttpContent httpContent,
+      HttpProxyInterceptPipeline pipeline) throws Exception {
+    pipeline.beforeRequest(chc,httpContent);
+  }
 
-    boolean afterResponse(Channel channel, HttpContent httpContent);
+  /**
+   * 拦截代理服务器到客户端的响应头
+   */
+  public void afterResponse(Channel clientChannel, Channel proxyChannel,
+      HttpResponse httpResponse, HttpProxyInterceptPipeline pipeline) throws Exception {
+    this.httpResponse = httpResponse;
+    pipeline.afterResponse(clientChannel,proxyChannel,httpResponse);
+  }
 
-    Map<String,String> getMap();
 
-
+  /**
+   * 拦截代理服务器到客户端的响应体
+   */
+  public void afterResponse(Channel clientChannel, Channel proxyChannel,
+      HttpContent httpContent, HttpProxyInterceptPipeline pipeline) throws Exception {
+    pipeline.afterResponse(clientChannel,proxyChannel,httpContent);
+  }
 }

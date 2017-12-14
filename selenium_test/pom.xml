@@ -5,7 +5,7 @@
 
 	<groupId>com.ciic.test</groupId>
 	<artifactId>selenium</artifactId>
-	<version>0.0.3</version>
+	<version>3.1.3</version>
 	<packaging>jar</packaging>
 
 	<name>selenium</name>
@@ -25,12 +25,8 @@
 	</properties>
 
 	<dependencies>
-        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.58</version>
-        </dependency>
+
+
 		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -79,11 +75,16 @@
 			<version>3.19.3</version>
 
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-server -->
+		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-server -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-server</artifactId>
 			<version>3.4.0</version>
 		</dependency>
+
+
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -112,7 +113,15 @@
             <artifactId>annotations</artifactId>
             <version>RELEASE</version>
         </dependency>
-    </dependencies>
+		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on -->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
+			<version>1.58</version>
+		</dependency>
+
+
+	</dependencies>
 
 	<build>
 		<plugins>
