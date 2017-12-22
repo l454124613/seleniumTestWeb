@@ -34,7 +34,9 @@ public class ProxyDao implements Proxy{
     private JdbcTemplate jdbcTemplate;
     @Override
     public void run()  {
-    new Thread(new Runnable() {
+        List<tmp> lt=jdbcTemplate.query("select url value from excepturl where  isused=1",new BeanPropertyRowMapper<>(tmp.class));
+
+        new Thread(new Runnable() {
     @Override
     public void run() {
         new HttpProxyServer()
@@ -45,14 +47,14 @@ public class ProxyDao implements Proxy{
                         pipeline.addLast(new CertDownIntercept());  //开启网页下载证书功能
                         pipeline.addLast(new HttpProxyIntercept() {
                             @Override
-                            public void beforeRequest(ChannelHandlerContext chc, HttpRequest httpRequest,
+                            public void beforeRequest(Channel clientChannel, HttpRequest httpRequest,
                                                       HttpProxyInterceptPipeline pipeline) throws Exception {
                                 //替换UA，伪装成手机浏览器
                               //  httpRequest.headers().set(HttpHeaderNames.USER_AGENT,
                                    //     "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1");
                                 //转到下一个拦截器处理
-                                map.put(chc.channel().id().asShortText(),httpRequest.uri());
-                                List<tmp> lt=jdbcTemplate.query("select url value from excepturl where  isused=1",new BeanPropertyRowMapper<>(tmp.class));
+                                map.put(clientChannel.id().asShortText(),httpRequest.uri());
+                                boolean ismatch=false;
                                 if(lt.size()>0){
                                     for (int i = 0; i <lt.size() ; i++) {
                                         String tm= httpRequest.uri();
@@ -71,21 +73,26 @@ public class ProxyDao implements Proxy{
                                             ta=ta.replace(".","\\.").replace("?","\\?").replace("+","\\+");
                                         }
                                         if(httpRequest.uri().matches(ta)){
-                                            HttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpProxyServer.f404);
-                                            chc.writeAndFlush(response);
+                                            ismatch=true;
+                                            String html = "<html><body>intercept</body><html>";
+                                            HttpResponse hookResponse = new DefaultHttpResponse(HttpVersion.HTTP_1_1,HttpResponseStatus.OK);
+                                         //   hookResponse.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html");
+                                            hookResponse.headers().set(HttpHeaderNames.CONTENT_LENGTH, html.getBytes().length);
+                                            //直接输出http响应体至客户端,不走后面的转发handler了
+                                            clientChannel.writeAndFlush(hookResponse);
+                                            HttpContent hookContent = new DefaultLastHttpContent();
+                                            hookContent.content().writeBytes(html.getBytes());
+                                            clientChannel.writeAndFlush(hookContent );
 
-                                            chc.pipeline().remove("httpCodec");
-
-
-                                            map.remove(chc.channel().id().asShortText());
-                                            chc.channel().close();
-                                            chc.close();
-                                            return  ;
                                         }
 
                                     }
+
                                 }
-                                pipeline.beforeRequest(chc, httpRequest);
+                                if(!ismatch){
+                                    pipeline.beforeRequest(clientChannel, httpRequest);
+                                }
+
                             }
 
                             @Override

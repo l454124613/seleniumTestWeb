@@ -2,6 +2,7 @@ package lee.study.proxyee.util;
 
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpRequest;
+import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,6 +12,9 @@ public class ProtoUtil {
     RequestProto requestProto = new RequestProto();
     int port = -1;
     String hostStr = httpRequest.headers().get(HttpHeaderNames.HOST);
+    if(hostStr==null){
+      return null;
+    }
     String uriStr = httpRequest.uri();
     Pattern pattern = Pattern.compile("^(?:https?://)?(?<host>[^:]*)(?::(?<port>\\d+))?$");
     Matcher matcher = pattern.matcher(hostStr);
@@ -42,8 +46,9 @@ public class ProtoUtil {
     return requestProto;
   }
 
-  public static class RequestProto {
+  public static class RequestProto implements Serializable {
 
+    private static final long serialVersionUID = -6471051659605127698L;
     private String host;
     private int port;
     private boolean ssl;

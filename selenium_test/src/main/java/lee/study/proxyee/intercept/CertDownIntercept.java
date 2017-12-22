@@ -1,7 +1,6 @@
 package lee.study.proxyee.intercept;
 
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.DefaultLastHttpContent;
 import io.netty.handler.codec.http.HttpContent;
@@ -23,10 +22,14 @@ public class CertDownIntercept extends HttpProxyIntercept {
   private boolean crtFlag = false;
 
   @Override
-  public void beforeRequest(ChannelHandlerContext chc, HttpRequest httpRequest,
-                            HttpProxyInterceptPipeline pipeline) throws Exception {
+  public void beforeRequest(Channel clientChannel, HttpRequest httpRequest,
+      HttpProxyInterceptPipeline pipeline) throws Exception {
     ProtoUtil.RequestProto requestProto = ProtoUtil.getRequestProto(httpRequest);
-    InetSocketAddress inetSocketAddress = (InetSocketAddress) chc.channel().localAddress();
+    if (requestProto == null) { //bad request
+      clientChannel.close();
+      return;
+    }
+    InetSocketAddress inetSocketAddress = (InetSocketAddress) clientChannel.localAddress();
     if (requestProto.getHost().equals(inetSocketAddress.getHostString()) &&
         requestProto.getPort() == inetSocketAddress.getPort()) {
       crtFlag = true;
@@ -41,11 +44,11 @@ public class CertDownIntercept extends HttpProxyIntercept {
         httpResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
         HttpContent httpContent = new DefaultLastHttpContent();
         httpContent.content().writeBytes(bts);
-        chc.channel().writeAndFlush(httpResponse);
-        chc.channel().writeAndFlush(httpContent);
-        chc.channel().close();
+        clientChannel.writeAndFlush(httpResponse);
+        clientChannel.writeAndFlush(httpContent);
+        clientChannel.close();
       } else if (httpRequest.uri().matches("^.*/favicon.ico$")) {
-        chc.channel().close();
+        clientChannel.close();
       } else {  //跳转下载页面
         HttpResponse httpResponse = new DefaultHttpResponse(HttpVersion.HTTP_1_1,
             HttpResponseStatus.OK);
@@ -55,19 +58,19 @@ public class CertDownIntercept extends HttpProxyIntercept {
         httpResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         HttpContent httpContent = new DefaultLastHttpContent();
         httpContent.content().writeBytes(html.getBytes());
-        chc.channel().writeAndFlush(httpResponse);
-        chc.channel().writeAndFlush(httpContent);
+        clientChannel.writeAndFlush(httpResponse);
+        clientChannel.writeAndFlush(httpContent);
       }
     } else {
-      super.beforeRequest(chc, httpRequest, pipeline);
+      pipeline.beforeRequest(clientChannel, httpRequest);
     }
   }
 
   @Override
-  public void beforeRequest(ChannelHandlerContext chc, HttpContent httpContent,
+  public void beforeRequest(Channel clientChannel, HttpContent httpContent,
       HttpProxyInterceptPipeline pipeline) throws Exception {
     if (!crtFlag) {
-      super.beforeRequest(chc, httpContent, pipeline);
+      pipeline.beforeRequest(clientChannel, httpContent);
     }
   }
 }

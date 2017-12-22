@@ -3,13 +3,16 @@ package com.ciic.test.service;
 import com.ciic.test.bean.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
  * Created by lixuecheng on 2017/7/13.
  */
 public interface ItemService {
+    int addCaseVer(String ti,String des,String id);
     List<item> getItem(String uid);
+    Map<String,List<CaseVer>> getVer();
     List<item> getAllItem();
     List<Page> getPage(String tid);
     List<Page> getOnePage(String tid,String title);

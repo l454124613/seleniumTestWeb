@@ -121,7 +121,7 @@ $(document).ready(function () {
 //             }
 
                     $('#log3').html('');
-                    $('#casehomemenu').html('');
+                 //   $('#casehomemenu').html('');
 
             }
           //  $('#menu1').html(re);
@@ -156,6 +156,7 @@ $(document).ready(function () {
                     alertf("项目有异常，请联系管理员。");
                 }else {
                     var items=o.items;
+                    casever=o.vers;
                     var st='';
                     for(var i=0;i<items.length;i++){
                         st+="<div class=\"item\" data-value=\""+items[i].id+"\"  onclick='gettid("+items[i].id+",\""+items[i].name+"\")' >"+items[i].name+"</div>";
@@ -605,6 +606,9 @@ function getform(a,b) {
                 re+="<div name=\""+b+"\"  name=\""+b+"\" contenteditable='plaintext-only' oninput=\""+va.function+"\"  >"+va.des+"</div>";
 
             }break;
+            case 'label':{
+                re+="<label style=\"font-size: 1em;\" >"+va.des+"</label>";break;
+            }
         }
 
         re+=" </div>";
@@ -2941,6 +2945,7 @@ function  shuaeleall() {
     });
 
 }
+var casever;
 function  shuaitem() {
     if(isshuaitem){
         $.get('/gitema',function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
@@ -2949,6 +2954,7 @@ function  shuaitem() {
                 alertf(o.msg);
             }else{
                 var users1=o.items;
+                 casever=o.vers;
                 var re2="";
                 if(users1.length>0){
                     for(var i=0;i<users1.length;i++){
@@ -2967,7 +2973,10 @@ function  shuaitem() {
 
                             "                        <td  >"+(users1[i].isused=="0")+"</td>\n" +
                             "                        <td  ><button class=\"ui  circular basic icon button\" onclick=\"updateitem("+users1[i].id+",'"+users1[i].name+"','"+users1[i].firstpageurl+"','"+re4.join(",")+"')\" title=\"修改项目\"><i class=\"paint brush icon\"></i></button>\n" +
-                            "                            <button class=\"ui circular basic icon button "+((users1[i].isused=="0")?'disabled':'')+"\" onclick='removeitem("+users1[i].id+")' title=\"禁用项目\"><i class=\"remove circle icon red\"></i></button></td>\n" +
+                          //  "                            <button class=\"ui circular basic icon button "+((users1[i].isused=="0")?'disabled':'')+"\" onclick='addver("+users1[i].id+")' title=\"添加版本\"><i class=\"plus icon green\"></i></button>" +
+                            "                            <button class=\"ui circular basic icon button "+((users1[i].isused=="0")?'disabled':'')+"\" onclick='lookver("+users1[i].id+")' title=\"查看版本\"><i class=\"file text outline icon\"></i></button>" +
+                            "                            <button class=\"ui circular basic icon button "+((users1[i].isused=="0")?'disabled':'')+"\" onclick='removeitem("+users1[i].id+")' title=\"禁用项目\"><i class=\"remove circle icon red\"></i></button>" +
+                            "</td>\n" +
 
                             "                    </tr>\n";
 
@@ -2998,6 +3007,81 @@ function  shuaitem() {
     
 }
 
+function removever(a,b) {
+    if (confirm("你确定要删除吗？")) {
+        $.get('/removecasever/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+            casever=o.vers;
+            lookver(b);
+
+        })
+    }
+}
+function lookver(a) {
+$('#head001').text('*版本*');
+var ss="(双击取消版本)<div class=\"ui list\">";
+var casever1=casever['v'+a];
+
+for(var i=0;i<casever1.length;i++){
+    if(casever1[i].isused==1){
+        ss+=  "  <div class=\"item\" ondblclick='removever("+casever1[i].id+","+a+")'>\n"+
+            "    <div class=\"header\">"+casever1[i].name+"</div>\n"+
+            casever1[i].des+
+            "  </div>";
+    }else{
+        ss+=  "  <div class=\"item\" >\n"+
+            "    <div class=\"header\"><del>"+casever1[i].name+"</del></div>\n<del>"+
+            casever1[i].des+
+            " </del> </div>";
+    }
+
+
+}
+ss+="</div>";
+
+
+
+
+$('#con001').html(ss);
+$('#but001').html(    "<div class=\"ui button\" onclick='addver("+a+")'>新增</div><div class=\"ui button\" onclick='hidemodal001()'>关闭</div>");
+    $('#modal001').modal('show');
+
+}
+function hidemodal001() {
+    $('#modal001').modal('hide');
+    
+}
+function addver(a) {
+   var ffmver= {size:1,i0:{name:'当前最新版本',des:casever['x'+a][0].name,length:16,type:'label'}};
+   var ffmver2= {size:2,i0:{name:'版本号',des:'版本号',length:6,function:'addverti(this)',type:'input'},i1:{name:'版本描述',des:'描述',function:'addverdes(this)',length:10,type:'input'}};
+  var ss= form2div(getform(ffmver,'')+getform(ffmver2,''));
+    $('#con001').html(ss);
+    $('#but001').html(    "<div class=\"ui button\" onclick='lookver("+a+")'>取消</div><div class=\"ui button\" onclick='addver2ser("+a+")'>确定</div>");
+    $('#modal001').modal('refresh');
+
+}
+
+function addverti(a) {
+    casever['newti']=$(a).val();
+}
+function addverdes(a) {
+    casever['newdes']=$(a).val();
+}
+function addver2ser(a) {
+    if(typeof casever['newti']=='undefined'||typeof casever['newdes']=='undefined'||$.trim(casever['newti'])==''||$.trim(casever['newdes'])==''){
+        alert('请输入完整信息');
+    }else {
+        $.postJSON('/addver/'+a,j2s({value:casever['newti'],value2:casever['newdes']}),function (data) {
+            casever=data;
+            lookver(a);
+
+            
+        },function (data) {
+            alert(j2s(data));
+        })
+    }
+}
 function contains(a,b,isArr) {
 
     var a1;

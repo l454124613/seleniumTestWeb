@@ -10,7 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lixuecheng on 2017/7/14.
@@ -21,11 +24,43 @@ public class ItemDao implements ItemService{
     private JdbcTemplate jdbcTemplate;
 
     @Override
+    public int addCaseVer(String ti, String des,String id) {
+        return  jdbcTemplate.update("INSERT INTO casehome ( \"name\", \"des\",  \"tid\") VALUES (?,?,?)",new Object[]{ti,des,id});
+
+    }
+
+    @Override
     public List<item> getItem(String uid) {
 
 
 
         return jdbcTemplate.query("SELECT id,name from item where id in (SELECT gid from u2g where uid=?) and isused=1", mycode.prase(new Object[]{uid}),new BeanPropertyRowMapper<item>(item.class));
+    }
+
+    @Override
+    public Map<String, List<CaseVer>> getVer() {
+
+        List<CaseVer> lt=jdbcTemplate.query("select name ,tid ,isused,des,max(id) id from casehome where isused=1 GROUP BY tid",new BeanPropertyRowMapper<>(CaseVer.class));
+        List<CaseVer> lv=jdbcTemplate.query("select * from casehome ",new BeanPropertyRowMapper<>(CaseVer.class));
+        //List<CaseVer> lv2=new ArrayList<>();
+        Map<String, List<CaseVer>> map=new HashMap<>();
+        for (int i = 0; i <lt.size() ; i++) {
+            CaseVer tt=lt.get(i);
+            List<CaseVer> lv2=new ArrayList<>();
+            lv2.add(tt);
+            map.put("v"+tt.getTid(),new ArrayList<CaseVer>());
+            map.put("x"+tt.getTid(),lv2);
+        }
+        for (int i = lv.size()-1; i >=0 ; i--) {
+            CaseVer tt=lv.get(i);
+            map.get("v"+tt.getTid()).add(tt);
+            
+        }
+
+
+
+
+        return map;
     }
 
     @Override

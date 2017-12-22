@@ -1,5 +1,6 @@
 package com.ciic.test.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.ciic.test.bean.*;
 import com.ciic.test.service.*;
 import com.ciic.test.tools.mycode;
@@ -414,7 +415,7 @@ private Map<String,Thread> map4thread=new HashMap();
     String getItem(HttpSession session){
 
         List<item> li= itemService.getItem(session.getAttributeNames().nextElement());
-        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"items\":"+li+"}";
+        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"items\":"+li+",\"vers\":" + JSON.toJSONString(itemService.getVer()) +"}";
 
 
 
@@ -527,7 +528,7 @@ if(file1.exists()){
     String getAllItem(HttpSession session){
         if(userService.isManager(session.getAttributeNames().nextElement())){
 
-            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"操作成功\",\"items\":"+itemService.getAllItem()+"}";
+            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"操作成功\",\"items\":"+itemService.getAllItem()+",\"vers\":"+ JSON.toJSONString(itemService.getVer())+"}";
         }else {
 
             return "{\"isok\":1,\"msg\":\"信息不对称\",\"to\":\"/\"}";
@@ -551,6 +552,15 @@ if(file1.exists()){
             return "{\"isok\":1,\"msg\":\"信息不匹配\",\"to\":\"/\"}";
 
         }
+
+
+
+    }
+    @RequestMapping("/addver/{id}")
+    Object getPage(@PathVariable String id,@RequestBody tmp tt){
+      itemService.addCaseVer(tt.getValue(),tt.getValue2(),id);
+        return JSON.toJSONString(itemService.getVer());
+
 
 
 
@@ -1222,7 +1232,7 @@ String getcase(@PathVariable String tid,@PathVariable String all){
      * @return
      */
 
-    @RequestMapping("/removecasehome/{chid}")
+    @RequestMapping("/removecasever/{chid}")
     String removeCaseHome( @PathVariable String chid){
         int n=  caseService.removeCaseHome(chid);
 
@@ -1230,7 +1240,7 @@ String getcase(@PathVariable String tid,@PathVariable String all){
         if(n==1){
 
 
-            return "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\"}";
+            return   "{\"isok\":0,\"msg\":\"操作成功\",\"to\":\"/\",\"vers\":"+JSON.toJSONString(itemService.getVer())+"}";
         }else {
             return "{\"isok\":1,\"msg\":\"操作失败\",\"to\":\"/\"}";
         }
@@ -1238,6 +1248,8 @@ String getcase(@PathVariable String tid,@PathVariable String all){
 
 
     }
+
+
 
     /**
      *

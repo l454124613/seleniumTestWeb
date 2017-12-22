@@ -36,7 +36,7 @@ public class HttpProxyServerHandle extends ChannelInboundHandlerAdapter {
   private ChannelFuture cf;
   private String host;
   private int port;
-  private boolean isSSL = false;
+  private boolean isSsl = false;
   private int status = 0;
   private ProxyConfig proxyConfig;
   private HttpProxyInterceptPipeline interceptPipeline;
@@ -57,21 +57,20 @@ public class HttpProxyServerHandle extends ChannelInboundHandlerAdapter {
     //默认拦截器
     this.interceptPipeline = new HttpProxyInterceptPipeline(new HttpProxyIntercept() {
       @Override
-      public void beforeRequest(ChannelHandlerContext chc, HttpRequest httpRequest,
+      public void beforeRequest(Channel clientChannel, HttpRequest httpRequest,
           HttpProxyInterceptPipeline pipeline) throws Exception {
-        handleProxyData(chc, httpRequest, true);
+        handleProxyData(clientChannel, httpRequest, true);
       }
 
       @Override
-      public void beforeRequest(ChannelHandlerContext chc, HttpContent httpContent,
+      public void beforeRequest(Channel clientChannel, HttpContent httpContent,
           HttpProxyInterceptPipeline pipeline) throws Exception {
-        handleProxyData(chc, httpContent, true);
+        handleProxyData(clientChannel, httpContent, true);
       }
 
       @Override
       public void afterResponse(Channel clientChannel, Channel proxyChannel,
-          HttpResponse httpResponse,
-          HttpProxyInterceptPipeline pipeline) throws Exception {
+          HttpResponse httpResponse, HttpProxyInterceptPipeline pipeline) throws Exception {
         clientChannel.writeAndFlush(httpResponse);
         if (HttpHeaderValues.WEBSOCKET.toString()
             .equals(httpResponse.headers().get(HttpHeaderNames.UPGRADE))) {
@@ -83,8 +82,7 @@ public class HttpProxyServerHandle extends ChannelInboundHandlerAdapter {
 
       @Override
       public void afterResponse(Channel clientChannel, Channel proxyChannel,
-          HttpContent httpContent,
-          HttpProxyInterceptPipeline pipeline) throws Exception {
+          HttpContent httpContent, HttpProxyInterceptPipeline pipeline) throws Exception {
         clientChannel.writeAndFlush(httpContent);
       }
     });
@@ -116,17 +114,18 @@ public class HttpProxyServerHandle extends ChannelInboundHandlerAdapter {
           return;
         }
       }
-      interceptPipeline.beforeRequest(ctx, request);
+      interceptPipeline.setRequestProto(new RequestProto(host,port,isSsl));
+      interceptPipeline.beforeRequest(ctx.channel(), request);
     } else if (msg instanceof HttpContent) {
       if (status != 2) {
-        interceptPipeline.beforeRequest(ctx, (HttpContent) msg);
+        interceptPipeline.beforeRequest(ctx.channel(), (HttpContent) msg);
       } else {
         status = 1;
       }
     } else { //ssl和websocket的握手处理
       ByteBuf byteBuf = (ByteBuf) msg;
       if (byteBuf.getByte(0) == 22) {//ssl握手
-        isSSL = true;
+        isSsl = true;
         SslContext sslCtx = SslContextBuilder
             .forServer(HttpProxyServer.serverPriKey, CertPool.getCert(this.host)).build();
         ctx.pipeline().addFirst("httpCodec", new HttpServerCodec());
@@ -135,7 +134,7 @@ public class HttpProxyServerHandle extends ChannelInboundHandlerAdapter {
         ctx.pipeline().fireChannelRead(msg);
         return;
       }
-      handleProxyData(ctx, msg, false);
+      handleProxyData(ctx.channel(), msg, false);
     }
   }
 
@@ -156,7 +155,7 @@ public class HttpProxyServerHandle extends ChannelInboundHandlerAdapter {
     exceptionHandle.beforeCatch(ctx.channel(), cause);
   }
 
-  private void handleProxyData(ChannelHandlerContext chc, Object msg, boolean isHttp)
+  private void handleProxyData(Channel channel, Object msg, boolean isHttp)
       throws Exception {
     if (cf == null) {
       if (isHttp && !(msg instanceof HttpRequest)) {  //connection异常 还有HttpContent进来，不转发
@@ -168,10 +167,10 @@ public class HttpProxyServerHandle extends ChannelInboundHandlerAdapter {
         有些服务器对于client hello不带SNI扩展时会直接返回Received fatal alert: handshake_failure(握手错误)
         例如：https://cdn.mdn.mozilla.net/static/img/favicon32.7f3da72dcea1.png
        */
-      RequestProto proto = new RequestProto(host,port,isSSL);
+      RequestProto requestProto = new RequestProto(host, port, isSsl);
       ChannelInitializer channelInitializer =
-          isHttp ? new HttpProxyInitializer(chc.channel(), proto, proxyHandler)
-              : new TunnelProxyInitializer(chc.channel(), proxyHandler);
+          isHttp ? new HttpProxyInitializer(channel, requestProto, proxyHandler)
+              : new TunnelProxyInitializer(channel, proxyHandler);
       Bootstrap bootstrap = new Bootstrap();
       bootstrap.group(HttpProxyServer.proxyGroup) // 注册线程池
           .channel(NioSocketChannel.class) // 使用NioSocketChannel来作为连接用的channel类

@@ -30,7 +30,7 @@
     <div class="item ">
         <b>用例配置</b>
         <div class=" content menu">
-            <div id="casehomemenu"> <a class="item i3" onclick='clickcasehome(this)'>管理版本库</a></div>
+            <!--<div id="casehomemenu"> <a class="item i3" onclick='clickcasehome(this)'>管理版本库</a></div>-->
 
             <a class="item i3"  onclick='clickcase(this)'>管理用例</a>
             <a class="item i3" onclick='clickpage(this)'>管理页面</a>
@@ -71,10 +71,19 @@
     <div class="ui  menu" id="menu5" style="position: fixed;width: 100%;z-index: 20;top: 0px;">
         <a class="active item" onclick="toggle()" id="togmenu">隐藏菜单 </a>
         <div class="ui scrolling dropdown  item" id="choosei">
-            <input type="hidden" name="gender">
+            <input type="hidden" >
             <div class="default text" id="chooseitem">请选择项目</div>
             <i class="dropdown icon"></i>
             <div class="menu" id="itemc">
+
+
+            </div>
+        </div>
+        <div class="ui scrolling dropdown  item" id="choosev">
+            <input type="hidden" >
+            <div class="default text" id="choosever">选择版本</div>
+            <i class="dropdown icon"></i>
+            <div class="menu" id="itemd">
 
 
             </div>
@@ -141,7 +150,19 @@
 
     </div>
 </div>
+<div class="ui modal " id="modal001">
+    <i class="close icon"></i>
+    <div class="header" id="head001">
 
+    </div>
+    <div class="content" id="con001">
+
+
+    </div>
+    <div class="actions" id="but001">
+
+    </div>
+</div>
 
 <div class="ui modal " id="modal6">
     <i class="close icon"></i>

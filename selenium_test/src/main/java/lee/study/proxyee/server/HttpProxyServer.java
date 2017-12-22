@@ -7,8 +7,9 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.ssl.SslContext;
@@ -35,8 +36,6 @@ public class HttpProxyServer {
   //http代理隧道握手成功
   public final static HttpResponseStatus SUCCESS = new HttpResponseStatus(200,
       "Connection established");
-  public final static HttpResponseStatus f404 = new HttpResponseStatus(404,
-          "Connection not found");
 
   public static SslContext clientSslCtx;
   public static String issuer;
@@ -128,52 +127,52 @@ public class HttpProxyServer {
     }
   }
 
-//  public static void main(String[] args) throws Exception {
-//    //new HttpProxyServer().start(9999);
-//
-//    new HttpProxyServer()
-////        .proxyConfig(new ProxyConfig(ProxyType.SOCKS5, "127.0.0.1", 1085))  //使用socks5二级代理
-//        .proxyInterceptInitializer(new HttpProxyInterceptInitializer() {
-//          @Override
-//          public void init(HttpProxyInterceptPipeline pipeline) {
-//            pipeline.addLast(new CertDownIntercept());  //处理证书下载
-//            pipeline.addLast(new HttpProxyIntercept() {
-//              @Override
-//              public void beforeRequest(Channel clientChannel, HttpRequest httpRequest,
-//                  HttpProxyInterceptPipeline pipeline) throws Exception {
-//                //替换UA，伪装成手机浏览器
-////                httpRequest.headers().set(HttpHeaderNames.USER_AGENT,
-////                    "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1");
-//                //转到下一个拦截器处理
-//                pipeline.beforeRequest(clientChannel, httpRequest);
-//              }
-//
-//              @Override
-//              public void afterResponse(Channel clientChannel, Channel proxyChannel,
-//                  HttpResponse httpResponse,
-//                  HttpProxyInterceptPipeline pipeline) throws Exception {
-//                //拦截响应，添加一个响应头
-//                httpResponse.headers().add("intercept", "test");
-//                //转到下一个拦截器处理
-//                pipeline.afterResponse(clientChannel, proxyChannel, httpResponse);
-//              }
-//            });
-//          }
-//        })
-//        .httpProxyExceptionHandle(new HttpProxyExceptionHandle() {
-//          @Override
-//          public void beforeCatch(Channel clientChannel, Throwable cause) {
-//            System.out.println("111111111111111");
-//            super.beforeCatch(clientChannel, cause);
-//          }
-//
-//          @Override
-//          public void afterCatch(Channel clientChannel, Channel proxyChannel, Throwable cause) {
-//            System.out.println("22222222222222");
-//            super.afterCatch(clientChannel, proxyChannel, cause);
-//          }
-//        })
-//        .start(9999);
-//  }
+  public static void main(String[] args) throws Exception {
+    //new HttpProxyServer().start(9999);
+
+    new HttpProxyServer()
+//        .proxyConfig(new ProxyConfig(ProxyType.SOCKS5, "127.0.0.1", 1085))  //使用socks5二级代理
+        .proxyInterceptInitializer(new HttpProxyInterceptInitializer() {
+          @Override
+          public void init(HttpProxyInterceptPipeline pipeline) {
+            pipeline.addLast(new CertDownIntercept());  //处理证书下载
+            pipeline.addLast(new HttpProxyIntercept() {
+              @Override
+              public void beforeRequest(Channel clientChannel, HttpRequest httpRequest,
+                  HttpProxyInterceptPipeline pipeline) throws Exception {
+                //替换UA，伪装成手机浏览器
+                httpRequest.headers().set(HttpHeaderNames.USER_AGENT,
+                    "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1");
+                //转到下一个拦截器处理
+                pipeline.beforeRequest(clientChannel, httpRequest);
+              }
+
+              @Override
+              public void afterResponse(Channel clientChannel, Channel proxyChannel,
+                  HttpContent httpContent, HttpProxyInterceptPipeline pipeline) throws Exception {
+
+                //拦截响应，添加一个响应头
+                pipeline.getHttpRequest().headers().add("intercept", "test");
+                //转到下一个拦截器处理
+                pipeline.afterResponse(clientChannel, proxyChannel, httpContent);
+              }
+            });
+          }
+        })
+        .httpProxyExceptionHandle(new HttpProxyExceptionHandle() {
+          @Override
+          public void beforeCatch(Channel clientChannel, Throwable cause) {
+            System.out.println("111111111111111");
+            super.beforeCatch(clientChannel, cause);
+          }
+
+          @Override
+          public void afterCatch(Channel clientChannel, Channel proxyChannel, Throwable cause) {
+            System.out.println("22222222222222");
+            super.afterCatch(clientChannel, proxyChannel, cause);
+          }
+        })
+        .start(9999);
+  }
 
 }

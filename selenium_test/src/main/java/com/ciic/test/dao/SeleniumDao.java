@@ -95,6 +95,7 @@ private String picPath;
             updateCaseListStatus("1",caseListId);//准备
          //  String pre=getpre(caseid);
             WebDriver[] driver={null};
+         //   driver[0].findElements(By.tagName("")).get(0).getCssValue()
 
 //            try {
 //
