@@ -69,13 +69,12 @@ $(document).ready(function () {
             alertf(o.msg);
             location.href=o.to;
         }else{
-            var cc2=Cookies.get('user5');
+            common=(localStorage.getItem('common')==null?common:s2j(localStorage.getItem('common')));
 
-            if(typeof(cc2) != "undefined"
-                &&cc2.length>0){
-                var c3=cc2.split(':');
-                $('#choosei') .dropdown('set text',c3[1]);
-                tid=parseInt(c3[0]);
+            if(common.tid>0&&common.tname!=''){
+
+                $('#choosei') .dropdown('set text',common.tname);
+
             }
 
             var cc=Cookies.get('user2');
@@ -538,8 +537,8 @@ function form2div(a) {
 function savenow() {
     if(window.localStorage){
         https['time']=Date.parse(new Date());
-        localStorage.setItem("https"+tid+''+cid, j2s(https));
-        var a=localStorage.getItem("https"+tid+''+cid);
+        localStorage.setItem("https"+common.tid+''+cid, j2s(https));
+        var a=localStorage.getItem("https"+common.tid+''+cid);
         if(a==j2s(https)){
             alertf('保存成功');
         }else{
@@ -666,7 +665,7 @@ function savehttps() {
 
     }
     if(isok){
-        localStorage.removeItem("https"+tid+''+cid);
+        localStorage.removeItem("https"+common.tid+''+cid);
 
         $.postJSON('http://localhost:8081/http/'+cid,j2s(data),function(a){
             alertf(a.msg);
@@ -954,7 +953,7 @@ function base( table,num,addmethod,addname,tableid,ss) {
 
 function clickurl(a) {
 
-    if(tid<1){
+    if(common.tid<1){
         alertf("请先选择项目~")
 
     }else {
@@ -1033,7 +1032,7 @@ function updateeurl(a){
         }
         $.post('/updateeurl',{
             url:inn,
-            tid:tid,
+            tid:common.tid,
             type:a
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
@@ -1055,7 +1054,7 @@ function updateeurl(a){
 function shuaurl() {
     isadd=0;
 
-    $.get('/geurls/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/geurls/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -1123,7 +1122,7 @@ function changeyan2() {
 
 
     $('#yanid').html(re);
-    $.get('/getdatasource/'+tid,function (data,st) {
+    $.get('/getdatasource/'+common.tid,function (data,st) {
         if(st=="success"){
 
         }else {
@@ -1241,7 +1240,7 @@ function changeyan4() {
 }
 
 function shualabel() {
-    $.get('/getlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/getlabel/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -1277,7 +1276,7 @@ function shualabel() {
 }
 
     function clicklabel(a) {
-        if(tid<1){
+        if(common.tid<1){
             alertf("请先选择项目~")
 
         }else {
@@ -1374,7 +1373,7 @@ function changeyan1() {
         "    </div></div>";
     $('#yanid').html(re);
     $('.dropdown').dropdown();
-    $.get('/gpage/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/gpage/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
@@ -1412,7 +1411,7 @@ function changepage2(a) {
 
     $('#seele2').removeClass('disabled');
 
-    $.get('/gele/'+va+"/"+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/gele/'+va+"/"+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -1578,7 +1577,7 @@ function clicklog(a) {
 }
 
 function clickfile(a) {
-    if(tid<1){
+    if(common.tid<1){
         alertf("请先选择项目~")
     }else{
         forfirstfun();
@@ -1610,7 +1609,7 @@ function changefile(){
     var formData = new FormData();
     formData.append("file",f1);
     $.ajax({
-        url:  "/upload/"+fileid+"/"+tid,
+        url:  "/upload/"+fileid+"/"+common.tid,
         type: 'POST',
         cache: false,
         data: formData,
@@ -1647,7 +1646,7 @@ function addfile(a) {
 
 function shuafile() {
 
-    $.get('/getfile/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/getfile/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -1817,7 +1816,7 @@ function clearIsused() {
 
 
 function runcase(a,b) {
-    $.get('/testcase/'+a+"/"+tid+"/"+b,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/testcase/'+a+"/"+common.tid+"/"+b,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         alertf(o.msg);
     });
@@ -1833,7 +1832,7 @@ function lookruncase(a) {
     //         if(o.res==0){
     //         alertf("没有可查看的用例");
     //         }else{
-    Cookies.set('log',a+"qbwd90211j1qwdsqjwe1me01"+tid);
+    Cookies.set('log',a+"qbwd90211j1qwdsqjwe1me01"+common.tid);
                 window.open("/html/log.html");
     //         }
     //     }
@@ -2153,7 +2152,7 @@ function changeyu1() {
     $('#yuid').html(re);
 
 
-    $.get('/getcase/2/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/getcase/2/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         var cc=o.cases;
         var v1="";
@@ -2208,7 +2207,7 @@ function changeyu2() {
 
         "    </div></div>";
     $('#yuid').html(re);
-    $.get('/getdatasource/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/getdatasource/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!="0"){
             alertf(o.msg);
@@ -2639,7 +2638,7 @@ function changeact(a) {
             $('#inputv').html("  <input type=\"text\"  placeholder=\"输入值\" id='inputv2'>");
         }else {
             if(re=='4'){
-                $.get('/getfile/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+                $.get('/getfile/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
                     var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
                     if(o.isok!=0){
                         alertf(o.msg);
@@ -2714,7 +2713,7 @@ var vv3="";
 
 function shuapageinfo(d,e,f) {
 
-    $.get('/ge4p/'+pid+'/'+tid+'/'+cid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/ge4p/'+pid+'/'+common.tid+'/'+cid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -2777,7 +2776,7 @@ $('#pagename2').text(o.page.pagename);
 
 function shuapage() {
 
-    $.get('/gpage/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/gpage/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -2827,7 +2826,7 @@ function datasourcecon (a,b) {
 
 function shuaDatasource() {
 
-    $.get('/getdatasource/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/getdatasource/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -2865,7 +2864,7 @@ function shuaDatasource() {
 }
 
 function  shuaele() {
-    $.get('/gele/'+pid+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/gele/'+pid+'/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -2907,7 +2906,7 @@ function topage() {
 }
 
 function  shuaeleall() {
-    $.get('/gele/'+'-1'+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/gele/'+'-1'+'/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -3102,7 +3101,7 @@ function contains(a,b,isArr) {
 }
 
 function shuacaseinfo(a,b) {
-$.get('/getcase/1/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+$.get('/getcase/1/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
     var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
     if(o.isok!=0){
         alertf(o.msg);
@@ -3261,7 +3260,7 @@ function canruncase(a,b) {
 function looklabel(a,b,c) {
 $('#labeltitle').html(b);
 labelid=a;
-    $.get('/getlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/getlabel/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
@@ -3444,7 +3443,7 @@ $('#addpageone7').click(function () {
             link:link,
             dataname:dname,
             pass:pass,
-            tid:tid,
+            tid:common.tid,
             id:adddatasource
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
@@ -3549,7 +3548,7 @@ $('#addpageone9').click(function () {
     var title=$.trim($('#homedes').val());
     if(name.length>0 && title.length>0){
         $.post('/addcasehome',{
-            tid:tid,
+            tid:common.tid,
             name:name,
             des:title,
             type:homeid
@@ -3576,7 +3575,7 @@ $('#addpageone11').click(function () {
 
     if(lbs.length>0){
         $.post('/upatelabel',{
-            tid:tid,
+            tid:common.tid,
             id:labelid,
 
             labels:lbs.toString()
@@ -3601,7 +3600,7 @@ $('#addpageone10').click(function () {
     var title=$.trim($('#labeldes').val());
     if(name.length>0 && title.length>0){
         $.post('/addlabel',{
-            tid:tid,
+            tid:common.tid,
             name:name,
             des:title,
             type:labelid
@@ -3627,7 +3626,7 @@ $('#addpageone').click(function () {
     var title=$.trim($('#pagetitleadd').val());
     if(name.length>1 && title.length>1){
         $.post('/addpage',{
-            item:tid,
+            item:common.tid,
             pagename:name,
             pagetitle:title,
             type:a1
@@ -3713,7 +3712,7 @@ $('#addpageone5').click(function () {
             name:name,
             des:title,
             important:uss,
-            tid:tid,
+            tid:common.tid,
             type:ass4,
             elety:elev
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
@@ -3787,7 +3786,7 @@ $('#addpageone2').click(function () {
         alertf('请输入完整信息');
     }else{
         $.post('/addele',{
-            item:tid,
+            item:common.tid,
             elename:ename,
            // eletype:etypeid,
             type:ass1,
@@ -3818,21 +3817,25 @@ $('#addpageone2').click(function () {
 
 
 });
+var common={tid:-1,tname:'',vid:-1,vname:'',ismanager:false};
 
 function gettid(a,b) {
-    if(tid<0||tid==a){
-        tid=a;
+    if(common.tid<0||common.tid==a){
+        common.tid=a;
+        common.tname=b;
     }else{
-        tid=a;
+        common.tid=a;
+        common.tname=b;
         $('#context').html("<h2 class=\"ui center aligned header\" style=\"margin-top: 7%\">已切换到项目："+b+"</h2>");
     }
-    Cookies.set('user5',a+':'+b, { expires: 30 });
+  //  Cookies.set('user5',a+':'+b, { expires: 30 });
+    localStorage.setItem('common',j2s(common));
 
 }
 
 function removepage(a) {
     if (confirm("你确定要删除吗？")) {
-        $.get('/removepage/'+a+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        $.get('/removepage/'+a+'/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
@@ -3849,7 +3852,7 @@ function removepage(a) {
 
 function removeele(a) {
     if (confirm("你确定要删除吗？")) {
-        $.get('/removeele/'+a+'/'+pid+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        $.get('/removeele/'+a+'/'+pid+'/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
            shuaele();
@@ -4067,7 +4070,7 @@ function searchcase() {
             
         }
         function getusedlabel() {
-            $.get('/getusedlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+            $.get('/getusedlabel/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
                 var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
                 var re=  "  <select class=\"ui compact selection dropdown\"  id='seaca' style=\"          padding-bottom: 1px;          padding-top: 1px;          \">\n";
 
@@ -4117,7 +4120,7 @@ function searchcase() {
 
   function clickcase(a)
   {
-      if(tid<1){
+      if(common.tid<1){
           alertf("请先选择项目~")
       }else{
           forfirstfun();
@@ -4159,7 +4162,7 @@ function searchcase() {
 
     function clickcasehome(a)
     {
-        if(tid<1){
+        if(common.tid<1){
             alertf("请先选择项目~")
 
     }else {
@@ -4206,7 +4209,7 @@ function finishcasehome(a) {
     
 }
 function shuacasehome() {
-    $.get('/getcasehome/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/getcasehome/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -4259,7 +4262,7 @@ re+="<td  ></td></tr>";
 
 
     function clickdatasource(a) {
-        if(tid<1){
+        if(common.tid<1){
             alertf("请先选择项目~")
         }else{
 
@@ -4289,7 +4292,7 @@ re+="<td  ></td></tr>";
     }
 
 function changecasehm(a) {
-    $.get('/setcasehome/'+a+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/setcasehome/'+a+'/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         alertf(o.msg);
         shuacasehome();
@@ -4303,7 +4306,7 @@ function changecasehm(a) {
 
 
     function clickpage(a) {
-        if(tid<1){
+        if(common.tid<1){
             alertf("请先选择项目~")
         }else {
             forfirstfun();
@@ -4345,7 +4348,7 @@ function showlabel(a) {
 function choosecase(a,b) {
     forfirstfun();
 
-    $.get('/getusedlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/getusedlabel/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -4439,7 +4442,7 @@ function addcids(b) {
 
 
   function clicktest(a) {
-      if(tid<1){
+      if(common.tid<1){
           alertf("请先选择项目~")
       }else {
           forfirstfun();
@@ -4477,7 +4480,7 @@ function addcids(b) {
 
           $('#context').html(re1);
           $('.ui.dropdown').dropdown();
-          $.get('/getcasehome/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+          $.get('/getcasehome/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
              var re="";
               var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
               var cc=o.casehomes;
@@ -4490,7 +4493,7 @@ function addcids(b) {
               $('#casehomemenu2').html(re);
               
           });
-          $.get('/getusedlabel/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+          $.get('/getusedlabel/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
               var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
               if(o.isok!=0){
                   alertf(o.msg);
@@ -4532,7 +4535,7 @@ function changecasehome(a) {
 }
 
     function clicklook(a) {
-        if(tid<1){
+        if(common.tid<1){
             alertf("请先选择项目~")
         }else {
             forfirstfun(1);
@@ -4582,7 +4585,7 @@ function removeseries(a) {
 
 function runseries(a) {
     if (confirm("你确定要运行吗？")) {
-        $.get('/runseries/'+a+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        $.get('/runseries/'+a+'/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             shuaseries();
@@ -4593,7 +4596,7 @@ function runseries(a) {
     
 }
 function pauseseries(a) {
-    $.get('/pauseseries/'+a+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/pauseseries/'+a+'/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         shuaseries();
@@ -4747,14 +4750,14 @@ shuarunseries(re,a);
 
 function stopseries(a) {
     if (confirm("你确定要停止吗？")) {
-    $.get('/stopseries/'+a+'/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/stopseries/'+a+'/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
     alertf(o.msg);
     });}
     
 }
 function shuaseries() {
-    $.get('/getseries/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/getseries/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         var ses=o.series;
         var as=$('.active.segment').html();
@@ -4851,7 +4854,7 @@ function checkimp(a) {
 }
 function shuatestcase(type,a) {
     if(type==-1){
-        $.get('/getcase/2/'+tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        $.get('/getcase/2/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             if(o.isok!=0){
                 alertf(o.msg);
@@ -4978,7 +4981,7 @@ function addtestcase() {
   }else {
       var dda=new Date();
       $.post('/addseries',{
-          tid:tid,
+          tid:common.tid,
           cids:aa.join(","),
           seriesName:dda.toLocaleDateString()+'-'+dda.getHours()+'-'+dda.getMinutes()+"运行"
 
@@ -4991,7 +4994,7 @@ function addtestcase() {
 }
 
 function clickelemnet(a) {
-    if(tid<1){
+    if(common.tid<1){
         alertf("请先选择项目~")
     }else{
         forfirstfun();
@@ -5071,7 +5074,7 @@ if(b){
 
     });
 $.GetJSON('/http/'+cid,'version=0.2',function(a){
-    var b=localStorage.getItem("https"+tid+''+cid);
+    var b=localStorage.getItem("https"+common.tid+''+cid);
   var   islocal=false;
   var h;
     if(b!=null){
@@ -5083,7 +5086,7 @@ $.GetJSON('/http/'+cid,'version=0.2',function(a){
            if(a[0].time<h.time){
 https=h;
            }else {
-               localStorage.removeItem("https"+tid+''+cid);
+               localStorage.removeItem("https"+common.tid+''+cid);
                https.info=s2j(a[0].con);
            }
         }else {
@@ -5380,7 +5383,7 @@ $('#logout').click(function () {
     $.get('/logout',function (data,status) {
         var o=$.parseJSON(data);
         alertf(o.msg);
-         tid=-1;
+         common.tid=-1;
          pid=0;
          ass1=0;
          ass2=0;
