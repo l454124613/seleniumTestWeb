@@ -71,11 +71,7 @@ $(document).ready(function () {
         }else{
             common=(localStorage.getItem('common')==null?common:s2j(localStorage.getItem('common')));
 
-            if(common.tid>0&&common.tname!=''){
 
-                $('#choosei') .dropdown('set text',common.tname);
-
-            }
 
             var cc=Cookies.get('user2');
             var re="";
@@ -161,6 +157,24 @@ $(document).ready(function () {
                         st+="<div class=\"item\" data-value=\""+items[i].id+"\"  onclick='gettid("+items[i].id+",\""+items[i].name+"\")' >"+items[i].name+"</div>";
                     }
                     $('#itemc').html(st);
+
+                    if(common.tid>0&&common.tname!=''){
+
+
+                        var gv=casever['v'+common.tid];
+
+                        var st='';
+                        for(var i=0;i<gv.length;i++){
+                            st+="<div class=\"item\" data-value=\""+gv[i].id+"\"  onclick='getvid("+gv[i].id+",\""+gv[i].name+"\")' >"+gv[i].name+"</div>";
+                        }
+                        $('#itemd').html(st);
+                        setTimeout(function (){$('#choosei') .dropdown('set selected',common.tid)},50);
+                        if(common.vid>0&&common.vname!=''){
+                            setTimeout(function (){$('#choosev') .dropdown('set selected',common.vid)},50);
+                        }
+
+
+                    }
 
 
                 }
@@ -3820,16 +3834,39 @@ $('#addpageone2').click(function () {
 var common={tid:-1,tname:'',vid:-1,vname:'',ismanager:false};
 
 function gettid(a,b) {
-    if(common.tid<0||common.tid==a){
+    if(common.tid<0||common.tid!=a){
         common.tid=a;
         common.tname=b;
+        if(common.tid!=a){
+
+            $('#context').html("<h2 class=\"ui center aligned header\" style=\"margin-top: 7%\">已切换到项目："+b+"</h2>");
+        }
+        var gv=casever['v'+a];
+
+        var st='';
+        for(var i=0;i<gv.length;i++){
+            st+="<div class=\"item\" data-value=\""+gv[i].id+"\"  onclick='gettid("+gv[i].id+",\""+gv[i].name+"\")' >"+gv[i].name+"</div>";
+        }
+        $('#itemd').html(st);
+
     }else{
-        common.tid=a;
-        common.tname=b;
-        $('#context').html("<h2 class=\"ui center aligned header\" style=\"margin-top: 7%\">已切换到项目："+b+"</h2>");
+
+
     }
   //  Cookies.set('user5',a+':'+b, { expires: 30 });
     localStorage.setItem('common',j2s(common));
+
+}
+function getvid(a,b) {
+    if(common.vid!=a){
+        common.vid=a;
+        common.vname=b;
+
+        localStorage.setItem('common',j2s(common));
+
+    }
+    //  Cookies.set('user5',a+':'+b, { expires: 30 });
+
 
 }
 
