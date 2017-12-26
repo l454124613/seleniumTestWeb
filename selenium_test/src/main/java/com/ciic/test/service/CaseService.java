@@ -10,7 +10,7 @@ import java.util.List;
 public interface CaseService {
     List<Thread> getCases();
 
-List<CaseInfo> getcase(String tid,boolean isall);
+List<CaseInfo> getcase(String tid,boolean isall,String vid);
 
 int updateCanRunCase(String id);
 int updateCantRunCase(String id);
@@ -19,7 +19,7 @@ int updatecase(String id ,String name ,String des,String important);
 
 int removeCase(String id);
 int finishCasehome(String id);
-int addCase(String name ,String des,String important,String tid,String type);
+int addCase(String name ,String des,String important,String tid,String type,String vid);
 
 List<CaseInfo> getOnecase(String id);
 

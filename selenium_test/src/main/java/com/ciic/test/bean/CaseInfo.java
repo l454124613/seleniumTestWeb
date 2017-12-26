@@ -8,10 +8,7 @@ public class CaseInfo {
     private String name;
     private String des;
     private  String important;
-    private String tid;
-    private String type;
-    private String label;
-    private String ispass;
+    private  String status;
 
     @Override
     public String toString() {
@@ -24,19 +21,43 @@ public class CaseInfo {
                 .append(des).append('\"');
         sb.append(",\"important\":\"")
                 .append(important).append('\"');
-        sb.append(",\"tid\":\"")
-                .append(tid).append('\"');
+        sb.append(",\"status\":\"")
+                .append(status).append('\"');
+        sb.append(",\"cvid\":\"")
+                .append(cvid).append('\"');
         sb.append(",\"type\":\"")
                 .append(type).append('\"');
         sb.append(",\"label\":\"")
                 .append(label).append('\"');
-        sb.append(",\"ispass\":\"")
-                .append(ispass).append('\"');
         sb.append(",\"vid\":\"")
                 .append(vid).append('\"');
         sb.append('}');
         return sb.toString();
     }
+
+    public String getCvid() {
+        return cvid;
+    }
+
+    public void setCvid(String cvid) {
+        this.cvid = cvid;
+    }
+
+    private String cvid;
+
+
+    private String type;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    private String label;
+
 
     public String getVid() {
         return vid;
@@ -48,13 +69,6 @@ public class CaseInfo {
 
     private String vid;
 
-    public String getIspass() {
-        return ispass;
-    }
-
-    public void setIspass(String ispass) {
-        this.ispass = ispass;
-    }
 
     public String getLabel() {
         return label;
@@ -72,13 +86,7 @@ public class CaseInfo {
         this.type = type;
     }
 
-    public String getTid() {
-        return tid;
-    }
 
-    public void setTid(String tid) {
-        this.tid = tid;
-    }
 
     public String getId() {
         return id;

@@ -52,12 +52,13 @@ return list;
 
     }
     @Override
-    public List<CaseInfo> getcase(String tid,boolean isall) {
+    public List<CaseInfo> getcase(String tid,boolean isall,String vid) {
 
             if(isall){
-                return  jdbcTemplate.query("select * from caselist where tid=? and isused=1 " ,mycode.prase(new Object[]{tid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
+                return  jdbcTemplate.query("SELECT case_version.id cvid,caselist.id id, status, name, des, important, type, label from case_version LEFT JOIN caselist on caselist.id=case_version.cid where case_version.isused=1 and tid=? and chid=?" ,mycode.prase(new Object[]{tid,vid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
 
             }else {
+                //TODO
                 return  jdbcTemplate.query("select * from caselist where tid=? and isused=1 and ispass=1" ,mycode.prase(new Object[]{tid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
 
             }
@@ -97,21 +98,25 @@ return list;
     }
 
     @Override
-    public int addCase(String name, String des, String important,String tid,String type) {
+    public int addCase(String name, String des, String important,String tid,String type,String vid) {
         int n=  jdbcTemplate.update("INSERT INTO \"main\".\"caselist\" ( \"name\", \"des\", \"important\", \"tid\", \"type\") VALUES ( ?, ?, ?, ?,?)",mycode.prase(new Object[]{name,des,important,tid,type}));
-        if(n==1){
-            int n2=jdbcTemplate.update("INSERT INTO \"precondition\" ( \"type\", \"a\", \"b\", \"c\",\"cid\") VALUES (4, -1, -1, -1, (SELECT max(id) from caselist where isused=1 and tid=?))",mycode.prase(new Object[]{tid}));
-
-
-
-        if(n2==1){
-            return n2;
-        }else {
+        List<tmp> lt=jdbcTemplate.query("SELECT max(id) value from caselist where   tid=? and name=? and des =? and type=?",new Object[]{tid,name,des,type},new BeanPropertyRowMapper<>(tmp.class));
+        if(lt.size()==0){
             return 0;
-        }
         }else {
-            return  0;
+            if(n==1){
+                int n2=jdbcTemplate.update("INSERT INTO \"precondition\" ( \"type\", \"a\", \"b\", \"c\",\"cid\") VALUES (4, -1, -1, -1,"+lt.get(0).getValue()+")");
+                n2*=jdbcTemplate.update("INSERT INTO case_version ( \"chid\", \"cid\", \"status\", \"isnew\", \"baseid\") VALUES (?, ?, 1, 1, ?)",new Object[]{vid,lt.get(0).getValue(),lt.get(0).getValue()});
+                if(n2==1){
+                    return n2;
+                }else {
+                    return 0;
+                }
+            }else {
+                return  0;
+            }
         }
+
     }
 
     @Override

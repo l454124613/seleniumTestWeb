@@ -165,7 +165,10 @@ $(document).ready(function () {
 
                         var st='';
                         for(var i=0;i<gv.length;i++){
-                            st+="<div class=\"item\" data-value=\""+gv[i].id+"\"  onclick='getvid("+gv[i].id+",\""+gv[i].name+"\")' >"+gv[i].name+"</div>";
+                            if(gv[i].isused==1){
+                                st+="<div class=\"item\" data-value=\""+gv[i].id+"\"  onclick='getvid("+gv[i].id+",\""+gv[i].name+"\")' >"+gv[i].name+"</div>";
+
+                            }
                         }
                         $('#itemd').html(st);
                         setTimeout(function (){$('#choosei') .dropdown('set selected',common.tid)},50);
@@ -2607,7 +2610,7 @@ function addstep(a) {
 
 function wancheng() {
     pid=0;
-    clickcase();
+    clickcase('#clickcases');
 }
 
 // function changeele(a) {
@@ -3115,7 +3118,11 @@ function contains(a,b,isArr) {
 }
 
 function shuacaseinfo(a,b) {
-$.get('/getcase/1/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    if(b=='clear'){
+        shuacaseinfo();
+        return 1;
+    }
+$.get('/getcase/1/'+common.tid+'/'+common.vid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
     var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
     if(o.isok!=0){
         alertf(o.msg);
@@ -3137,7 +3144,7 @@ if(cba==a){
                 var guodu=ccs[i].id+",'"+ccs[i].name+"'";
                 var aac=ccs[i].id+",'"+ccs[i].name+"','"+ccs[i].des+"',"+ccs[i].important+','+ccs[i].type;
                 var istype=ccs[i].type=='1';
-                var isp=ccs[i].ispass==1;
+
                 if(issearch){
                     var ismatch=false;
                     switch (b){
@@ -3147,68 +3154,49 @@ if(cba==a){
                         case 'imp':ccs[i].important==a?ismatch=true:ismatch=false;break;
 
 
+
                     }
                     allmatch=(ismatch||allmatch);
                     if(ismatch){
                         rex+= "                    <tr>\n" +
-                            "                        <td  >Y</td>\n" +
+                            "                        <td  >"+(istype?'界面':'接口')+"</td>\n" +
                             "                        <td  >"+ccs[i].name+"</td>\n" +
                             "                        <td  >"+ccs[i].des+"</td>\n" +
                             "                        <td  >"+int2imp(ccs[i].important)+"</td>\n" +
-                            "                        <td  >"+(istype?'界面':'接口')+"</td>\n" +
+
                             "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookstep("+ccs[i].id+","+istype+")' title=\"查看操作步骤\"><i class=\"indent icon\"></i></button></td>\n" +
                             "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookpre("+ccs[i].id+")' title=\"查看预置条件\"><i class=\"grid layout icon\"></i></button></td>\n" +
                             "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"copycase("+guodu+")\" title=\"复制/粘贴用例\"><i class=\"copy icon\"></i></button>" +
                             "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
                             "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" ;
-if(isp){
-    rex+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",2)\" title=\"撤回\"><i class=\" reply  icon \"></i></button></td></tr>\n" ;
+// if(ccs[i].ispass){
+//     rex+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",2)\" title=\"撤回\"><i class=\" reply  icon \"></i></button></td></tr>\n" ;
+//
+// }else {
+//     rex+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",1)\" title=\"确认可运行\"><i class=\" checkmark icon \"></i></button></td></tr>\n" ;
+//
+// }
 
-}else {
-    rex+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",1)\" title=\"确认可运行\"><i class=\" checkmark icon \"></i></button></td></tr>\n" ;
-
-}
-
-                    }else {
-                        re+= "                    <tr>\n" +
-                            "                        <td  >N</td>\n" +
-                            "                        <td  >"+ccs[i].name+"</td>\n" +
-                            "                        <td  >"+ccs[i].des+"</td>\n" +
-                            "                        <td  >"+int2imp(ccs[i].important)+"</td>\n" +
-                            "                        <td  >"+(istype?'界面':'接口')+"</td>\n" +
-                            "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookstep("+ccs[i].id+","+istype+")' title=\"查看操作步骤\"><i class=\"indent icon\"></i></button></td>\n" +
-                            "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookpre("+ccs[i].id+")' title=\"查看预置条件\"><i class=\"grid layout icon\"></i></button></td>\n" +
-                            "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"copycase("+guodu+")\" title=\"复制/粘贴用例\"><i class=\"copy icon\"></i></button>" +
-                            "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
-                            "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" ;
-                        if(isp){
-                            re+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",2)\" title=\"撤回\"><i class=\" reply  icon \"></i></button></td></tr>\n" ;
-
-                        }else {
-                            re+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",1)\" title=\"确认可运行\"><i class=\" checkmark icon \"></i></button></td></tr>\n" ;
-
-                        }
                     }
 
                 }else {
                     re+= "                    <tr>\n" +
-                        "                        <td  >"+(i+1)+"</td>\n" +
+                        "                        <td  >"+(istype?'界面':'接口')+"</td>\n" +
                         "                        <td  >"+ccs[i].name+"</td>\n" +
                         "                        <td  >"+ccs[i].des+"</td>\n" +
                         "                        <td  >"+int2imp(ccs[i].important)+"</td>\n" +
-                        "                        <td  >"+(istype?'界面':'接口')+"</td>\n" +
                         "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookstep("+ccs[i].id+","+istype+")' title=\"查看操作步骤\"><i class=\"indent icon\"></i></button></td>\n" +
                         "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookpre("+ccs[i].id+")' title=\"查看预置条件\"><i class=\"grid layout icon\"></i></button></td>\n" +
                         "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"copycase("+guodu+")\" title=\"复制/粘贴用例\"><i class=\"copy icon\"></i></button>" +
                         "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
                         "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" ;
-                    if(isp){
-                        re+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",2)\" title=\"撤回\"><i class=\" reply  icon \"></i></button></td></tr>\n" ;
-
-                    }else {
-                        re+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",1)\" title=\"确认可运行\"><i class=\" checkmark icon \"></i></button></td></tr>\n" ;
-
-                    }
+                    // if(isp){
+                    //     re+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",2)\" title=\"撤回\"><i class=\" reply  icon \"></i></button></td></tr>\n" ;
+                    //
+                    // }else {
+                    //     re+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",1)\" title=\"确认可运行\"><i class=\" checkmark icon \"></i></button></td></tr>\n" ;
+                    //
+                    // }
                 }
                 allmatch=true;
 
@@ -3728,7 +3716,8 @@ $('#addpageone5').click(function () {
             important:uss,
             tid:common.tid,
             type:ass4,
-            elety:elev
+            elety:elev,
+            vid:common.vid
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             isshuaitem=true;
@@ -3834,23 +3823,27 @@ $('#addpageone2').click(function () {
 var common={tid:-1,tname:'',vid:-1,vname:'',ismanager:false};
 
 function gettid(a,b) {
+
     if(common.tid<0||common.tid!=a){
-        common.tid=a;
-        common.tname=b;
+
         if(common.tid!=a){
 
             $('#context').html("<h2 class=\"ui center aligned header\" style=\"margin-top: 7%\">已切换到项目："+b+"</h2>");
+            $('#choosev') .dropdown('clear');
+            common.vid=-1;
         }
+        common.tid=a;
+        common.tname=b;
         var gv=casever['v'+a];
 
         var st='';
         for(var i=0;i<gv.length;i++){
-            st+="<div class=\"item\" data-value=\""+gv[i].id+"\"  onclick='gettid("+gv[i].id+",\""+gv[i].name+"\")' >"+gv[i].name+"</div>";
+            if(gv[i].isused==1){
+                st+="<div class=\"item\" data-value=\""+gv[i].id+"\"  onclick='getvid("+gv[i].id+",\""+gv[i].name+"\")' >"+gv[i].name+"</div>";
+
+            }
         }
         $('#itemd').html(st);
-
-    }else{
-
 
     }
   //  Cookies.set('user5',a+':'+b, { expires: 30 });
@@ -4093,7 +4086,7 @@ function updatecase(a,b,c,d,e) {
 function searchcase() {
     var inp=$.trim($('#seaca').val())
     var se=$('#secon').val();
-    if(inp==""){
+    if(inp==""&&se!='clear'){
         $('#seaca').css('background','yellow');
     }else {
         shuacaseinfo(inp,se);
@@ -4150,6 +4143,7 @@ function searchcase() {
                     "    <option value=\"3\">低</option>\n"+
 
                     "  </select>\n");break;
+                case 'clear':$('#seq').html('');break;
             }
 
             
@@ -4158,8 +4152,12 @@ function searchcase() {
   function clickcase(a)
   {
       if(common.tid<1){
-          alertf("请先选择项目~")
+          alertf("请先选择项目~");
       }else{
+          if(common.vid<1){
+              alertf("请先选择项目的相关版本~");
+              return 1;
+          }
           forfirstfun();
           $(a).css('color','aqua');
           pid=0;
@@ -4170,18 +4168,18 @@ function searchcase() {
               "    <option  value=\"des\">描述</option>\n"+
               "    <option value=\"label\">标签</option>\n"+
               "    <option value=\"imp\">重要级</option>\n"+
+              "    <option value=\"clear\">还原</option>\n"+
 
               "  </select>\n"+
               "  <div type=\"submit\" class=\"ui button\" onclick='searchcase()'>搜索</div>\n"+
               "</div>"
-          var re=base(  "                        <th style=\"width: 40px\">#</th>\n" +
+          var re=base(  "                        <th style=\"width: 80px\">用例类型</th>\n" +
               "                        <th  style=\"width: 25%\">用例名称</th>\n" +
               "                        <th   style='min-width: 100px'>用例描述</th>\n" +
               "                        <th   style='width: 60px'>重要等级</th>\n" +
-              "                        <th   style='width: 60px'>用例类型</th>\n" +
               "                        <th style=\"width: 60px\">查看步骤</th>\n" +
               "                        <th style=\"width: 60px\">预置条件</th>\n" +
-              "                        <th style=\"width: 80px\">操作按钮</th><th style=\"width: 80px\">执行用例</th>",9,'addcase()','添加用例','caseid');
+              "                        <th style=\"width: 80px\">操作按钮</th><th style=\"width: 80px\">调试用例</th>",9,'addcase()','添加用例','caseid');
 
 
           $('#context').html(re1+re);
@@ -4346,6 +4344,10 @@ function changecasehm(a) {
         if(common.tid<1){
             alertf("请先选择项目~")
         }else {
+            if(common.vid<1){
+                alertf("请先选择项目的相关版本~");
+                return 1;
+            }
             forfirstfun();
             $(a).css('color','aqua');
             mele=0;
@@ -5034,6 +5036,10 @@ function clickelemnet(a) {
     if(common.tid<1){
         alertf("请先选择项目~")
     }else{
+        if(common.vid<1){
+            alertf("请先选择项目的相关版本~");
+            return 1;
+        }
         forfirstfun();
         $(a).css('color','aqua');
         mele=1;
@@ -5075,7 +5081,7 @@ if(b){
 }else {
     var re="<div style=\"margin-bottom: 5px;\">\n"+
         "                <div class=\"ui  basic buttons\">\n"+
-        "                    <button class=\"ui  button\" title=\"返回\" onclick='clickcase()' ><i class=\"long arrow left icon\"></i>离开</button>\n"+
+        "                    <button class=\"ui  button\" title=\"返回\" onclick='clickcase(\"#clickcases\")' ><i class=\"long arrow left icon\"></i>离开</button>\n"+
         "\n"+
         "                </div>\n"+
         "                <div class=\"ui  basic icon buttons right floated\">\n"+
@@ -5412,7 +5418,7 @@ function  addele() {
 
 
 function returnpage() {
-    clickpage();
+    clickpage('#clickpages');
     pid=0;
     elements1={};
 }

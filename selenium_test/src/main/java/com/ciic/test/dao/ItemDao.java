@@ -145,6 +145,7 @@ public class ItemDao implements ItemService{
 
     @Override
     public int addItemUser(String user,String id ) {
+
       return   jdbcTemplate.update("INSERT INTO \"u2g\" ( \"gid\", \"uid\") VALUES (?, ?)",mycode.prase(new Object[]{id,user}));
 
 

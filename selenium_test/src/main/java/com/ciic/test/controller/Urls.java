@@ -104,6 +104,7 @@ private Map<String,Thread> map4thread=new HashMap();
             if(type.equalsIgnoreCase("0")){
                 int a1= itemService.addItem(name,url);
                 int a2=itemService.getmaxitemid();
+                itemService.addCaseVer("基础版本","新建项目时创建",String.valueOf(a2));
                 String[] u2=users.split(",");
                 if(a2>0&&u2.length>0){
                     int num4a=0;
@@ -851,9 +852,9 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
      * @param all
      * @return
      */
-    @RequestMapping("/getcase/{all}/{tid}")
-String getcase(@PathVariable String tid,@PathVariable String all){
-        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"cases\":"+caseService.getcase(tid,all.equals("1")?true:false)+"}";
+    @RequestMapping("/getcase/{all}/{tid}/{vid}")
+String getcase(@PathVariable String tid,@PathVariable String all,@PathVariable String vid){
+        return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"cases\":"+caseService.getcase(tid,all.equals("1")?true:false,vid)+"}";
     }
 
     /**
@@ -1662,13 +1663,13 @@ if(step.isEmpty()||pagename.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmp
      * @return
      */
     @RequestMapping("/addcase")
-String addcase(String name,String des,String important,String type,String tid,String elety){
-       if(name.isEmpty()||important.isEmpty()||des.isEmpty()||type.isEmpty()||tid.isEmpty()||elety.isEmpty()){
+String addcase(String name,String des,String important,String type,String tid,String elety,String vid){
+       if(name.isEmpty()||important.isEmpty()||des.isEmpty()||type.isEmpty()||tid.isEmpty()||elety.isEmpty()||vid.isEmpty()){
            return "{\"isok\":1,\"msg\":\"信息不匹配\",\"to\":\"/\"}";
        }else {
            int a=0;
            if(type.equalsIgnoreCase("0")){
-             a=  caseService.addCase(name,des,important,tid,elety);
+             a=  caseService.addCase(name,des,important,tid,elety,vid);
 
            }else {
                a=caseService.updatecase(type,name,des,important);
