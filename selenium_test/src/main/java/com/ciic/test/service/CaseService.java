@@ -15,7 +15,7 @@ List<CaseInfo> getcase(String tid,boolean isall,String vid);
 int updateCanRunCase(String id);
 int updateCantRunCase(String id);
 
-int updatecase(String id ,String name ,String des,String important);
+int updatecase(String id ,String name ,String des,String important,String vid);
 
 int removeCase(String id);
 int finishCasehome(String id);
@@ -28,7 +28,7 @@ int removeStep(String id);
 String getPid(String sid);
 String getTopage(String sid);
 
-int copyCase(String mid,String yid);
+int copyCase(String mid,String yid,String ov,String nv);
 
 void zhengliStep(String cid);
 
@@ -42,7 +42,7 @@ int addExp(String type,String sid,String a,String b,String c,String d,String e);
 int updateExp(String type,String sid,String a,String b,String c,String d,String e);
 
 List<Precondition> getPrecondition(String cid);
-int updatePrecondition(String type,String cid ,String a,String b,String c);
+int updatePrecondition(String type,String cid ,String a,String b,String c,String vid);
 
 
 

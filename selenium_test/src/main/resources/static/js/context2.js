@@ -32,6 +32,8 @@ var fileid=0;
 var isadd=0
 var copyid=0;
 var copyname="";
+var copytype="";
+var copyver="";
 
 
 
@@ -1832,11 +1834,20 @@ function clearIsused() {
 }
 
 
-function runcase(a,b) {
-    $.get('/testcase/'+a+"/"+common.tid+"/"+b,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
-        var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
-        alertf(o.msg);
-    });
+function runcase(a,b,c,d) {
+    if(c=='2'){
+        alertf('调试中，请稍后');
+    }else{
+        if(c=='-1'){
+            alertf('请添加操作步骤');
+            return 1;
+        }
+        $.get('/testcase/'+a+"/"+common.tid+"/"+b+'/'+d,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+            var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+            alertf(o.msg);
+        });
+    }
+
 }
 
 function lookruncase(a) {
@@ -2142,7 +2153,7 @@ function getyu1() {
     if(case1==""){
         return false;
     }else {
-        return {a:case1,b:-1,c:-1,type:1,cid:cid};
+        return {a:case1,b:-1,c:-1,type:1,cid:cid,vid:common.vid};
     }
     
 }
@@ -2169,7 +2180,7 @@ function changeyu1() {
     $('#yuid').html(re);
 
 
-    $.get('/getcase/2/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/getcase/2/'+common.tid+'/'+common.vid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         var cc=o.cases;
         var v1="";
@@ -2197,7 +2208,7 @@ function getyu2() {
     if(data==""||sql==""){
         return false;
     }else{
-        return {a:data,b:sql,c:-1,type:2,cid:cid};
+        return {a:data,b:sql,c:-1,type:2,cid:cid,vid:common.vid};
     }
 }
 
@@ -2263,7 +2274,7 @@ function getyu3() {
     if(typeh==""||url==""||body==""){
         return false;
     }else {
-           return {a:typeh,b:url,c:body,type:3,cid:cid};
+           return {a:typeh,b:url,c:body,type:3,cid:cid,vid:common.vid};
     }
 
 }
@@ -3142,8 +3153,19 @@ if(cba==a){
             var allmatch=false;
             for(var i=0;i<ccs.length;i++){
                 var guodu=ccs[i].id+",'"+ccs[i].name+"'";
+                var guodu1=ccs[i].id+",'"+ccs[i].name+"',"+ccs[i].type;
+                var guodu2=ccs[i].id+",'"+ccs[i].name+"',"+ccs[i].status;
                 var aac=ccs[i].id+",'"+ccs[i].name+"','"+ccs[i].des+"',"+ccs[i].important+','+ccs[i].type;
                 var istype=ccs[i].type=='1';
+                var stat='';
+                switch(ccs[i].status){
+                    case '1':stat='未调试';break;
+                    case '2':stat='调试中';break;
+                    case '3':stat='调试成功';break;
+                    case '4':stat='请修改';break;
+                    case '-1':stat='无步骤';break;
+
+                }
 
                 if(issearch){
                     var ismatch=false;
@@ -3166,9 +3188,9 @@ if(cba==a){
 
                             "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookstep("+ccs[i].id+","+istype+")' title=\"查看操作步骤\"><i class=\"indent icon\"></i></button></td>\n" +
                             "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookpre("+ccs[i].id+")' title=\"查看预置条件\"><i class=\"grid layout icon\"></i></button></td>\n" +
-                            "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"copycase("+guodu+")\" title=\"复制/粘贴用例\"><i class=\"copy icon\"></i></button>" +
-                            "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
-                            "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" ;
+                            "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"copycase("+guodu1+")\" title=\"复制/粘贴用例\"><i class=\"copy icon\"></i></button>" +
+                            "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].cvid+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
+                            "<td><button class=\"ui  basic  button \" onclick=\"runcase("+guodu2 +")\" title=\"调试用例\">"+stat+"</button>" ;
 // if(ccs[i].ispass){
 //     rex+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",2)\" title=\"撤回\"><i class=\" reply  icon \"></i></button></td></tr>\n" ;
 //
@@ -3187,9 +3209,9 @@ if(cba==a){
                         "                        <td  >"+int2imp(ccs[i].important)+"</td>\n" +
                         "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookstep("+ccs[i].id+","+istype+")' title=\"查看操作步骤\"><i class=\"indent icon\"></i></button></td>\n" +
                         "                        <td  ><button class=\"ui  circular basic icon button\" onclick='lookpre("+ccs[i].id+")' title=\"查看预置条件\"><i class=\"grid layout icon\"></i></button></td>\n" +
-                        "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"copycase("+guodu+")\" title=\"复制/粘贴用例\"><i class=\"copy icon\"></i></button>" +
-                        "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].id+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
-                        "<td><button class=\"ui circular basic icon button \" onclick=\"runcase("+guodu +")\" title=\"运行用例\"><i class=\"play icon green\"></i></button>" ;
+                        "                        <td  > <button class=\"ui circular basic icon button \" onclick=\"looklabel("+guodu+",'"+ccs[i].label+"')\" title=\"查看标签\"><i class=\"tags icon   yellow\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"updatecase("+aac+")\" title=\"修改用例\"><i class=\"paint brush icon\"></i></button><button class=\"ui  circular basic icon button\" onclick=\"copycase("+guodu1+")\" title=\"复制/粘贴用例\"><i class=\"copy icon\"></i></button>" +
+                        "                            <button class=\"ui circular basic icon button \" onclick='removecase("+ccs[i].cvid+")' title=\"删除用例\"><i class=\"remove circle icon red\"></i></button></td>" +
+                        "<td><button class=\"ui  basic  button \" onclick=\"runcase("+guodu2 +")\" title=\"调试用例\">"+stat+"</button>" ;
                     // if(isp){
                     //     re+=                            "<button class=\"ui circular basic icon button \" onclick=\"canruncase("+ccs[i].id +",2)\" title=\"撤回\"><i class=\" reply  icon \"></i></button></td></tr>\n" ;
                     //
@@ -3213,27 +3235,34 @@ if(cba==a){
     
 }
 
-function copycase(a,b) {
+function copycase(a,b,c) {
     if(copyid!=0){
         if(copyid==a){
             copyid=0;
             alertf("取消复制");
             return;
         }
-        if (confirm("用例"+copyname+"将覆盖用例"+b+"，请确认？")) {
-            $.get('/copycase/'+a+'/'+copyid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        if(copytype==c){
+            if (confirm("用例"+copyname+"将覆盖用例"+b+"，请确认？")) {
+                $.post('/copycase/'+a+'/'+copyid,{ov:copyver,nv:common.vid},function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
-                var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
+                    var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
-                alertf(o.msg);
-                // $('#mpage').click();
-                copyid=0;
-            })
+                    alertf(o.msg);
+                    // $('#mpage').click();
+                    copyid=0;
+                })
+            }
+        }else{
+            alertf('复制类型错误，请检查');
         }
+
 
     }else {
         copyid=a;
         copyname=b;
+        copytype=c;
+        copyver=common.vid;
         alertf("用例"+b+"复制成功");
 
     }
@@ -3506,7 +3535,7 @@ $('#addpageone8').click(function () {
 
     if($('#yu44').checkbox('is checked')){
         $('#closemodal8').click();
-        dat={a:-1,b:-1,c:-1,cid:cid,type:4};
+        dat={a:-1,b:-1,c:-1,cid:cid,type:4,vid:common.vid};
     }else {
         if($('#yu11').checkbox('is checked')){
             dat=getyu1();
@@ -4179,7 +4208,7 @@ function searchcase() {
               "                        <th   style='width: 60px'>重要等级</th>\n" +
               "                        <th style=\"width: 60px\">查看步骤</th>\n" +
               "                        <th style=\"width: 60px\">预置条件</th>\n" +
-              "                        <th style=\"width: 80px\">操作按钮</th><th style=\"width: 80px\">调试用例</th>",9,'addcase()','添加用例','caseid');
+              "                        <th style=\"width: 80px\">操作按钮</th><th style=\"width: 80px\">用例状态</th>",9,'addcase()','添加用例','caseid');
 
 
           $('#context').html(re1+re);
@@ -4893,7 +4922,7 @@ function checkimp(a) {
 }
 function shuatestcase(type,a) {
     if(type==-1){
-        $.get('/getcase/2/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        $.get('/getcase/2/'+common.tid+'/'+common.vid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             if(o.isok!=0){
                 alertf(o.msg);
@@ -4952,7 +4981,7 @@ function shuatestcase(type,a) {
             }
         });
     }else {
-        $.get('/getcase/2/t'+type,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        $.get('/getcase/2/t'+type+'/'+vid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             if(o.isok!=0){
                 alertf(o.msg);

@@ -965,13 +965,13 @@ String getcase(@PathVariable String tid,@PathVariable String all,@PathVariable S
      * @return
      */
     @RequestMapping("/updatepre")
-    String updatePrecondition(String type,String cid,String a,String b,String c){
+    String updatePrecondition(String type,String cid,String a,String b,String c,String vid){
         if(type.isEmpty()||cid.isEmpty()){
             return "{\"isok\":1,\"msg\":\"参数获取不全\",\"to\":\"/\"}";
         }else {
 
 
-            int  n   = caseService.updatePrecondition(type,cid,a,b,c);
+            int  n   = caseService.updatePrecondition(type,cid,a,b,c,vid);
 
 
 
@@ -1111,13 +1111,13 @@ String getcase(@PathVariable String tid,@PathVariable String all,@PathVariable S
      * @param session
      * @return
      */
-    @RequestMapping("/testcase/{cid}/{tid}/{name}")
-    String testCase(@PathVariable String cid,@PathVariable String tid,@PathVariable String name,HttpSession session){
+    @RequestMapping("/testcase/{cid}/{tid}/{name}/{cvid}")
+    String testCase(@PathVariable String cid,@PathVariable String tid,@PathVariable String name,HttpSession session,@PathVariable String cvid){
         int n=0;
         List<Series> ls=    caseService.getOneSeries(name+"调试",tid);
 
         if(ls.size()==0){
-         n=   caseService.addRunCase(name+"调试",cid,tid,"1",session.getAttributeNames().nextElement());
+         n=   caseService.addRunCase(name+"调试",cid,tid,cvid,session.getAttributeNames().nextElement());
 
         }else{
             boolean hasCid=false;
@@ -1134,7 +1134,7 @@ String getcase(@PathVariable String tid,@PathVariable String all,@PathVariable S
             if(hasCid){
                 return "{\"isok\":1,\"msg\":\"已有相同调试在运行或等待运行，请在进度中查看\",\"to\":\"/\"}";
             }else {
-                n=   caseService.addRunCase(name+"调试",cid,tid,"1",session.getAttributeNames().nextElement());
+                n=   caseService.addRunCase(name+"调试",cid,tid,cvid,session.getAttributeNames().nextElement());
 
 
             }
@@ -1184,7 +1184,7 @@ String getcase(@PathVariable String tid,@PathVariable String all,@PathVariable S
      */
         @RequestMapping("/addseries")
     String addSeries( String cids,String tid,String seriesName){
-      int n=  caseService.addRunCase(seriesName,cids,tid,"2","0");
+      int n=  caseService.addRunCase(seriesName,cids,tid,"-1","0");
 
 
             if(n==1){
@@ -1672,7 +1672,7 @@ String addcase(String name,String des,String important,String type,String tid,St
              a=  caseService.addCase(name,des,important,tid,elety,vid);
 
            }else {
-               a=caseService.updatecase(type,name,des,important);
+               a=caseService.updatecase(type,name,des,important,vid);
 
            }
 
@@ -1759,8 +1759,8 @@ if(id.equalsIgnoreCase("0")){
     }
 
     @RequestMapping("/copycase/{mu}/{yuan}")
-    String copyCase(@PathVariable String mu,@PathVariable String yuan){
-        int a= caseService.copyCase(mu,yuan);
+    String copyCase(@PathVariable String mu,@PathVariable String yuan,String ov,String nv){
+        int a= caseService.copyCase(mu,yuan,ov,nv);
 
         if(a>0){
             return "{\"isok\":0,\"msg\":\"复制成功\",\"to\":\"/\"}";

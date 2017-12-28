@@ -99,11 +99,15 @@ public class mycode {
     }
 
     public  static String getTitle(String url){
-        WebDriver driver=new HtmlUnitDriver();
-        driver.get(url);
-     String aa=driver.getTitle();
-        driver.quit();
-        return aa;
+        try {
+            WebDriver driver=new HtmlUnitDriver();
+            driver.get(url);
+            String aa=driver.getTitle();
+            driver.quit();
+            return aa;
+        } catch (Exception e) {
+return "err";
+        }
     }
 
     public static Object[] prase(Object[] a){

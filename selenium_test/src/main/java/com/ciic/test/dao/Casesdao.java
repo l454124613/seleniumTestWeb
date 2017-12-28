@@ -77,14 +77,66 @@ return list;
     }
 
     @Override
-    public int updatecase(String id, String name, String des, String important) {
-        return  jdbcTemplate.update("UPDATE \"main\".\"caselist\" SET  \"name\"=?, \"des\"=?, \"important\"=?  WHERE (\"id\"=?)",mycode.prase(new Object[]{name,des,important,id}));
+    public int updatecase(String id, String name, String des, String important,String vid) {
+        List<tmp> lt=jdbcTemplate.query("select isnew value,id value2 from case_version where cid=? and chid=? and isused=1",new Object[]{id,vid},new BeanPropertyRowMapper<>(tmp.class));
+       if(lt.size()==0){
+           return  0;
+       }
+       if(lt.get(0).getValue().equals("0")){
+           id=newVer4Case(id,lt.get(0).getValue2(),vid);
+
+       }
+           return  jdbcTemplate.update("UPDATE \"caselist\" SET  \"name\"=?, \"des\"=?, \"important\"=?  WHERE (\"id\"=?)",mycode.prase(new Object[]{name,des,important,id}));
+
+
 
     }
 
+
+    /**
+     *
+     * @param id 原始被复制的用例id
+     * @param cvid 最终修改的cvid
+     * @param vid 最终记录的vid
+     * @return 新建的用例id
+     */
+    private  String newVer4Case(String id,String cvid,String vid){
+        List<tmp3> lt3=jdbcTemplate.query("select name value1,type value2,tid value3 from caselist where id=?",new Object[]{id},new BeanPropertyRowMapper<>(tmp3.class));
+        jdbcTemplate.update("INSERT INTO \"caselist\" ( \"name\", \"des\", \"important\", \"tid\", \"yuid\", \"type\", \"label\") SELECT name, des, important, tid, yuid, type, label from caselist where id=?",new Object[]{id});
+        List<tmp> lt=jdbcTemplate.query("select max(id) value,type value2 from caselist where name=? and type=? and tid=? ",new Object[]{lt3.get(0).getValue1(),lt3.get(0).getValue2(),lt3.get(0).getValue3()},new BeanPropertyRowMapper<>(tmp.class));
+        String id1=lt.get(0).getValue();
+        jdbcTemplate.update("INSERT INTO \"precondition\" ( \"type\", \"a\", \"b\", \"c\", \"isused\", \"cid\")  SELECT type, a, b, c, isused, \""+id1+"\" from precondition where cid=?",new Object[]{id});
+       if(lt.get(0).getValue2().equals("1")){
+           jdbcTemplate.update("INSERT INTO \"step\" ( \"pagename\", \"step\", \"catid\", \"catname\", \"cid\", \"value\", \"eid\", \"ename\", \"isused\", \"expid\") SELECT pagename, step, catid, catname, \""+id1+"\", value, eid, ename, isused, expid where cid=?",new Object[]{id});
+           jdbcTemplate.update("INSERT INTO \"exp\" ( \"type\", \"a\", \"b\", \"c\", \"d\", \"e\", \"isused\", \"sid\") SELECT o.type ,o.a,o.b,o.c,o.d,o.e,o.isused,u2.id sid from exp o LEFT JOIN step u on u.id=o.sid LEFT JOIN step u2 on u.step=u2.step where u.cid=? and u2.cid=?",new Object[]{id,id1});
+
+       }else{
+           jdbcTemplate.update("INSERT INTO \"httpcase\" ( \"con\", \"time\", \"isused\", \"cid\") SELECT con,time,isused,? from httpcase where cid=?",new Object[]{id1,id});
+       }
+        String st="1";
+       if(lt3.get(0).getValue2().equals("1")){
+           List<tmp> ltt=jdbcTemplate.query("select count(1) value from step where cid ="+id1,new BeanPropertyRowMapper<>(tmp.class));
+          if(ltt.get(0).getValue().equals("0")){
+              st="-1";
+          }
+       }else{
+           List<tmp> ltt=jdbcTemplate.query("select count(1) value from httpcase where cid ="+id1,new BeanPropertyRowMapper<>(tmp.class));
+           if(ltt.get(0).getValue().equals("0")){
+               st="-1";
+           }
+       }
+
+
+    jdbcTemplate.update("update case_version set isnew=1,status="+st+",isused=1,chid="+vid+",cid="+id1+" where id="+cvid);
+
+
+
+        return id1;
+
+    }
     @Override
     public int removeCase(String id) {
-        return    jdbcTemplate.update("UPDATE caselist set isused=0 where id=?",mycode.prase(new Object[]{id}));
+        return    jdbcTemplate.update("UPDATE case_version set isused=0 where id=?",mycode.prase(new Object[]{id}));
 
     }
 
@@ -99,7 +151,7 @@ return list;
 
     @Override
     public int addCase(String name, String des, String important,String tid,String type,String vid) {
-        int n=  jdbcTemplate.update("INSERT INTO \"main\".\"caselist\" ( \"name\", \"des\", \"important\", \"tid\", \"type\") VALUES ( ?, ?, ?, ?,?)",mycode.prase(new Object[]{name,des,important,tid,type}));
+        int n=  jdbcTemplate.update("INSERT INTO \"caselist\" ( \"name\", \"des\", \"important\", \"tid\", \"type\") VALUES ( ?, ?, ?, ?,?)",mycode.prase(new Object[]{name,des,important,tid,type}));
         List<tmp> lt=jdbcTemplate.query("SELECT max(id) value from caselist where   tid=? and name=? and des =? and type=?",new Object[]{tid,name,des,type},new BeanPropertyRowMapper<>(tmp.class));
         if(lt.size()==0){
             return 0;
@@ -153,54 +205,16 @@ return list;
     }
 
     @Override
-    public int copyCase(String mid, String yid) {
-      List<CaseInfo> lc=  jdbcTemplate.query("select * from caselist where id=? and isused=1",new Object[]{yid},new BeanPropertyRowMapper<>(CaseInfo.class));
-        List<CaseInfo> lc2=  jdbcTemplate.query("select * from caselist where id=? and isused=1",new Object[]{mid},new BeanPropertyRowMapper<>(CaseInfo.class));
+    public int copyCase(String mid, String yid,String ov,String nv) {
+      List<tmp> lt=  jdbcTemplate.query("select id value from case_version where cid=? and chid=?",new Object[]{mid,nv},new BeanPropertyRowMapper<>(tmp.class));
 
 
-        if(lc.size()==0||lc2.size()==0){
-          return 0;
-      }else {
-          if(lc.get(0).getType().equals("1")){
-              if(!lc2.get(0).getType().equals("1")){
-                  return 0;
-              }
-             jdbcTemplate.update("UPDATE step set isused=0 where cid=?",new Object[]{mid});
-           int a2=    jdbcTemplate.update("INSERT INTO step ( \"pagename\", \"step\", \"catid\", \"catname\", \"cid\", \"value\", \"eid\", \"ename\", \"isused\", \"expid\") select  \"pagename\", \"step\", \"catid\", \"catname\", ?, \"value\", \"eid\", \"ename\", \"isused\", \"expid\" from step where cid =? and isused=1",new Object[]{mid,yid});
-          jdbcTemplate.update("DELETE from exp where sid in (SELECT id from step where cid=? and isused=1)",new Object[]{mid});
 
-           List<Step> ls= jdbcTemplate.query("select * from step where cid=? and isused=1",new Object[]{mid},new BeanPropertyRowMapper<>(Step.class));
-           List<Step> ls2= jdbcTemplate.query("select * from step where cid=? and isused=1",new Object[]{yid},new BeanPropertyRowMapper<>(Step.class));
-           if(ls.size()!=ls2.size()){
-               return 0;
-           }else {
-               for (int i = 0; i <ls.size() ; i++) {
-                 Expected expected=  jdbcTemplate.query("select * from exp where sid="+ls2.get(i).getId(),new BeanPropertyRowMapper<>(Expected.class)).get(0);
-                   jdbcTemplate.update("INSERT INTO exp ( \"type\", \"a\", \"b\", \"c\", \"d\", \"e\", \"isused\", \"sid\") VALUES ( "+expected.getType()+", "+expected.getA()+", "+expected.getB()+", "+expected.getC()+", "+expected.getD()+", '"+expected.getE()+"', 1, "+ls.get(i).getId()+")");
-               }
+          String   cid=newVer4Case(yid,lt.get(0).getValue(),nv);
+
+return  1;
 
 
-           }
-
-
-           if(a2==0){
-    return  0;
-}else {
-    return a2;
-}
-          }else {
-              List<HttpCase> lh=jdbcTemplate.query("select * from httpcase where cid=?",new Object[]{yid},new BeanPropertyRowMapper<>(HttpCase.class));
-             if(lh.size()==0){
-                 return 0;
-             }else {
-                 HttpCase httpCase=lh.get(0);
-                 httpCase.setCid(mid);
-                 httpCase.setTime(System.currentTimeMillis()+"");
-               return   updateHttpCase(httpCase);
-             }
-
-          }
-      }
        // return jdbcTemplate.update("INSERT into step");
     }
 
@@ -223,12 +237,12 @@ return list;
 
     @Override
     public String getPid4Case(String cid) {
-        List<tmp> lt=jdbcTemplate.query("select yuid value from caselist where isused=1 and id=?  and value =1",mycode.prase(new Object[]{cid}),new BeanPropertyRowMapper<tmp>(tmp.class));
+        List<tmp> lt=jdbcTemplate.query("select yuid value from caselist where   id=? ",mycode.prase(new Object[]{cid}),new BeanPropertyRowMapper<tmp>(tmp.class));
 
          if(lt.size()==1){
             List<Element> le=   jdbcTemplate.query("SELECT max(step),element.* from step JOIN element on element.id=step.eid  where cid=(SELECT a from precondition where cid=? and isused=1) and step.isused=1",mycode.prase(new Object[]{cid}),new BeanPropertyRowMapper<Element>(Element.class));
-             System.out.println(le);
-            if(le.size()==0){
+
+            if(le.size()==0||le.get(0).getId()==null){
                 return "0";
             }else {
                 String pa=le.get(0).getTopage();
@@ -300,11 +314,13 @@ return "0";
     }
 
     @Override
-    public int updatePrecondition(String type, String cid, String a, String b, String c) {
-        if(type.equals("4")||type.equals("0")){
-            jdbcTemplate.update("update caselist set yuid=? where id=?",mycode.prase(new Object[]{type,cid}));
-        }else{
-            jdbcTemplate.update("update caselist set yuid=? where id=?",mycode.prase(new Object[]{type,cid}));
+    public int updatePrecondition(String type, String cid, String a, String b, String c,String vid) {
+        List<tmp> lt=jdbcTemplate.query("select isnew value,id value2 from case_version where cid=? and chid=? and isused=1",new Object[]{cid,vid},new BeanPropertyRowMapper<>(tmp.class));
+        if(lt.size()==0){
+            return  0;
+        }
+        if(lt.get(0).getValue().equals("0")){
+            cid=newVer4Case(cid,lt.get(0).getValue2(),vid);
 
         }
 
