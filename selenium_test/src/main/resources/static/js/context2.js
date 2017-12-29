@@ -3862,6 +3862,7 @@ function gettid(a,b) {
             $('#context').html("<h2 class=\"ui center aligned header\" style=\"margin-top: 7%\">已切换到项目："+b+"</h2>");
             $('#choosev') .dropdown('clear');
             common.vid=-1;
+            $('.i3').each(function(){$(this).css('color','')});
         }
         common.tid=a;
         common.tname=b;
@@ -3886,7 +3887,7 @@ function getvid(a,b) {
         common.vid=a;
         common.vname=b;
         $('#context').html("<h2 class=\"ui center aligned header\" style=\"margin-top: 7%\">已切换版本："+b+"</h2>");
-
+        $('.i3').each(function(){$(this).css('color','')});
         localStorage.setItem('common',j2s(common));
 
     }

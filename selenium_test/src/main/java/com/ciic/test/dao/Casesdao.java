@@ -4,17 +4,15 @@ import com.ciic.test.bean.*;
 import com.ciic.test.service.CaseService;
 import com.ciic.test.service.GetCase;
 
-import com.ciic.test.service.Proxy;
+
 import com.ciic.test.service.SeleniumService;
 import com.ciic.test.tools.mycode;
-import com.sun.corba.se.impl.ior.NewObjectKeyTemplateBase;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
