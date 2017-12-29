@@ -1430,7 +1430,7 @@ function changepage2(a) {
 
     $('#seele2').removeClass('disabled');
 
-    $.get('/gele/'+va+"/"+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/gele/'+va+"/"+common.tid+'/'+common.vid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -2892,7 +2892,7 @@ function shuaDatasource() {
 }
 
 function  shuaele() {
-    $.get('/gele/'+pid+'/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/gele/'+pid+'/'+common.tid+'/'+common.vid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -2934,7 +2934,7 @@ function topage() {
 }
 
 function  shuaeleall() {
-    $.get('/gele/'+'-1'+'/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/gele/'+'-1'+'/'+common.tid+'/'+common.vid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);

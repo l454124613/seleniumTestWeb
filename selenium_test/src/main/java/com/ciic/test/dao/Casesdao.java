@@ -83,8 +83,7 @@ return list;
            return  0;
        }
        if(lt.get(0).getValue().equals("0")){
-           id=newVer4Case(id,lt.get(0).getValue2(),vid);
-
+           id=newVer4Case(id,lt.get(0).getValue2(),vid,"-1");
        }
            return  jdbcTemplate.update("UPDATE \"caselist\" SET  \"name\"=?, \"des\"=?, \"important\"=?  WHERE (\"id\"=?)",mycode.prase(new Object[]{name,des,important,id}));
 
@@ -98,33 +97,46 @@ return list;
      * @param id 原始被复制的用例id
      * @param cvid 最终修改的cvid
      * @param vid 最终记录的vid
+     * @param copyid -1为新建用例，其他id是复制到指定用例id
      * @return 新建的用例id
      */
-    private  String newVer4Case(String id,String cvid,String vid){
+    private  String newVer4Case(String id,String cvid,String vid,String copyid){
         List<tmp3> lt3=jdbcTemplate.query("select name value1,type value2,tid value3 from caselist where id=?",new Object[]{id},new BeanPropertyRowMapper<>(tmp3.class));
-        jdbcTemplate.update("INSERT INTO \"caselist\" ( \"name\", \"des\", \"important\", \"tid\", \"yuid\", \"type\", \"label\") SELECT name, des, important, tid, yuid, type, label from caselist where id=?",new Object[]{id});
-        List<tmp> lt=jdbcTemplate.query("select max(id) value,type value2 from caselist where name=? and type=? and tid=? ",new Object[]{lt3.get(0).getValue1(),lt3.get(0).getValue2(),lt3.get(0).getValue3()},new BeanPropertyRowMapper<>(tmp.class));
-        String id1=lt.get(0).getValue();
-        jdbcTemplate.update("INSERT INTO \"precondition\" ( \"type\", \"a\", \"b\", \"c\", \"isused\", \"cid\")  SELECT type, a, b, c, isused, \""+id1+"\" from precondition where cid=?",new Object[]{id});
-       if(lt.get(0).getValue2().equals("1")){
-           jdbcTemplate.update("INSERT INTO \"step\" ( \"pagename\", \"step\", \"catid\", \"catname\", \"cid\", \"value\", \"eid\", \"ename\", \"isused\", \"expid\") SELECT pagename, step, catid, catname, \""+id1+"\", value, eid, ename, isused, expid where cid=?",new Object[]{id});
-           jdbcTemplate.update("INSERT INTO \"exp\" ( \"type\", \"a\", \"b\", \"c\", \"d\", \"e\", \"isused\", \"sid\") SELECT o.type ,o.a,o.b,o.c,o.d,o.e,o.isused,u2.id sid from exp o LEFT JOIN step u on u.id=o.sid LEFT JOIN step u2 on u.step=u2.step where u.cid=? and u2.cid=?",new Object[]{id,id1});
-
-       }else{
-           jdbcTemplate.update("INSERT INTO \"httpcase\" ( \"con\", \"time\", \"isused\", \"cid\") SELECT con,time,isused,? from httpcase where cid=?",new Object[]{id1,id});
-       }
+        String id1="";
         String st="1";
+        if(copyid.equals("-1")){
+            jdbcTemplate.update("INSERT INTO \"caselist\" ( \"name\", \"des\", \"important\", \"tid\", \"yuid\", \"type\", \"label\") SELECT name, des, important, tid, yuid, type, label from caselist where id=?",new Object[]{id});
+            List<tmp> lt=jdbcTemplate.query("select max(id) value,type value2 from caselist where name=? and type=? and tid=? ",new Object[]{lt3.get(0).getValue1(),lt3.get(0).getValue2(),lt3.get(0).getValue3()},new BeanPropertyRowMapper<>(tmp.class));
+
+            id1=lt.get(0).getValue();
+        }else {
+            id1=copyid;
+            jdbcTemplate.update("delete from precondition where cid=?",new Object[]{id1});
+        }
+
+        jdbcTemplate.update("INSERT INTO \"precondition\" ( \"type\", \"a\", \"b\", \"c\", \"isused\", \"cid\")  SELECT type, a, b, c, isused, \""+id1+"\" from precondition where cid=?",new Object[]{id});
        if(lt3.get(0).getValue2().equals("1")){
+           jdbcTemplate.update("delete from exp where sid in (select id from step where cid=?)",new Object[]{id1});
+           jdbcTemplate.update("delete from step where cid=?",new Object[]{id1});
+
+
+           jdbcTemplate.update("INSERT INTO \"step\" ( \"pagename\", \"step\", \"catid\", \"catname\", \"cid\", \"value\", \"eid\", \"ename\", \"isused\", \"expid\") SELECT pagename, step, catid, catname, \""+id1+"\", value, eid, ename, isused, expid from step where cid=?",new Object[]{id});
+           jdbcTemplate.update("INSERT INTO \"exp\" ( \"type\", \"a\", \"b\", \"c\", \"d\", \"e\", \"isused\", \"sid\") SELECT o.type ,o.a,o.b,o.c,o.d,o.e,o.isused,u2.id sid from exp o LEFT JOIN step u on u.id=o.sid LEFT JOIN step u2 on u.step=u2.step where u.cid=? and u2.cid=?",new Object[]{id,id1});
            List<tmp> ltt=jdbcTemplate.query("select count(1) value from step where cid ="+id1,new BeanPropertyRowMapper<>(tmp.class));
-          if(ltt.get(0).getValue().equals("0")){
-              st="-1";
-          }
+           if(ltt.get(0).getValue().equals("0")){
+               st="-1";
+           }
        }else{
+           jdbcTemplate.update("delete from httpcase where cid=?",new Object[]{id1});
+
+           jdbcTemplate.update("INSERT INTO \"httpcase\" ( \"con\", \"time\", \"isused\", \"cid\") SELECT con,time,isused,? from httpcase where cid=?",new Object[]{id1,id});
            List<tmp> ltt=jdbcTemplate.query("select count(1) value from httpcase where cid ="+id1,new BeanPropertyRowMapper<>(tmp.class));
            if(ltt.get(0).getValue().equals("0")){
                st="-1";
            }
        }
+
+
 
 
     jdbcTemplate.update("update case_version set isnew=1,status="+st+",isused=1,chid="+vid+",cid="+id1+" where id="+cvid);
@@ -158,7 +170,7 @@ return list;
         }else {
             if(n==1){
                 int n2=jdbcTemplate.update("INSERT INTO \"precondition\" ( \"type\", \"a\", \"b\", \"c\",\"cid\") VALUES (4, -1, -1, -1,"+lt.get(0).getValue()+")");
-                n2*=jdbcTemplate.update("INSERT INTO case_version ( \"chid\", \"cid\", \"status\", \"isnew\", \"baseid\") VALUES (?, ?, 1, 1, ?)",new Object[]{vid,lt.get(0).getValue(),lt.get(0).getValue()});
+                n2*=jdbcTemplate.update("INSERT INTO case_version ( \"chid\", \"cid\", \"status\", \"isnew\", \"baseid\") VALUES (?, ?, -1, 1, ?)",new Object[]{vid,lt.get(0).getValue(),lt.get(0).getValue()});
                 if(n2==1){
                     return n2;
                 }else {
@@ -210,7 +222,7 @@ return list;
 
 
 
-          String   cid=newVer4Case(yid,lt.get(0).getValue(),nv);
+          String   cid=newVer4Case(yid,lt.get(0).getValue(),nv,mid);
 
 return  1;
 
@@ -320,7 +332,7 @@ return "0";
             return  0;
         }
         if(lt.get(0).getValue().equals("0")){
-            cid=newVer4Case(cid,lt.get(0).getValue2(),vid);
+            cid=newVer4Case(cid,lt.get(0).getValue2(),vid,"-1");
 
         }
 

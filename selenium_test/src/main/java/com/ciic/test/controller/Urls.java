@@ -663,8 +663,8 @@ if(file1.exists()){
      * @param session
      * @return
      */
-    @RequestMapping("/gele/{page}/{item}")
-    String getEle(@PathVariable String page,@PathVariable String item,HttpSession session){
+    @RequestMapping("/gele/{page}/{item}/{vid}")
+    String getEle(@PathVariable String page,@PathVariable String item,HttpSession session,@PathVariable String vid){
         if(itemService.isOwnItem(session.getAttributeNames().nextElement(),item)&&getPageService.isOwnPage(page,item)){
            // List<Page> lp=itemService.getPage(page);
             List<Element> le=null;
