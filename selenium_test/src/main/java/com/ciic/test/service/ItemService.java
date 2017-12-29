@@ -14,7 +14,7 @@ public interface ItemService {
     List<item> getItem(String uid);
     Map<String,List<CaseVer>> getVer();
     List<item> getAllItem();
-    List<Page> getPage(String tid);
+    List<Page> getPage(String tid,String vid);
     List<Page> getOnePage(String tid,String title);
     List<Page> getOnePageById(String id);
     List<Element> getele4page(String pid);

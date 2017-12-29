@@ -543,10 +543,10 @@ if(file1.exists()){
      * @param session
      * @return
      */
-    @RequestMapping("/gpage/{item}")
-    String getPage(@PathVariable String item,HttpSession session){
+    @RequestMapping("/gpage/{item}/{vid}")
+    String getPage(@PathVariable String item,HttpSession session,@PathVariable String vid){
         if(itemService.isOwnItem(session.getAttributeNames().nextElement(),item)){
-            List<Page> lp=itemService.getPage(item);
+            List<Page> lp=itemService.getPage(item,vid);
             return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"pages\":"+lp+"}";
 
         }else {
@@ -669,10 +669,10 @@ if(file1.exists()){
            // List<Page> lp=itemService.getPage(page);
             List<Element> le=null;
             if(page.equals("-1")){
-                le=getPageService.getall(item);
+                le=getPageService.getall(item,vid);
 
             }else {
-                le=  getPageService.get(page);
+                le=  getPageService.get(page,vid);
             }
 
             return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"elements\":"+le+"}";
@@ -691,15 +691,15 @@ if(file1.exists()){
      * @return
      */
     @RequestMapping(value = "/addpage")
-    String addPage(String item,String pagename,String pagetitle,String type){
+    String addPage(String item,String pagename,String pagetitle,String type,String vid){
         if(item.isEmpty()||pagename.isEmpty()||pagetitle.isEmpty()||type.isEmpty()){
             return "{\"isok\":1,\"msg\":\"信息不能为空\",\"to\":\"/\"}";
         }else {
             int a=0;
             if(type.equalsIgnoreCase("0")){
-                a= getPageService.addPage(item,pagename,pagetitle);
+                a= getPageService.addPage(item,pagename,pagetitle,vid);
             }else {
-a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
+                a=getPageService.updatePageInfoById(item,type,pagename,pagetitle,vid);
             }
 
 
@@ -730,9 +730,9 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
      * @return
      */
     @RequestMapping(value = "/addele")
-    String addEle(String item,String elename,String num,String type,String elelo,String elevalue,String pid,String topage,String toframe,String waitv,String waitid,String isframe,HttpSession session){
+    String addEle(String vid,String item,String elename,String num,String type,String elelo,String elevalue,String pid,String topage,String toframe,String waitv,String waitid,String isframe,HttpSession session){
 
-        if(isframe.isEmpty()||item.isEmpty()||elename.isEmpty()||num.isEmpty()||type.isEmpty()||elelo.isEmpty()||elevalue.isEmpty()||pid.isEmpty()||topage.isEmpty()||toframe.isEmpty()||waitid.isEmpty()||waitv.isEmpty()||!getPageService.isOwnPage(pid,item)){
+        if(vid.isEmpty()||isframe.isEmpty()||item.isEmpty()||elename.isEmpty()||num.isEmpty()||type.isEmpty()||elelo.isEmpty()||elevalue.isEmpty()||pid.isEmpty()||topage.isEmpty()||toframe.isEmpty()||waitid.isEmpty()||waitv.isEmpty()||!getPageService.isOwnPage(pid,item)){
             return "{\"isok\":1,\"msg\":\"信息不能为空\",\"to\":\"/\"}";
         }else {
             Element element=new Element();
@@ -748,9 +748,9 @@ a=getPageService.updatePageInfoById(item,type,pagename,pagetitle);
             element.setIsframe(isframe);
             int a=0;
             if(type.equalsIgnoreCase("0")){
-                a= getPageService.addEle(element,session.getAttributeNames().nextElement(),pid);
+                a= getPageService.addEle(element,session.getAttributeNames().nextElement(),pid,vid);
             }else {
-                a=getPageService.updateEle(element,session.getAttributeNames().nextElement(),type);
+                a=getPageService.updateEle(element,session.getAttributeNames().nextElement(),type,vid,pid);
             }
 
 
@@ -1520,8 +1520,8 @@ int num=configService.clearisused();
      * @param cid
      * @return
      */
-    @RequestMapping("/ge4p/{id}/{tid}/{cid}")
-    String geteleforpage(@PathVariable String id,@PathVariable String tid,@PathVariable String cid){
+    @RequestMapping("/ge4p/{id}/{tid}/{cid}/{vid}")
+    String geteleforpage(@PathVariable String id,@PathVariable String tid,@PathVariable String cid,@PathVariable String vid){
         if(id.equalsIgnoreCase("0")){
            String a= caseService.getPid4Case(cid);
 
@@ -1532,7 +1532,7 @@ int num=configService.clearisused();
                }else {
                    List<Page> lp=  itemService.getOnePage(tid,title);
                    if(lp.size()>0){
-                       return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"page\":"+lp.get(0)+",\"eles\":"+itemService.getele4page(lp.get(0).getId())+"}";
+                       return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"page\":"+lp.get(0)+",\"eles\":"+getPageService.get(lp.get(0).getId(),vid)+"}";
 
                    }else {
                        return "{\"isok\":1,\"msg\":\"获取页面失败。\",\"to\":\"/\"}";
@@ -1543,14 +1543,14 @@ int num=configService.clearisused();
 
                }
            }else {
-               return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"page\":"+itemService.getOnePageById(a).get(0)+",\"eles\":"+itemService.getele4page(a)+"}";
+               return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"page\":"+itemService.getOnePageById(a).get(0)+",\"eles\":"+getPageService.get(a,vid)+"}";
 
            }
 
 
 
         }else {
-            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"page\":"+itemService.getOnePageById(id).get(0)+",\"eles\":"+getPageService.get(id)+"}";
+            return "{\"isok\":0,\"to\":\"/html/context.html\",\"msg\":\"success\",\"page\":"+itemService.getOnePageById(id).get(0)+",\"eles\":"+getPageService.get(id,vid)+"}";
 
         }
 

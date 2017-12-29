@@ -25,7 +25,14 @@ public class ItemDao implements ItemService{
 
     @Override
     public int addCaseVer(String ti, String des,String id) {
-        return  jdbcTemplate.update("INSERT INTO casehome ( \"name\", \"des\",  \"tid\") VALUES (?,?,?)",new Object[]{ti,des,id});
+      int n=    jdbcTemplate.update("INSERT INTO casehome ( \"name\", \"des\",  \"tid\") VALUES (?,?,?)",new Object[]{ti,des,id});
+      List<tmp> lt=jdbcTemplate.query("select max(id)  value from casehome where tid=? and name=? and des=?",new Object[]{id,ti,des},new BeanPropertyRowMapper<>(tmp.class));
+if(lt.size()==0){
+    return 0;
+}
+n*=jdbcTemplate.update("INSERT INTO case_version (\"id\", \"chid\", \"cid\", \"status\", \"isused\", \"isnew\", \"baseid\") SELECT max(cid) id ,? chid,cid,'1' status,'1' isused,'0' isnew ,baseid aas FROM case_version where isused=1 and status!= -1 GROUP BY baseid",new Object[]{lt.get(0).getValue()});
+
+        return n;
 
     }
 
@@ -79,8 +86,9 @@ public class ItemDao implements ItemService{
     }
 
     @Override
-    public List<Page> getPage(String tid) {
-                return jdbcTemplate.query("SELECT id,pagename,pagetitle from page where isused=1 and tid=? ",mycode.prase(new Object[]{tid}),new BeanPropertyRowMapper<Page>(Page.class));
+    public List<Page> getPage(String tid,String vid) {
+
+                return jdbcTemplate.query("SELECT max(id) id123,* from page where vid<=? and tid=? and isused=1 group by baseid",mycode.prase(new Object[]{vid,tid}),new BeanPropertyRowMapper<Page>(Page.class));
 
     }
 
@@ -94,6 +102,11 @@ public class ItemDao implements ItemService{
         return jdbcTemplate.query("select * from page where id="+id,new BeanPropertyRowMapper<>(Page.class));
     }
 
+    /**
+     * @deprecated getPageService.get()相似
+     * @param pid
+     * @return
+     */
     @Override
     public List<Element> getele4page(String pid) {
 

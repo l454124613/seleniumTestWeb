@@ -14,8 +14,8 @@ public interface GetPageService {
 //    List<Page> get(String item);
 
 
-    List<Element> get(String page);
-    List<Element> getall(String tid);
+    List<Element> get(String page,String vid);
+    List<Element> getall(String tid,String vid);
 
  //GetPageService control();
 //     Map<String,ButtonService>   getbuttonmap();
@@ -26,14 +26,14 @@ public interface GetPageService {
 //     Map<String,TextService>     gettextmap();
 //     Map<String,UploadService>   getuploadmap();
 //     Map<String, SwitchToService> getFramemap();
-     int updatePageInfoById(String tid,String pid,String pagename,String pagetitle);
-     int addPage(String item,String pagename,String pagetitle);
+     int updatePageInfoById(String tid,String pid,String pagename,String pagetitle,String vid);
+     int addPage(String item,String pagename,String pagetitle,String vid);
      int removePage(String id);
      boolean isOwnPage(String pid,String tid);
      boolean isOwnEle(String pid,String eid);
      int removeEle(String id);
-     int addEle(Element element,String user,String pid);
-     int updateEle(Element element,String user,String eid);
+     int addEle(Element element,String user,String pid,String vid);
+     int updateEle(Element element,String user,String eid,String vid,String pid);
 
 
 

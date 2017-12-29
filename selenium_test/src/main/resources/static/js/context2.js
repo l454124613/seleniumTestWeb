@@ -1392,7 +1392,7 @@ function changeyan1() {
         "    </div></div>";
     $('#yanid').html(re);
     $('.dropdown').dropdown();
-    $.get('/gpage/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/gpage/'+common.tid+'/'+common.vid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
@@ -2741,7 +2741,7 @@ var vv3="";
 
 function shuapageinfo(d,e,f) {
 
-    $.get('/ge4p/'+pid+'/'+common.tid+'/'+cid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/ge4p/'+pid+'/'+common.tid+'/'+cid+'/'+common.vid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -2804,7 +2804,7 @@ $('#pagename2').text(o.page.pagename);
 
 function shuapage() {
 
-    $.get('/gpage/'+common.tid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+    $.get('/gpage/'+common.tid+'/'+common.vid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
         var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
         if(o.isok!=0){
             alertf(o.msg);
@@ -2930,7 +2930,7 @@ function  shuaele() {
     
 }
 function topage() {
-    $('#mpage').click();
+    $('#clickpages').click();
 }
 
 function  shuaeleall() {
@@ -3660,7 +3660,8 @@ $('#addpageone').click(function () {
             item:common.tid,
             pagename:name,
             pagetitle:title,
-            type:a1
+            type:a1,
+            vid:common.vid
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
@@ -3830,7 +3831,8 @@ $('#addpageone2').click(function () {
             waitid:waitid,
             waitv:waitv,
             isframe:chisfr,
-            num:num
+            num:num,
+            vid:common.vid
 
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
@@ -3873,16 +3875,17 @@ function gettid(a,b) {
             }
         }
         $('#itemd').html(st);
-
+        localStorage.setItem('common',j2s(common));
     }
   //  Cookies.set('user5',a+':'+b, { expires: 30 });
-    localStorage.setItem('common',j2s(common));
+
 
 }
 function getvid(a,b) {
     if(common.vid!=a){
         common.vid=a;
         common.vname=b;
+        $('#context').html("<h2 class=\"ui center aligned header\" style=\"margin-top: 7%\">已切换版本："+b+"</h2>");
 
         localStorage.setItem('common',j2s(common));
 

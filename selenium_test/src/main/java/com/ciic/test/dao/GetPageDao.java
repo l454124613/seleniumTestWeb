@@ -52,7 +52,7 @@ public class GetPageDao implements GetPageService{
 
 
 
-private List<Element> list;
+
 //private Map<String, ButtonService> mapb;
 //private Map<String, CheckboxService> mapc;
 //private Map<String, DialogService> mapd;
@@ -64,29 +64,18 @@ private List<Element> list;
 
 
     @Override
-    public List<Element> get(String page) {
-        list=jdbcTemplate.query("SELECT id,num,isframe,locationMethod,value,name,lastupdatetime,updater,topage,toframe,waitid,waitvalue from element where isused=1 and pid=?", mycode.prase(new Object[]{page}),new BeanPropertyRowMapper<Element>(Element.class));
+    public List<Element> get(String page,String vid) {
+        return   jdbcTemplate.query("SELECT max(element.id) asd,element.*,page.pagename pagename from element LEFT JOIN page on page.baseid=element.pid where page.id=? and element.vid<=? and element.isused=1 and page.isused=1 group by element.baseid", mycode.prase(new Object[]{page,vid}),new BeanPropertyRowMapper<Element>(Element.class));
 
 
-   return list;
+
     }
 
     @Override
-    public List<Element> getall(String tid) {
-        List<tmp> lt=jdbcTemplate.query("select isfinish value ,id value2 from casehome where tid=? and isused=1 and isnow=1",new Object[]{tid},new BeanPropertyRowMapper<>(tmp.class));
-if(lt.size()>0){
-    if(lt.get(0).getValue().equals("0")){
-        return jdbcTemplate.query("SELECT element.id,pid,num,isframe,locationMethod,value,element.name,lastupdatetime,updater,topage,toframe,waitid,waitvalue,page.pagename from element join page on element.pid=page.id  where element.isused=1 and page.isused=1 and page.tid=? ",new Object[]{tid},new BeanPropertyRowMapper<>(Element.class));
+    public List<Element> getall(String tid,String vid) {
+   return     jdbcTemplate.query("select * from (SELECT max(id) sd1 ,* from element where isused=1 and vid<=? GROUP BY baseid ) a LEFT JOIN (SELECT max(id) a1s ,pagename from page where isused=1 and vid<=?  and tid = ? GROUP BY baseid) b  on a.pid=b.a1s", mycode.prase(new Object[]{vid,vid,tid}),new BeanPropertyRowMapper<Element>(Element.class));
 
 
-    }else {
-        return jdbcTemplate.query("SELECT element.id,pid,num,isframe,locationMethod,value,element.name,lastupdatetime,updater,topage,toframe,waitid,waitvalue,page.pagename from element join page on element.pid=page.id  where element.isused=1 and page.isused=1 and page.tid=?",new Object[]{tid},new BeanPropertyRowMapper<>(Element.class));
-
-    }
-
-}else {
-    return  new ArrayList<>();
-}
     }
 
 //    @Override
@@ -161,15 +150,30 @@ if(lt.size()>0){
 //    }
 
     @Override
-    public int updatePageInfoById(String tid,String pid,String pagename,String pagetitle) {
+    public int updatePageInfoById(String tid,String pid,String pagename,String pagetitle,String vid) {
+       List<tmp> lt= jdbcTemplate.query("select id value,baseid value2 from page where id=? and vid=?",new Object[]{pid,vid},new BeanPropertyRowMapper<>(tmp.class));
 
-        return jdbcTemplate.update("UPDATE page set pagename=?,pagetitle=? WHERE id=? and tid=? and isused=1",mycode.prase(new  Object[]{pagename,pagetitle,pid,tid}));
+        if(lt.size()==0){
+            return     jdbcTemplate.update("INSERT INTO \"page\" ( \"pagename\", \"pagetitle\", \"parentid\",  \"tid\",  \"vid\",  \"baseid\") VALUES (?, ?, 0,  ?,?,(select baseid from page where id=?))",mycode.prase(new Object[]{pagename,pagetitle,tid,vid,pid}));
+
+
+        }else {
+            return jdbcTemplate.update("UPDATE page set pagename=?,pagetitle=? WHERE id=? and tid=? and isused=1",mycode.prase(new  Object[]{pagename,pagetitle,pid,tid}));
+
+        }
 
     }
 
     @Override
-    public int addPage(String item, String pagename, String pagetitle) {
-       return jdbcTemplate.update("INSERT INTO \"main\".\"page\" ( \"pagename\", \"pagetitle\", \"parentid\",  \"tid\") VALUES (?, ?, 0,  ?)",mycode.prase(new Object[]{pagename,pagetitle,item}));
+    public int addPage(String item, String pagename, String pagetitle,String vid) {
+    int n=    jdbcTemplate.update("INSERT INTO \"page\" ( \"pagename\", \"pagetitle\", \"parentid\",  \"tid\",  \"vid\") VALUES (?, ?, 0,  ?,?)",mycode.prase(new Object[]{pagename,pagetitle,item,vid}));
+    List<tmp> lt=jdbcTemplate.query("select max(id) value from page where pagename=? and pagetitle=? and tid=?  and vid=?",mycode.prase(new Object[]{pagename,pagetitle,item,vid}),new BeanPropertyRowMapper<>(tmp.class));
+   if(lt.size()==0){
+       return 0;
+   }
+
+    n*=   jdbcTemplate.update("update page set baseid="+lt.get(0).getValue()+" where id="+lt.get(0).getValue());
+        return n;
     }
 
     @Override
@@ -203,16 +207,30 @@ if(lt.size()>0){
     }
 
     @Override
-    public int addEle(Element element,String user,String pid) {
-        return jdbcTemplate.update("INSERT INTO \"element\" ( \"num\", \"isframe\", \"pid\", \"locationMethod\", \"value\", \"name\", \"topage\", \"toframe\",\"createtime\", \"waitid\",\"waitvalue\", \"creater\") VALUES ( ?, ?,?, ?, ?, ?, ?,?, ?,?,?,  ?)",
-                mycode.prase(new Object[]{element.getNum(),element.getIsframe(),pid,element.getLocationMethod(),element.getValue(),element.getName(),element.getTopage(), element.getToframe(),LocalDate.now()+" "+ LocalTime.now(),element.getWaitid(),element.getWaitvalue(),user}));
-
+    public int addEle(Element element,String user,String pid,String vid) {
+        int n= jdbcTemplate.update("INSERT INTO \"element\" ( \"num\", \"isframe\", \"pid\", \"locationMethod\", \"value\", \"name\", \"topage\", \"toframe\",\"createtime\", \"waitid\",\"waitvalue\", \"creater\",\"vid\") VALUES ( ?, ?,(select baseid from page where id=?), ?, ?, ?, ?,?, ?,?,?,  ?,?)",
+                mycode.prase(new Object[]{element.getNum(),element.getIsframe(),pid,element.getLocationMethod(),element.getValue(),element.getName(),element.getTopage(), element.getToframe(),LocalDate.now()+" "+ LocalTime.now(),element.getWaitid(),element.getWaitvalue(),user,vid}));
+     List<tmp> lt=  jdbcTemplate.query("select id value from element where vid=? and pid=? and name=?",new Object[]{vid,pid,element.getName()},new BeanPropertyRowMapper<>(tmp.class));
+    if(lt.size()==0){
+        return 0;
+    }
+    n*=jdbcTemplate.update("update element set baseid=? where id=?",new Object[]{lt.get(0).getValue(),lt.get(0).getValue()});
+        return n;
     }
 
     @Override
-    public int updateEle(Element element,String user,String eid) {
-      return   jdbcTemplate.update("UPDATE \"element\" SET  \"num\"=?,\"isframe\"=?,   \"locationMethod\"=?, \"value\"=?, \"name\"=?, \"topage\"=?, \"toframe\"=?,  \"lastupdatetime\"=?, \"updater\"=?, \"waitid\"=?, \"waitvalue\"=? WHERE (\"id\"=?)",
-              mycode.prase(new Object[]{element.getNum(),element.getIsframe(),element.getLocationMethod(),element.getValue(),element.getName(),element.getTopage(), element.getToframe(),LocalDate.now()+" "+ LocalTime.now(),user,element.getWaitid(),element.getWaitvalue(),eid}));
+    public int updateEle(Element element,String user,String eid,String vid,String pid) {
+        List<tmp> lt=jdbcTemplate.query("select baseid value from element where id=? and vid=?",new Object[]{eid,vid},new BeanPropertyRowMapper<>(tmp.class));
+        if(lt.size()==0){
+            return jdbcTemplate.update("INSERT INTO \"element\" ( \"num\", \"isframe\", \"pid\", \"locationMethod\", \"value\", \"name\", \"topage\", \"toframe\",\"createtime\", \"waitid\",\"waitvalue\", \"creater\",\"vid\",\"baseid\") VALUES ( ?, ?,(select baseid from page where id=?), ?, ?, ?, ?,?, ?,?,?,  ?,?,(select baseid from element where id=?))",
+                    mycode.prase(new Object[]{element.getNum(),element.getIsframe(),pid,element.getLocationMethod(),element.getValue(),element.getName(),element.getTopage(), element.getToframe(),LocalDate.now()+" "+ LocalTime.now(),element.getWaitid(),element.getWaitvalue(),user,vid,eid}));
+
+        }else {
+            return   jdbcTemplate.update("UPDATE \"element\" SET  \"num\"=?,\"isframe\"=?,   \"locationMethod\"=?, \"value\"=?, \"name\"=?, \"topage\"=?, \"toframe\"=?,  \"lastupdatetime\"=?, \"updater\"=?, \"waitid\"=?, \"waitvalue\"=? WHERE (\"id\"=?)",
+                    mycode.prase(new Object[]{element.getNum(),element.getIsframe(),element.getLocationMethod(),element.getValue(),element.getName(),element.getTopage(), element.getToframe(),LocalDate.now()+" "+ LocalTime.now(),user,element.getWaitid(),element.getWaitvalue(),eid}));
+        }
+
+
 
 
     }
