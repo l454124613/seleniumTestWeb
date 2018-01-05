@@ -1148,6 +1148,11 @@ String getcase(@PathVariable String tid,@PathVariable String all,@PathVariable S
 
         if(n==1){
                    if(map4thread.containsKey(tid)){
+                       if(map4thread.get(tid)==null){
+                           map4thread.remove(tid);
+                           map4thread.put(tid, caseService.startrun(tid));
+                           map4thread.get(tid).start();
+                       } else
                        if(map4thread.get(tid).isAlive()){
 
                        }else {
@@ -1571,13 +1576,13 @@ int num=configService.clearisused();
      * @return
      */
     @RequestMapping("/addstep")
-    String addstep( String step,String pagename,String catid,String cid,String value,String eid,String ename){
+    String addstep( String step,String pagename,String catid,String cid,String value,String eid,String ename,String vid){
 if(step.isEmpty()||pagename.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmpty()||ename.isEmpty()){
     return "{\"isok\":1,\"msg\":\"参数获取不全\",\"to\":\"/\"}";
 }else {
 
 
-    int  a   =  itemService.addStep(step,pagename,catid,cid,value,eid,ename);
+    int  a   =  caseService.addStep(step,pagename,catid,cid,value,eid,ename,vid);
 //    new Thread(new Runnable() {
 //        @Override
 //        public void run() {
@@ -1607,13 +1612,13 @@ if(step.isEmpty()||pagename.isEmpty()||catid.isEmpty()||cid.isEmpty()||eid.isEmp
      * @return
      */
     @RequestMapping("/fixstep")
-    String fixstep( String id,String pagename,String catid,String value,String eid,String ename){
+    String fixstep( String id,String pagename,String catid,String value,String eid,String ename,String vid){
         if(id.isEmpty()||pagename.isEmpty()||catid.isEmpty()||eid.isEmpty()||ename.isEmpty()){
             return "{\"isok\":1,\"msg\":\"参数获取不全\",\"to\":\"/\"}";
         }else {
 
 
-            int  a   =  itemService.updateStep(id,pagename,catid,value,eid,ename);
+            int  a   =  caseService.updateStep(id,pagename,catid,value,eid,ename,vid);
 
 
 

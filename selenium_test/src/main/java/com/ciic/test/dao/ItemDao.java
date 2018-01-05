@@ -226,7 +226,7 @@ n*=jdbcTemplate.update("INSERT INTO case_version (\"id\", \"chid\", \"cid\", \"s
 
     }
 
-    @Override
+    @Override@Deprecated
     public int addStep(String step, String type, String catid, String cid, String value, String eid, String ename) {
      int a=    jdbcTemplate.update("INSERT INTO \"step\" ( \"pagename\", \"step\", \"catid\",  \"cid\", \"value\", \"eid\", \"ename\") VALUES (?,?,?,?,?,?,?);",mycode.prase(new Object[]{type,step,catid,cid,value,eid,ename}));
         if(a==1){
@@ -239,7 +239,17 @@ n*=jdbcTemplate.update("INSERT INTO case_version (\"id\", \"chid\", \"cid\", \"s
     }
 
     @Override
-    public int updateStep(String id, String type, String catid, String value, String eid, String ename) {
+    @Deprecated
+    public int updateStep(String id, String type, String catid, String value, String eid, String ename,String vid) {
+        List<tmp> lt=jdbcTemplate.query("select isnew value,id value2 from case_version LEFT JOIN step on step.cid =case_version.cid where step.id=? and chid=? and isused=1",new Object[]{id,vid},new BeanPropertyRowMapper<>(tmp.class));
+        if(lt.size()==0){
+            return  0;
+        }
+        if(lt.get(0).getValue().equals("0")){
+
+        }
+
+
          return jdbcTemplate.update("UPDATE \"step\" SET  \"pagename\"=?, \"catid\"=?,   \"value\"=?, \"eid\"=?, \"ename\"=? WHERE (\"id\"=?)",mycode.prase(new Object[]{type,catid,value,eid,ename,id}));
 
     }

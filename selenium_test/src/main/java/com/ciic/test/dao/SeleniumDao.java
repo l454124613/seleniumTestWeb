@@ -82,7 +82,7 @@ private String picPath;
 
 
     @Override
-    public void run(String tid,String seriesid) {
+    public void run(String tid,String seriesid,String type) {
         //获得用例列表
         init(seriesid);
         //循环运行
@@ -115,9 +115,9 @@ private String picPath;
                 runStep(seriesid,driver,tid,caseListId,nowCaseresid,caseid);
 
                 updateCaseListRes("1",caseListId);
-
+                setStatus4case(type,"3");
             } catch (NoSuchElementException e) {
-                e.printStackTrace();
+               setStatus4case(type,"4");
                 System.out.println("fail");
                 screenShot(driver[0],nowCaseresid[0],seriesid,caseListId,null,true);
                 updateCaseresRes("2",e.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
@@ -141,7 +141,7 @@ private String picPath;
                 }
             }
             catch (UnhandledAlertException e){
-
+                setStatus4case(type,"4");
                 System.out.println("fail");
                 driver[0].switchTo().alert().accept();
                 screenShot(driver[0],nowCaseresid[0],seriesid,caseListId,null,true);
@@ -166,7 +166,7 @@ private String picPath;
                 }
             }catch (InterruptedException e2){
                 System.out.println("fail");
-
+                setStatus4case(type,"4");
 
                 updateCaseresRes("2",e2.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
                 updateCaseListRes("2",caseListId);
@@ -175,7 +175,7 @@ private String picPath;
                 break;
             }catch (MyException e3){
                 System.out.println("fail");
-
+                setStatus4case(type,"4");
 
                // updateCaseresRes("2",e2.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid);
                 updateCaseListRes("2",caseListId);
@@ -203,7 +203,7 @@ private String picPath;
             }
             catch (Exception e1){
                 System.out.println("warn");
-
+                setStatus4case(type,"4");
                 e1.printStackTrace();
                 updateCaseListRes("3",caseListId);
                 updateCaseresRes("3",e1.getLocalizedMessage().replace("\n","<br>").replace("(","%21").replace(")","%22").replace("{","%23").replace("}","%24").replace("\"","%25").replace("'","%26").replace("\\","\\\\"),nowCaseresid[0]);
@@ -505,6 +505,11 @@ public void test(String cid) {
     public void stopHttpCase(Http4res[] http4res,String rid) {
         this.http4res=http4res;
         setIshttpStop(true,rid);
+    }
+
+    @Override
+    public void setStatus4case(String cvid, String status) {
+        jdbcTemplate.update("update case_version set status=? where id=?",new Object[]{status,cvid});
     }
 
 

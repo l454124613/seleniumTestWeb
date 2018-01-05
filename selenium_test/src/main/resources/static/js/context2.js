@@ -2568,7 +2568,8 @@ function fixstep(a) {
 
             value:inv=="no"?"":inv,
             eid:ev,
-            ename:evn
+            ename:evn,
+            vid:common.vid
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
@@ -2603,7 +2604,8 @@ function addstep(a) {
             cid:cid,
             value:inv=="no"?"":inv,
             eid:ev,
-            ename:evn
+            ename:evn,
+            vid:common.vid
         },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
 
@@ -3154,7 +3156,7 @@ if(cba==a){
             for(var i=0;i<ccs.length;i++){
                 var guodu=ccs[i].id+",'"+ccs[i].name+"'";
                 var guodu1=ccs[i].id+",'"+ccs[i].name+"',"+ccs[i].type;
-                var guodu2=ccs[i].id+",'"+ccs[i].name+"',"+ccs[i].status;
+                var guodu2=ccs[i].id+",'"+ccs[i].name+"',"+ccs[i].status+","+ccs[i].cvid;
                 var aac=ccs[i].id+",'"+ccs[i].name+"','"+ccs[i].des+"',"+ccs[i].important+','+ccs[i].type;
                 var istype=ccs[i].type=='1';
                 var stat='';
@@ -4561,7 +4563,7 @@ function addcids(b) {
                   re+="    <div class=\"item\" data-value=\""+cc[i].id+"\">"+cc[i].name+"</div>";
 
               }
-              re+="<div class=\"item\" data-value=\"-1\">总库</div>";
+
               $('#casehomemenu2').html(re);
               
           });
@@ -4985,7 +4987,7 @@ function shuatestcase(type,a) {
             }
         });
     }else {
-        $.get('/getcase/2/t'+type+'/'+vid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        $.get('/getcase/2/'+common.tid+'/'+type,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             if(o.isok!=0){
                 alertf(o.msg);

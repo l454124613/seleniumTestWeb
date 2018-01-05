@@ -56,8 +56,8 @@ return list;
                 return  jdbcTemplate.query("SELECT case_version.id cvid,caselist.id id, status, name, des, important, type, label from case_version LEFT JOIN caselist on caselist.id=case_version.cid where case_version.isused=1 and tid=? and chid=?" ,mycode.prase(new Object[]{tid,vid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
 
             }else {
-                //TODO
-                return  jdbcTemplate.query("select * from caselist where tid=? and isused=1 and ispass=1" ,mycode.prase(new Object[]{tid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
+
+                return  jdbcTemplate.query("SELECT * FROM case_version LEFT JOIN caselist on caselist.id=case_version.cid where chid=? and tid=? and isused=1 and status=2" ,mycode.prase(new Object[]{vid,tid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
 
             }
 
@@ -86,6 +86,36 @@ return list;
            return  jdbcTemplate.update("UPDATE \"caselist\" SET  \"name\"=?, \"des\"=?, \"important\"=?  WHERE (\"id\"=?)",mycode.prase(new Object[]{name,des,important,id}));
 
 
+
+    }
+
+    @Override
+    public int addStep(String step, String type, String catid, String cid, String value, String eid, String ename,String vid) {
+        //TODO
+        int a=    jdbcTemplate.update("INSERT INTO \"step\" ( \"pagename\", \"step\", \"catid\",  \"cid\", \"value\", \"eid\", \"ename\") VALUES (?,?,?,?,?,?,?);",mycode.prase(new Object[]{type,step,catid,cid,value,eid,ename}));
+        jdbcTemplate.update("INSERT INTO case_version ( \"chid\", \"cid\", \"status\", \"isused\", \"isnew\", \"baseid\") VALUES ( 26, 55, 1, 1, 1, 55)");
+
+        if(a==1){
+            return jdbcTemplate.update("INSERT INTO \"exp\" (\"type\", \"a\", \"b\", \"c\", \"d\", \"e\",  \"sid\") VALUES (4, -1, -1, -1, -1, -1, (SELECT max(id) from step where isused=1 and cid=? and eid=?) )",mycode.prase(new Object[]{cid,eid}));
+
+        }else {
+            return 0;
+        }
+
+    }
+
+    @Override
+    public int updateStep(String id, String type, String catid, String value, String eid, String ename,String vid) {
+        List<tmp3> lt=jdbcTemplate.query("select isnew value1,id value2,cid value3 from case_version LEFT JOIN step on step.cid =case_version.cid where step.id=? and chid=? and isused=1",new Object[]{id,vid},new BeanPropertyRowMapper<>(tmp3.class));
+        if(lt.size()==0){
+            return  0;
+        }
+        if(lt.get(0).getValue1().equals("0")){
+            id=newVer4Case(lt.get(0).getValue3(),lt.get(0).getValue2(),vid,"-1");
+        }
+        seleniumService.setStatus4case(lt.get(0).getValue2(),"1");
+
+        return jdbcTemplate.update("UPDATE \"step\" SET  \"pagename\"=?, \"catid\"=?,   \"value\"=?, \"eid\"=?, \"ename\"=? WHERE (\"id\"=?)",mycode.prase(new Object[]{type,catid,value,eid,ename,id}));
 
     }
 
@@ -390,10 +420,11 @@ return "0";
 
     @Override
     public int addRunCase(String series,String cids,String tid,String type,String uid) {
-        if(type.equals("1")){
-            return jdbcTemplate.update("INSERT INTO \"series\" ( \"series\", \"cids\",  \"status\",   \"tid\", \"type\", \"ordertime\",uid) VALUES (?, ?, '1',?,?, '"+ LocalDate.now()+" "+ LocalTime.now()+"',?)",mycode.prase(new Object[]{series,cids,tid,type,uid}));
-        }else {
+        if(type.equals("-1")){
             return jdbcTemplate.update("INSERT INTO \"series\" ( \"series\", \"cids\",   \"tid\", \"type\", \"ordertime\",uid) VALUES (?, ?, ?,?, '"+ LocalDate.now()+" "+ LocalTime.now()+"',?)",mycode.prase(new Object[]{series,cids,tid,type,uid}));
+        }else {
+            return jdbcTemplate.update("INSERT INTO \"series\" ( \"series\", \"cids\",  \"status\",   \"tid\", \"type\", \"ordertime\",uid) VALUES (?, ?, '1',?,?, '"+ LocalDate.now()+" "+ LocalTime.now()+"',?)",mycode.prase(new Object[]{series,cids,tid,type,uid}));
+
         }
 
     }
@@ -745,11 +776,16 @@ private void map2Sql(Map<String,Set<String>> map,String tid){
         List<Series> ls=   jdbcTemplate.query("SELECT * from series where isused=1 and status=1  and tid =? order by ordertime",new Object[]{tid},new BeanPropertyRowMapper<Series>(Series.class));
           //获得第一个
             Series series= ls.get(0);
+
             //获得用例
             String cids=series.getCids();
         try {
             //用例优化排序
             orderCases(cids,tid,series.getId());
+
+            //设置用例调试模式
+            seleniumService.setStatus4case(series.getType(),"2");
+
 
 
 
@@ -760,13 +796,16 @@ private void map2Sql(Map<String,Set<String>> map,String tid){
               //运行脚本
 
 
-            seleniumService.run(tid,series.getId());
+            seleniumService.run(tid,series.getId(),series.getType());
         } catch (Exception e) {
             updateOneseriesStatus("4","",series.getId());
+            seleniumService.setStatus4case(series.getType(),"4");
         }
         //修改当前系列运行结束
         if(series.getId().equals(seidStop)){
             updateOneseriesStatus("5","",series.getId());
+            seleniumService.setStatus4case(series.getType(),"1");
+
         }else {
             updateOneseriesStatus("3","",series.getId());
         }
@@ -789,10 +828,12 @@ private void map2Sql(Map<String,Set<String>> map,String tid){
 
     }
 
+
+
 void addCase2res(String cid,String seriesid,String[] precids) throws Exception {
     List<tmp> lt= jdbcTemplate.query("select type value from caselist where id="+cid ,new BeanPropertyRowMapper<tmp>(tmp.class));
     if( lt.get(0).getValue().equals("1")){
-        int a= jdbcTemplate.update("INSERT INTO \"casereslist\" ( \"cid\", \"res\", \"runnum\", \"allnum\", \"cname\", \"cdes\", \"seriesid\", \"status\") SELECT caselist.id cid,-1 res,0 runnum,count(step.id) allnum,name cname,des cdes, "+seriesid+" seriesid,0 from caselist join step on step.cid=caselist.id  where  step.isused=1 and  caselist.isused=1 and caselist.id="+cid);
+        int a= jdbcTemplate.update("INSERT INTO \"casereslist\" ( \"cid\", \"res\", \"runnum\", \"allnum\", \"cname\", \"cdes\", \"seriesid\", \"status\") SELECT caselist.id cid,-1 res,0 runnum,count(step.id) allnum,name cname,des cdes, "+seriesid+" seriesid,0 from caselist join step on step.cid=caselist.id  where  step.isused=1  and caselist.id="+cid);
         if(a>0){
             lt= jdbcTemplate.query("select id value from casereslist where cid="+cid+" and seriesid = "+seriesid +" order by id desc",new BeanPropertyRowMapper<tmp>(tmp.class));
             for (int i = 0; i <precids.length ; i++) {
@@ -815,7 +856,7 @@ void addCase2res(String cid,String seriesid,String[] precids) throws Exception {
         }
 
     }else {
-        int a=    jdbcTemplate.update("INSERT INTO \"casereslist\" ( \"cid\", \"res\", \"runnum\", \"allnum\", \"cname\", \"cdes\", \"seriesid\", \"status\") SELECT cid,'-1' res,'0' runnum,'1' allnum, name cname,des cdes,'"+seriesid+"' seriesid,0 status from caselist join httpcase on httpcase.cid=caselist.id where   caselist.isused=1  and  caselist.id="+cid);
+        int a=    jdbcTemplate.update("INSERT INTO \"casereslist\" ( \"cid\", \"res\", \"runnum\", \"allnum\", \"cname\", \"cdes\", \"seriesid\", \"status\") SELECT cid,'-1' res,'0' runnum,'1' allnum, name cname,des cdes,'"+seriesid+"' seriesid,0 status from caselist join httpcase on httpcase.cid=caselist.id where     caselist.id="+cid);
         if(a>0){
             lt= jdbcTemplate.query("select id value from casereslist where cid="+cid+" and seriesid = "+seriesid +" order by id desc",new BeanPropertyRowMapper<tmp>(tmp.class));
             for (int i = 0; i <precids.length ; i++) {

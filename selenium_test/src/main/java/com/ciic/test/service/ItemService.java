@@ -36,7 +36,7 @@ public interface ItemService {
     String getItemUrl(String tid);
     List<Step> getStep(String cid);
     int addStep(String step,String type,String catid,String cid,String value,String eid,String ename);
-    int updateStep(String id ,String type,String catid,String value,String eid,String ename);
+    int updateStep(String id ,String type,String catid,String value,String eid,String ename,String vid);
 
 
 }

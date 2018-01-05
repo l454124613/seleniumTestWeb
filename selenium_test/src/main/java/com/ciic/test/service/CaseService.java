@@ -43,8 +43,8 @@ int updateExp(String type,String sid,String a,String b,String c,String d,String 
 
 List<Precondition> getPrecondition(String cid);
 int updatePrecondition(String type,String cid ,String a,String b,String c,String vid);
-
-
+    int addStep(String step, String type, String catid, String cid, String value, String eid, String ename,String vid);
+    int updateStep(String id, String type, String catid, String value, String eid, String ename,String vid);
 
 //run
 
