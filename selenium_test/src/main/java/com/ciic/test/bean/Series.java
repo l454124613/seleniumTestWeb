@@ -13,6 +13,7 @@ public class Series {
     private String etime;
     private String series;
     private String ordertime;
+    private String vid;
 
     @Override
     public String toString() {
@@ -35,8 +36,18 @@ public class Series {
                 .append(series).append('\"');
         sb.append(",\"ordertime\":\"")
                 .append(ordertime).append('\"');
+        sb.append(",\"vid\":\"")
+                .append(vid).append('\"');
         sb.append('}');
         return sb.toString();
+    }
+
+    public String getVid() {
+        return vid;
+    }
+
+    public void setVid(String vid) {
+        this.vid = vid;
     }
 
     public String getOrdertime() {

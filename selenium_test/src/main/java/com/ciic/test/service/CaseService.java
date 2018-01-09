@@ -23,7 +23,7 @@ int addCase(String name ,String des,String important,String tid,String type,Stri
 
 List<CaseInfo> getOnecase(String id);
 
-int removeStep(String id);
+int removeStep(String id,String vid);
 
 String getPid(String sid);
 String getTopage(String sid);
@@ -59,7 +59,7 @@ int updatePrecondition(String type,String cid ,String a,String b,String c,String
 //
 //    List<Caseres> getCaseres(String cid,String type,String series);
 
-    int addRunCase(String series,String cids,String tid,String type,String uid);
+    int addRunCase(String series,String cids,String tid,String type,String uid,String vid);
     List<Series> getOneSeries(String series, String tid);
     List<Series> getFinishSeries(String series);
 

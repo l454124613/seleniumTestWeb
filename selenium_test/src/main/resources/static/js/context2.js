@@ -2532,7 +2532,7 @@ function showexp(a) {
 
 function removestep(a) {
     if (confirm("你确定要删除吗？")) {
-        $.get('/removestep/'+a,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        $.get('/removestep/'+a+'/'+common.vid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
 
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
            shuastep();

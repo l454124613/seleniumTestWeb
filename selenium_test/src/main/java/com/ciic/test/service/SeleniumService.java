@@ -7,7 +7,7 @@ import org.openqa.selenium.WebDriver;
  * Created by lixuecheng on 2017/8/9.
  */
 public interface SeleniumService {
-    void run(String tid ,String seriesid,String type);
+    void run(String tid ,String seriesid,String type,String vid);
     void closeDriver(WebDriver driver);
     void stopRun(String seid);
     void test(String cid);

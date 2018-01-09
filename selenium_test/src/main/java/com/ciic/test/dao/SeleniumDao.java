@@ -82,7 +82,7 @@ private String picPath;
 
 
     @Override
-    public void run(String tid,String seriesid,String type) {
+    public void run(String tid,String seriesid,String type,String vid) {
         //获得用例列表
         init(seriesid);
         //循环运行
@@ -112,7 +112,7 @@ private String picPath;
             try {
 
                 getres(caseListId);
-                runStep(seriesid,driver,tid,caseListId,nowCaseresid,caseid);
+                runStep(seriesid,driver,tid,caseListId,nowCaseresid,caseid,vid);
 
                 updateCaseListRes("1",caseListId);
                 setStatus4case(type,"3");
@@ -335,7 +335,7 @@ if(isok){
 
     }
 
-    private  void  runStep(String seriesid,WebDriver[] driver,String tid,String caseListId,String[] nowCaseresid,String caseid) throws Exception {
+    private  void  runStep(String seriesid,WebDriver[] driver,String tid,String caseListId,String[] nowCaseresid,String caseid,String vid) throws Exception {
         for (int j = 0; j <ls.size() ; j++) {
             if(seidStop.equals(seriesid)){
                 throw new InterruptedException("运行被中断");
@@ -369,14 +369,14 @@ if(isok){
                         driver[0]= startDriver(tid );
                     }
                     Step step = getStep(sid);
-                    Element element = getElement(step.getEid());
+                    Element element = getElement(step.getEid(),vid);
                     WebElement webElement ;//未修改提示框//TODO
                     if(!isWin.equals("0")){
 
-                      webElement=  toWindow(driver[0],isWin,element);
+                      webElement=  toWindow(driver[0],isWin,element,vid);
                         isWin="0";
                     }else {
-                        webElement=element2Web(element, driver[0],false);
+                        webElement=element2Web(element, driver[0],false,vid);
                     }
                     screenShot(driver[0], nowCaseresid[0], seriesid, caseListId, webElement, false);                    //截图
                     action(webElement, step.getCatid(), driver[0], step.getValue());
@@ -403,8 +403,8 @@ if(isok){
                        if(le.size()==1){
                            nowCaseresid[0]= lt6.get(0).getValue();
                             switch (le.get(0).getType()){
-                                case "1": Element element2 = getElement(le.get(0).getB().split(":")[0]);
-                                WebElement webElement2 = element2Web(element2, driver[0],false);
+                                case "1": Element element2 = getElement(le.get(0).getB().split(":")[0],vid);
+                                WebElement webElement2 = element2Web(element2, driver[0],false,vid);
                                 screenShot(driver[0], lt6.get(0).getValue(), seriesid, caseListId, webElement2, false);
                                 Object o1=action(webElement2, le.get(0).getC(), driver[0], "");
                                 boolean res=false;
@@ -1068,8 +1068,9 @@ if(ly.size()==0){
 throw new NoSuchElementException("元素等不到");
     }
 
-    private Element getElement(String eid){
-      return  jdbcTemplate.query("select * from element where id ="+eid,new BeanPropertyRowMapper<>(Element.class)).get(0);
+    private Element getElement(String eid ,String vid ){
+
+      return  jdbcTemplate.query("SELECT max(id) aasd,* FROM element where vid<=? and baseid=?",new Object[]{vid,eid},new BeanPropertyRowMapper<>(Element.class)).get(0);
     }
 
     private void screenShot(WebDriver driver,String resid,String seriesid,String listid ,WebElement element,boolean iserr){
@@ -1094,9 +1095,9 @@ throw new NoSuchElementException("元素等不到");
 
     }
 
-    private WebElement element2Web(Element element,WebDriver driver,boolean isToWin) throws NoSuchElementException {
+    private WebElement element2Web(Element element,WebDriver driver,boolean isToWin,String vid) throws NoSuchElementException {
         if(!element.getToframe().equals("-1")){
-            driver.switchTo().frame(element2Web(getElement(element.getToframe()),driver,false));
+            driver.switchTo().frame(element2Web(getElement(element.getToframe(),vid),driver,false,vid));
         }
         //0:id;1:name;2:tagname;3:linktext;4:classname;5:xpath;6:css;
         WebElement webElement=null;
@@ -1325,7 +1326,7 @@ private boolean exist(WebElement webElement){
 
 
 
-    public WebElement toWindow(WebDriver driver,String topage,Element element) {
+    public WebElement toWindow(WebDriver driver,String topage,Element element,String vid) {
         String title=getTitle(topage);
         try {
             Thread.sleep(2000);
@@ -1336,13 +1337,13 @@ private boolean exist(WebElement webElement){
         if(title.substring(0,2).equals("..")||title.substring(0,2).equals("。。")){
 
             driver=  driver.switchTo().window(aa[0]);
-            return element2Web(element, driver,false);
+            return element2Web(element, driver,false,vid);
         }
         Set<String> set= driver.getWindowHandles();
 
         if(set.size()==1){
             driver=  driver.switchTo().window(aa[0]);
-            return element2Web(element, driver,false);
+            return element2Web(element, driver,false,vid);
         }
 
 
@@ -1352,7 +1353,7 @@ private boolean exist(WebElement webElement){
             //System.out.println(driver1.getCurrentUrl());
             if(driver1.getTitle().equalsIgnoreCase(title)){
 
-                if(exist(element2Web(element, driver1,true))){
+                if(exist(element2Web(element, driver1,true,vid))){
                     aa[0] =s1;
                     break;
 
@@ -1360,7 +1361,7 @@ private boolean exist(WebElement webElement){
 
             }else {
 
-                if(exist(element2Web(element, driver1,true))){
+                if(exist(element2Web(element, driver1,true,vid))){
                     aa[0] =s1;
                     break;
 
@@ -1375,7 +1376,7 @@ private boolean exist(WebElement webElement){
 
 
              driver=  driver.switchTo().window(aa[0]);
-        return element2Web(element, driver,false);
+        return element2Web(element, driver,false,vid);
 
     }
 

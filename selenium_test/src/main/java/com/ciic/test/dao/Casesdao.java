@@ -91,10 +91,16 @@ return list;
 
     @Override
     public int addStep(String step, String type, String catid, String cid, String value, String eid, String ename,String vid) {
-        //TODO
+        List<tmp> lt=jdbcTemplate.query("select isnew value,id value2 from case_version where cid=? and chid=? and isused=1",new Object[]{cid,vid},new BeanPropertyRowMapper<>(tmp.class));
+        if(lt.size()==0){
+            return  0;
+        }
+        if(lt.get(0).getValue().equals("0")){
+            cid=newVer4Case(cid,lt.get(0).getValue2(),vid,"-1");
+        }
         int a=    jdbcTemplate.update("INSERT INTO \"step\" ( \"pagename\", \"step\", \"catid\",  \"cid\", \"value\", \"eid\", \"ename\") VALUES (?,?,?,?,?,?,?);",mycode.prase(new Object[]{type,step,catid,cid,value,eid,ename}));
-        jdbcTemplate.update("INSERT INTO case_version ( \"chid\", \"cid\", \"status\", \"isused\", \"isnew\", \"baseid\") VALUES ( 26, 55, 1, 1, 1, 55)");
-
+        //jdbcTemplate.update("INSERT INTO case_version ( \"chid\", \"cid\", \"status\", \"isused\", \"isnew\", \"baseid\") VALUES ( ?, ?, 1, 1, 1, 55)");
+        seleniumService.setStatus4case(lt.get(0).getValue2(),"1");
         if(a==1){
             return jdbcTemplate.update("INSERT INTO \"exp\" (\"type\", \"a\", \"b\", \"c\", \"d\", \"e\",  \"sid\") VALUES (4, -1, -1, -1, -1, -1, (SELECT max(id) from step where isused=1 and cid=? and eid=?) )",mycode.prase(new Object[]{cid,eid}));
 
@@ -111,9 +117,9 @@ return list;
             return  0;
         }
         if(lt.get(0).getValue1().equals("0")){
-            id=newVer4Case(lt.get(0).getValue3(),lt.get(0).getValue2(),vid,"-1");
+            newVer4Case(lt.get(0).getValue3(),lt.get(0).getValue2(),vid,"-1");
         }
-        seleniumService.setStatus4case(lt.get(0).getValue2(),"1");
+
 
         return jdbcTemplate.update("UPDATE \"step\" SET  \"pagename\"=?, \"catid\"=?,   \"value\"=?, \"eid\"=?, \"ename\"=? WHERE (\"id\"=?)",mycode.prase(new Object[]{type,catid,value,eid,ename,id}));
 
@@ -146,11 +152,12 @@ return list;
        if(lt3.get(0).getValue2().equals("1")){
            jdbcTemplate.update("delete from exp where sid in (select id from step where cid=?)",new Object[]{id1});
            jdbcTemplate.update("delete from step where cid=?",new Object[]{id1});
+           jdbcTemplate.update("update step set cid="+id1+" where cid="+id);
 
-
-           jdbcTemplate.update("INSERT INTO \"step\" ( \"pagename\", \"step\", \"catid\", \"catname\", \"cid\", \"value\", \"eid\", \"ename\", \"isused\", \"expid\") SELECT pagename, step, catid, catname, \""+id1+"\", value, eid, ename, isused, expid from step where cid=?",new Object[]{id});
+           jdbcTemplate.update("INSERT INTO \"step\" ( \"pagename\", \"step\", \"catid\", \"catname\", \"cid\", \"value\", \"eid\", \"ename\", \"isused\", \"expid\") SELECT pagename, step, catid, catname, \""+id+"\", value, eid, ename, isused, expid from step where cid=?",new Object[]{id1});
            jdbcTemplate.update("INSERT INTO \"exp\" ( \"type\", \"a\", \"b\", \"c\", \"d\", \"e\", \"isused\", \"sid\") SELECT o.type ,o.a,o.b,o.c,o.d,o.e,o.isused,u2.id sid from exp o LEFT JOIN step u on u.id=o.sid LEFT JOIN step u2 on u.step=u2.step where u.cid=? and u2.cid=?",new Object[]{id,id1});
-           List<tmp> ltt=jdbcTemplate.query("select count(1) value from step where cid ="+id1,new BeanPropertyRowMapper<>(tmp.class));
+
+           List<tmp> ltt=jdbcTemplate.query("select count(1) value from step where isused=1 and  cid ="+id1,new BeanPropertyRowMapper<>(tmp.class));
            if(ltt.get(0).getValue().equals("0")){
                st="-1";
            }
@@ -158,9 +165,10 @@ return list;
            jdbcTemplate.update("delete from httpcase where cid=?",new Object[]{id1});
 
            jdbcTemplate.update("INSERT INTO \"httpcase\" ( \"con\", \"time\", \"isused\", \"cid\") SELECT con,time,isused,? from httpcase where cid=?",new Object[]{id1,id});
-           List<tmp> ltt=jdbcTemplate.query("select count(1) value from httpcase where cid ="+id1,new BeanPropertyRowMapper<>(tmp.class));
+           List<tmp> ltt=jdbcTemplate.query("select count(1) value from httpcase where   cid ="+id1,new BeanPropertyRowMapper<>(tmp.class));
            if(ltt.get(0).getValue().equals("0")){
                st="-1";
+
            }
        }
 
@@ -218,8 +226,20 @@ return list;
     }
 
     @Override
-    public int removeStep(String id) {
-      return   jdbcTemplate.update("update step set isused=0 where id=?",mycode.prase(new Object[]{id}));
+    public int removeStep(String id,String vid) {
+        List<tmp3> lt=jdbcTemplate.query("select isnew value1,id value2,cid value3 from case_version LEFT JOIN step on step.cid =case_version.cid where step.id=? and chid=? and isused=1",new Object[]{id,vid},new BeanPropertyRowMapper<>(tmp3.class));
+        if(lt.size()==0){
+            return  0;
+        }
+
+        if(lt.get(0).getValue1().equals("0")){
+            newVer4Case(lt.get(0).getValue3(),lt.get(0).getValue2(),vid,"-1");
+        }
+
+
+
+
+        return   jdbcTemplate.update("update step set isused=0 where id=?",mycode.prase(new Object[]{id}));
     }
 
     @Override
@@ -419,11 +439,11 @@ return "0";
 //    }
 
     @Override
-    public int addRunCase(String series,String cids,String tid,String type,String uid) {
+    public int addRunCase(String series,String cids,String tid,String type,String uid,String vid) {
         if(type.equals("-1")){
-            return jdbcTemplate.update("INSERT INTO \"series\" ( \"series\", \"cids\",   \"tid\", \"type\", \"ordertime\",uid) VALUES (?, ?, ?,?, '"+ LocalDate.now()+" "+ LocalTime.now()+"',?)",mycode.prase(new Object[]{series,cids,tid,type,uid}));
+            return jdbcTemplate.update("INSERT INTO \"series\" ( \"series\", \"cids\",   \"tid\", \"type\", \"ordertime\",uid,vid) VALUES (?, ?, ?,?, '"+ LocalDate.now()+" "+ LocalTime.now()+"',?,?)",mycode.prase(new Object[]{series,cids,tid,type,uid,vid}));
         }else {
-            return jdbcTemplate.update("INSERT INTO \"series\" ( \"series\", \"cids\",  \"status\",   \"tid\", \"type\", \"ordertime\",uid) VALUES (?, ?, '1',?,?, '"+ LocalDate.now()+" "+ LocalTime.now()+"',?)",mycode.prase(new Object[]{series,cids,tid,type,uid}));
+            return jdbcTemplate.update("INSERT INTO \"series\" ( \"series\", \"cids\",  \"status\",   \"tid\", \"type\", \"ordertime\",uid,vid) VALUES (?, ?, '1',?,?, '"+ LocalDate.now()+" "+ LocalTime.now()+"',?,?)",mycode.prase(new Object[]{series,cids,tid,type,uid,vid}));
 
         }
 
@@ -796,7 +816,7 @@ private void map2Sql(Map<String,Set<String>> map,String tid){
               //运行脚本
 
 
-            seleniumService.run(tid,series.getId(),series.getType());
+            seleniumService.run(tid,series.getId(),series.getType(),series.getVid());
         } catch (Exception e) {
             updateOneseriesStatus("4","",series.getId());
             seleniumService.setStatus4case(series.getType(),"4");

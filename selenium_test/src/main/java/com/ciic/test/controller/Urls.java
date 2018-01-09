@@ -1111,13 +1111,13 @@ String getcase(@PathVariable String tid,@PathVariable String all,@PathVariable S
      * @param session
      * @return
      */
-    @RequestMapping("/testcase/{cid}/{tid}/{name}/{cvid}")
-    String testCase(@PathVariable String cid,@PathVariable String tid,@PathVariable String name,HttpSession session,@PathVariable String cvid){
+    @RequestMapping("/testcase/{cid}/{tid}/{name}/{cvid}/{vid}")
+    String testCase(@PathVariable String cid,@PathVariable String tid,@PathVariable String name,HttpSession session,@PathVariable String cvid,@PathVariable String vid){
         int n=0;
         List<Series> ls=    caseService.getOneSeries(name+"调试",tid);
 
         if(ls.size()==0){
-         n=   caseService.addRunCase(name+"调试",cid,tid,cvid,session.getAttributeNames().nextElement());
+         n=   caseService.addRunCase(name+"调试",cid,tid,cvid,session.getAttributeNames().nextElement(),vid);
 
         }else{
             boolean hasCid=false;
@@ -1134,7 +1134,7 @@ String getcase(@PathVariable String tid,@PathVariable String all,@PathVariable S
             if(hasCid){
                 return "{\"isok\":1,\"msg\":\"已有相同调试在运行或等待运行，请在进度中查看\",\"to\":\"/\"}";
             }else {
-                n=   caseService.addRunCase(name+"调试",cid,tid,cvid,session.getAttributeNames().nextElement());
+                n=   caseService.addRunCase(name+"调试",cid,tid,cvid,session.getAttributeNames().nextElement(),vid);
 
 
             }
@@ -1188,8 +1188,8 @@ String getcase(@PathVariable String tid,@PathVariable String all,@PathVariable S
      * @return
      */
         @RequestMapping("/addseries")
-    String addSeries( String cids,String tid,String seriesName){
-      int n=  caseService.addRunCase(seriesName,cids,tid,"-1","0");
+    String addSeries( String cids,String tid,String seriesName,String vid){
+      int n=  caseService.addRunCase(seriesName,cids,tid,"-1","0",vid);
 
 
             if(n==1){
@@ -1889,9 +1889,9 @@ if(id.equalsIgnoreCase("0")){
      * @param sid
      * @return
      */
-    @RequestMapping("/removestep/{sid}")
-    String removestep(@PathVariable String sid){
-        int a= caseService.removeStep(sid);
+    @RequestMapping("/removestep/{sid}/{vid}")
+    String removestep(@PathVariable String sid,@PathVariable String vid){
+        int a= caseService.removeStep(sid,vid);
 
         if(a==1){
             return "{\"isok\":0,\"msg\":\"删除成功\",\"to\":\"/\"}";
