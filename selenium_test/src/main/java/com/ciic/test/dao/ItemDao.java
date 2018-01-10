@@ -30,7 +30,7 @@ public class ItemDao implements ItemService{
 if(lt.size()==0){
     return 0;
 }
-n*=jdbcTemplate.update("INSERT INTO case_version (\"id\", \"chid\", \"cid\", \"status\", \"isused\", \"isnew\", \"baseid\") SELECT max(cid) id ,? chid,cid,'1' status,'1' isused,'0' isnew ,baseid aas FROM case_version where  status!= -1 GROUP BY baseid",new Object[]{lt.get(0).getValue()});
+n*=jdbcTemplate.update("INSERT INTO case_version (\"chid\", \"cid\", \"status\", \"isused\", \"isnew\", \"baseid\", \"tid\") SELECT ? chid,cid,'1' status,'1' isused,'0' isnew ,baseid ,tid FROM case_version where  status!= -1 and tid=?  GROUP BY baseid",new Object[]{lt.get(0).getValue(),id});
 
         return n;
 

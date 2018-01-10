@@ -1842,7 +1842,7 @@ function runcase(a,b,c,d) {
             alertf('请添加操作步骤');
             return 1;
         }
-        $.get('/testcase/'+a+"/"+common.tid+"/"+b+'/'+d,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
+        $.get('/testcase/'+a+"/"+common.tid+"/"+b+'/'+d+'/'+common.vid,function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
             var o=$.parseJSON(data); if(o.isok=="3"){location.href='/';return false;}
             alertf(o.msg);
         });
@@ -5057,6 +5057,7 @@ function addtestcase() {
       $.post('/addseries',{
           tid:common.tid,
           cids:aa.join(","),
+          vid:common.vid,
           seriesName:dda.toLocaleDateString()+'-'+dda.getHours()+'-'+dda.getMinutes()+"运行"
 
       },function (data,st) {if(st=="success"){}else {alertf("网站出错，请联系管理员");}
@@ -5151,7 +5152,7 @@ if(b){
         on:'click'
 
     });
-$.GetJSON('/http/'+cid,'version=0.2',function(a){
+$.GetJSON('/http/'+cid+'/'+common.vid,'version=0.2',function(a){
     var b=localStorage.getItem("https"+common.tid+''+cid);
   var   islocal=false;
   var h;

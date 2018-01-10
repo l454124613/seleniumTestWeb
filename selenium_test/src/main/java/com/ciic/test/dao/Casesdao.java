@@ -53,11 +53,11 @@ return list;
     public List<CaseInfo> getcase(String tid,boolean isall,String vid) {
 
             if(isall){
-                return  jdbcTemplate.query("SELECT case_version.id cvid,caselist.id id, status, name, des, important, type, label from case_version LEFT JOIN caselist on caselist.id=case_version.cid where case_version.isused=1 and tid=? and chid=?" ,mycode.prase(new Object[]{tid,vid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
+                return  jdbcTemplate.query("SELECT case_version.id cvid,caselist.id id, status, name, des, important, type, label from case_version LEFT JOIN caselist on caselist.id=case_version.cid where case_version.isused=1 and case_version.tid=? and chid=?" ,mycode.prase(new Object[]{tid,vid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
 
             }else {
 
-                return  jdbcTemplate.query("SELECT * FROM case_version LEFT JOIN caselist on caselist.id=case_version.cid where chid=? and tid=? and isused=1 and status=2" ,mycode.prase(new Object[]{vid,tid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
+                return  jdbcTemplate.query("SELECT * FROM case_version LEFT JOIN caselist on caselist.id=case_version.cid where chid=? and case_version.tid=? and isused=1 and status=3" ,mycode.prase(new Object[]{vid,tid}),new BeanPropertyRowMapper<CaseInfo>(CaseInfo.class));
 
             }
 
@@ -112,7 +112,7 @@ return list;
 
     @Override
     public int updateStep(String id, String type, String catid, String value, String eid, String ename,String vid) {
-        List<tmp3> lt=jdbcTemplate.query("select isnew value1,id value2,cid value3 from case_version LEFT JOIN step on step.cid =case_version.cid where step.id=? and chid=? and isused=1",new Object[]{id,vid},new BeanPropertyRowMapper<>(tmp3.class));
+        List<tmp3> lt=jdbcTemplate.query("select isnew value1,case_version.id value2,case_version.cid value3 from case_version LEFT JOIN step on step.cid =case_version.cid where step.id=? and chid=? and case_version.isused=1 and step.isused=1",new Object[]{id,vid},new BeanPropertyRowMapper<>(tmp3.class));
         if(lt.size()==0){
             return  0;
         }
@@ -206,7 +206,7 @@ return list;
         }else {
             if(n==1){
                 int n2=jdbcTemplate.update("INSERT INTO \"precondition\" ( \"type\", \"a\", \"b\", \"c\",\"cid\") VALUES (4, -1, -1, -1,"+lt.get(0).getValue()+")");
-                n2*=jdbcTemplate.update("INSERT INTO case_version ( \"chid\", \"cid\", \"status\", \"isnew\", \"baseid\") VALUES (?, ?, -1, 1, ?)",new Object[]{vid,lt.get(0).getValue(),lt.get(0).getValue()});
+                n2*=jdbcTemplate.update("INSERT INTO case_version ( \"chid\", \"cid\", \"status\", \"isnew\", \"baseid\", \"tid\") VALUES (?, ?, -1, 1, ?,?)",new Object[]{vid,lt.get(0).getValue(),lt.get(0).getValue(),tid});
                 if(n2==1){
                     return n2;
                 }else {
@@ -508,7 +508,7 @@ return "0";
 
     @Override
     public List<Series> getSeries(String tid,String uid) {
-        return jdbcTemplate.query("select * from series where isused=1 and tid=? and (type=2 or uid=?) order by ordertime desc",new Object[]{tid,uid},new BeanPropertyRowMapper<>(Series.class));
+        return jdbcTemplate.query("select * from series where isused=1 and tid=? and (type=-1 or uid=?) order by ordertime desc",new Object[]{tid,uid},new BeanPropertyRowMapper<>(Series.class));
     }
 
     @Override
@@ -612,11 +612,13 @@ return thread;
 
 
     @Override
-    public int updateHttpCase(HttpCase httpCase) {
+    public int updateHttpCase(HttpCase httpCase,String vid) {
+        //TODO
         String cid=httpCase.getCid();
         List<Tmp1> tmp1=jdbcTemplate.query("select 1 value from httpcase where cid=?",new Object[]{cid},new BeanPropertyRowMapper<Tmp1>(Tmp1.class));
         if(tmp1.size()>0){
          return    jdbcTemplate.update("UPDATE httpcase SET  \"con\"=?, \"time\"=?  WHERE (\"cid\"=? )",new Object[]{httpCase.getCon(),httpCase.getTime(),cid});
+
         }else {
           return   jdbcTemplate.update("INSERT INTO httpcase ( con, time,cid) VALUES (?, ?,?)",new Object[]{httpCase.getCon(),httpCase.getTime(),cid});
         }
@@ -682,7 +684,7 @@ private void map2Sql(Map<String,Set<String>> map,String tid){
 //
 //}
 
-    private void orderCases(String cids,String tid,String seriesid) throws Exception {
+    private void orderCases(String cids,String tid,String seriesid,String vid) throws Exception {
         List<String> ls=new ArrayList<>();//保存非预置条件用例
 
         Set sety=new HashSet();
@@ -801,7 +803,7 @@ private void map2Sql(Map<String,Set<String>> map,String tid){
             String cids=series.getCids();
         try {
             //用例优化排序
-            orderCases(cids,tid,series.getId());
+            orderCases(cids,tid,series.getId(),series.getVid());
 
             //设置用例调试模式
             seleniumService.setStatus4case(series.getType(),"2");

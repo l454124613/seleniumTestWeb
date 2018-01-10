@@ -378,13 +378,13 @@ private Map<String,Thread> map4thread=new HashMap();
     }
 
 
-    @RequestMapping(value="/http/{cid}",method= RequestMethod.POST)
-    Object addhttps(@RequestBody Http4j[] Http4js,@PathVariable String cid){
+    @RequestMapping(value="/http/{cid}/{vid}",method= RequestMethod.POST)
+    Object addhttps(@RequestBody Http4j[] Http4js,@PathVariable String cid,@PathVariable String vid){
         HttpCase httpCase=new HttpCase();
         httpCase.setCid(cid);
         httpCase.setTime(System.currentTimeMillis()+"");
         httpCase.setCon(Arrays.asList(Http4js).toString());
-      int a=  caseService.updateHttpCase(httpCase);
+      int a=  caseService.updateHttpCase(httpCase,vid);
 
 
         if(a==1){

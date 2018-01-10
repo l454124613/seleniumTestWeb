@@ -90,7 +90,7 @@ List<CaseresList> getCaseresList(String seriesid);
 int updateLabel(String id ,String labels);
 
 
-int updateHttpCase(HttpCase httpCase);
+int updateHttpCase(HttpCase httpCase,String vid);
     List<HttpCase> getHttpCase(String cid);
 
     void test(String cid);

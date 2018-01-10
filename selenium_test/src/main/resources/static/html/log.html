@@ -252,7 +252,7 @@ var data2=[];
                             "            <p>运行开始时间："+se1[0].sttime+"</p>\n"+
                             "            <p>运行结束时间："+se1[0].etime+"</p>";
 
-                        if(se1[0].type=='1'){
+                        if(se1[0].type!='-1'){
                             $('#listnum').css('display','none');
                             var re2="";
                             switch (cas1[0].res){

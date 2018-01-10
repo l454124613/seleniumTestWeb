@@ -73,7 +73,7 @@ public class GetPageDao implements GetPageService{
 
     @Override
     public List<Element> getall(String tid,String vid) {
-   return     jdbcTemplate.query("select * from (SELECT max(id) sd1 ,* from element where isused=1 and vid<=? GROUP BY baseid ) a LEFT JOIN (SELECT max(id) a1s ,pagename from page where isused=1 and vid<=?  and tid = ? GROUP BY baseid) b  on a.pid=b.a1s", mycode.prase(new Object[]{vid,vid,tid}),new BeanPropertyRowMapper<Element>(Element.class));
+   return     jdbcTemplate.query("select * from (SELECT max(id) sd1 ,* from element where isused=1 and vid<=? GROUP BY baseid ) a  INNER  JOIN (SELECT max(id) a1s ,pagename,baseid from page where isused=1 and vid<=?  and tid = ? GROUP BY baseid) b  on a.pid=b.baseid", mycode.prase(new Object[]{vid,vid,tid}),new BeanPropertyRowMapper<Element>(Element.class));
 
 
     }
