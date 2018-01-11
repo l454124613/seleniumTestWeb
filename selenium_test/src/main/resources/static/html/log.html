@@ -46,6 +46,7 @@
 <script>
     var rev={su:[],err:[],wa:[],all:[],no:[]};
     var res1;
+    var data2={};
     var textimg="";
     function showres(a) {
         var re3="";
@@ -59,7 +60,10 @@
 //                                    case '3': re3+= "  <div class=\"item\"><i class=\"remove circle outline icon yellow\"></i> "+res1[i].word+"</div>\n";break;
 //                                    case '-1': re3+= "  <div class=\"item\"><i class=\"minus  icon grey\"></i> "+res1[i].word+"</div>\n";break;
 //                                }
-            var func=i+",'"+res1[i].pic+"','"+res1[i].restext+"'";
+
+            var func=i+",'"+res1[i].pic+"'";
+
+            data2['i'+i]=res1[i].restext;
             var ishttp=false;
 
             if(res1[i].word=="接口请求_预置条件"||res1[i].word=="接口请求"){
@@ -79,7 +83,7 @@
             "</ol>";
         $('#context').html(con);
     }
-function getimg(a,b,f,c,d) {
+function getimg(a,b,c,d) {
 
 
     var ca=$('#img'+a).html();
@@ -98,6 +102,7 @@ function getimg(a,b,f,c,d) {
             $('#img'+a).html("<div  id='ff"+a+"'></div>");
 
         }
+        var f=data2['i'+a];
         if(d){
           //  f=f.replace
             f=f.replace(/\r/g,"").replace(/\n/g,"\\n");
@@ -270,8 +275,9 @@ var data2=[];
 //                                    case '-1': re3+= "  <div class=\"item\"><i class=\"minus  icon grey\"></i> "+res1[i].word+"</div>\n";break;
 //                                }
 
-                                var func=i+",'"+res1[i].pic+"','"+s2h(res1[i].restext.replace(/\r/g,"").replace(/\n/g,"\\n"))+"'";
+                                var func=i+",'"+res1[i].pic+"'";
                                 var ishttp=false;
+                                data2['i'+i]=res1[i].restext;
 
 
                                 if(res1[i].word=="接口请求_预置条件"||res1[i].word=="接口请求"){

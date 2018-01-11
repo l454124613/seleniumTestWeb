@@ -613,14 +613,26 @@ return thread;
 
     @Override
     public int updateHttpCase(HttpCase httpCase,String vid) {
-        //TODO
+
         String cid=httpCase.getCid();
+
+        List<tmp3> lt=jdbcTemplate.query("select isnew value1,id value2,cid value3 from case_version where  cid=? and chid=? and isused=1",new Object[]{cid,vid},new BeanPropertyRowMapper<>(tmp3.class));
+        if(lt.size()==0){
+            return  0;
+        }
+
+        if(lt.get(0).getValue1().equals("0")){
+            cid=newVer4Case(lt.get(0).getValue3(),lt.get(0).getValue2(),vid,"-1");
+        }
         List<Tmp1> tmp1=jdbcTemplate.query("select 1 value from httpcase where cid=?",new Object[]{cid},new BeanPropertyRowMapper<Tmp1>(Tmp1.class));
         if(tmp1.size()>0){
+            seleniumService.setStatus4case(lt.get(0).getValue2(),"1");
          return    jdbcTemplate.update("UPDATE httpcase SET  \"con\"=?, \"time\"=?  WHERE (\"cid\"=? )",new Object[]{httpCase.getCon(),httpCase.getTime(),cid});
 
         }else {
-          return   jdbcTemplate.update("INSERT INTO httpcase ( con, time,cid) VALUES (?, ?,?)",new Object[]{httpCase.getCon(),httpCase.getTime(),cid});
+            seleniumService.setStatus4case(lt.get(0).getValue2(),"1");
+
+            return   jdbcTemplate.update("INSERT INTO httpcase ( con, time,cid) VALUES (?, ?,?)",new Object[]{httpCase.getCon(),httpCase.getTime(),cid});
         }
     }
 

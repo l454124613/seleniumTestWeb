@@ -867,14 +867,19 @@ public void test(String cid) {
 //            Process p=   Runtime.getRuntime().exec(aasd,new String[]{filePath+"basetools/run.jmx","-n"});
 
             Process p1= Runtime.getRuntime().exec("cmd /k  start  "+filePath+"basetools/run.bat");
-            while (!ishttpStop||!resid.equals(rid)){
+            int ni=0;
+            while ((!ishttpStop||!resid.equals(rid))&&ni<60){
                 Thread.sleep(1000);
+                ni++;
+
             }
 
             p1.destroy();
             p1=null;
             Runtime.getRuntime().exec("cmd.exe /C start wmic process where name='cmd.exe' call terminate");
-
+if(ni>=60){
+    throw new Exception("等待超时，请检查");
+}
             boolean isok=true;
             for(Http4j http4j:lh4){
                 for (int i = 0; i < http4res.length; i++) {
@@ -940,7 +945,9 @@ public void test(String cid) {
             }
         if(isok){
 
+
             updateCaseresRes("1",Arrays.toString(http4res).replace("\"","\\\"").replace("\n","\\n").replace(" ",""),resid);
+
         }else {
 
             updateCaseresRes("2",Arrays.toString(http4res).replace("\"","\\\"").replace("\n","\\n").replace(" ",""),resid);

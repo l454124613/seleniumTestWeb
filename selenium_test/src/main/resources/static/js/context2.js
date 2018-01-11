@@ -686,7 +686,7 @@ function savehttps() {
     if(isok){
         localStorage.removeItem("https"+common.tid+''+cid);
 
-        $.postJSON('http://localhost:8081/http/'+cid,j2s(data),function(a){
+        $.postJSON('http://localhost:8081/http/'+cid+'/'+common.vid,j2s(data),function(a){
             alertf(a.msg);
         },function(a){
 
@@ -4846,18 +4846,29 @@ function shuaseries() {
 
             seriesold=ses;
         }
+
+
         var s1={one:0,two:0,three:0,four:0};
         var s2={one:"<div class=\"ui segments\">",two:"<div class=\"ui segments\">",three:"<div class=\"ui segments\" id='segment3'>",four:"<div class=\"ui segments\">"};
         if(ses.length>0){
             for(var i=0;i<ses.length;i++){
+                var vv=casever['v'+ses[i].tid];
+                var v2='';
+                for(var j=0;j<vv.length;j++){
+                    if(vv[j].id==ses[i].vid){
+                        v2=vv[j].name;
+                        break;
+                    }
+
+                }
                 switch (ses[i].status){
 
-                    case "0":s1.one++;s2.one+="  <div class=\"ui segment\">  <div class=\"ui right floated small   icon button   circular  \" title='删除' style='margin-top: -4px;' onclick='removeseries("+ses[i].id+")' ><i class=\"remove red icon\"></i></div><div class=\"ui right floated small   icon button   circular  \"  style='margin-top: -4px;'  title='运行' onclick='runseries("+ses[i].id+")' ><i class=\"play  green icon\"></i></div><p>"+ses[i].series+"，创建于："+ses[i].ordertime+"</p>  </div>";break;//<div class=\"ui right floated small   icon button   circular  \"  title='查看' style='margin-top: -4px;' onclick='lookserires()' ><i class=\"search icon \"></i></div><p>"+ses[i].series+"</p>  </div>
-                    case "1":s1.two++;s2.two+="  <div class=\"ui segment\">  <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='暂停' onclick='pauseseries("+ses[i].id+")' ><i class=\"pause icon\"></i></div><p>"+ses[i].series+"，创建于："+ses[i].ordertime+"</p> </div>";break; //<div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' onclick='' ><i class=\"search icon \"></i></div>
-                    case "2":s1.three++;s2.three+="  <div class=\"ui segment ui sticky\"> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' id='openid' title='展开' onclick='openrunseries("+ses[i].id+")' ><i class=\"expand icon \"></i></div><div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='停止' onclick='stopseries("+ses[i].id+")' ><i class=\"stop icon\"></i></div> <p>"+ses[i].series+"，创建于："+ses[i].ordertime+"</p> </div>\n";break;
-                    case "3":s1.four++;s2.four+="  <div class=\"ui segment\"> <div class=\"ui right floated small   icon button   circular  \" title='删除' style='margin-top: -4px;' onclick='removeseries("+ses[i].id+")' ><i class=\"remove red icon\"></i></div> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='查看' onclick='lookruncase("+ses[i].id+")' ><i class=\"record icon \"></i></div> <p>"+ses[i].series+"，创建于："+ses[i].ordertime+"</p> </div>\n";break;
-                    case "4":s1.four++;s2.four+="  <div class=\"ui orange inverted segment\"> <div class=\"ui right floated small   icon button   circular  \" title='删除' style='margin-top: -4px;' onclick='removeseries("+ses[i].id+")' ><i class=\"remove red icon\"></i></div> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='查看' onclick='lookruncase("+ses[i].id+")' ><i class=\"record icon \"></i></div> <p>"+ses[i].series+"，创建于："+ses[i].ordertime+",问题：有用例步骤错误，请检查</p> </div>\n";break;
-                    case "5":s1.four++;s2.four+="  <div class=\"ui yellow inverted segment\"> <div class=\"ui right floated small   icon button   circular  \" title='删除' style='margin-top: -4px;' onclick='removeseries("+ses[i].id+")' ><i class=\"remove red icon\"></i></div> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='查看' onclick='lookruncase("+ses[i].id+")' ><i class=\"record icon \"></i></div> <p>"+ses[i].series+"，创建于："+ses[i].ordertime+",强制停止</p> </div>\n";break;
+                    case "0":s1.one++;s2.one+="  <div class=\"ui segment\">  <div class=\"ui right floated small   icon button   circular  \" title='删除' style='margin-top: -4px;' onclick='removeseries("+ses[i].id+")' ><i class=\"remove red icon\"></i></div><div class=\"ui right floated small   icon button   circular  \"  style='margin-top: -4px;'  title='运行' onclick='runseries("+ses[i].id+")' ><i class=\"play  green icon\"></i></div><p>"+ses[i].series+"，版本："+v2+",创建于："+ses[i].ordertime+"</p>  </div>";break;//<div class=\"ui right floated small   icon button   circular  \"  title='查看' style='margin-top: -4px;' onclick='lookserires()' ><i class=\"search icon \"></i></div><p>"+ses[i].series+"</p>  </div>
+                    case "1":s1.two++;s2.two+="  <div class=\"ui segment\">  <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='暂停' onclick='pauseseries("+ses[i].id+")' ><i class=\"pause icon\"></i></div><p>"+ses[i].series+"，版本："+v2+",创建于："+ses[i].ordertime+"</p> </div>";break; //<div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' onclick='' ><i class=\"search icon \"></i></div>
+                    case "2":s1.three++;s2.three+="  <div class=\"ui segment ui sticky\"> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' id='openid' title='展开' onclick='openrunseries("+ses[i].id+")' ><i class=\"expand icon \"></i></div><div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='停止' onclick='stopseries("+ses[i].id+")' ><i class=\"stop icon\"></i></div> <p>"+ses[i].series+"，版本："+v2+",创建于："+ses[i].ordertime+"</p> </div>\n";break;
+                    case "3":s1.four++;s2.four+="  <div class=\"ui segment\"> <div class=\"ui right floated small   icon button   circular  \" title='删除' style='margin-top: -4px;' onclick='removeseries("+ses[i].id+")' ><i class=\"remove red icon\"></i></div> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='查看' onclick='lookruncase("+ses[i].id+")' ><i class=\"record icon \"></i></div> <p>"+ses[i].series+"，版本："+v2+",创建于："+ses[i].ordertime+"</p> </div>\n";break;
+                    case "4":s1.four++;s2.four+="  <div class=\"ui orange inverted segment\"> <div class=\"ui right floated small   icon button   circular  \" title='删除' style='margin-top: -4px;' onclick='removeseries("+ses[i].id+")' ><i class=\"remove red icon\"></i></div> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='查看' onclick='lookruncase("+ses[i].id+")' ><i class=\"record icon \"></i></div> <p>"+ses[i].series+"，版本："+v2+",创建于："+ses[i].ordertime+",问题：有用例步骤错误，请检查</p> </div>\n";break;
+                    case "5":s1.four++;s2.four+="  <div class=\"ui yellow inverted segment\"> <div class=\"ui right floated small   icon button   circular  \" title='删除' style='margin-top: -4px;' onclick='removeseries("+ses[i].id+")' ><i class=\"remove red icon\"></i></div> <div class=\"ui right floated small   icon button   circular  \" style='margin-top: -4px;' title='查看' onclick='lookruncase("+ses[i].id+")' ><i class=\"record icon \"></i></div> <p>"+ses[i].series+"，版本："+v2+",创建于："+ses[i].ordertime+",强制停止</p> </div>\n";break;
                 }
 
             }
@@ -5152,7 +5163,7 @@ if(b){
         on:'click'
 
     });
-$.GetJSON('/http/'+cid+'/'+common.vid,'version=0.2',function(a){
+$.GetJSON('/http/'+cid,'version=0.2',function(a){
     var b=localStorage.getItem("https"+common.tid+''+cid);
   var   islocal=false;
   var h;
