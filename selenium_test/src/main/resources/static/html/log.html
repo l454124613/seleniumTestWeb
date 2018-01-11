@@ -106,8 +106,14 @@ function getimg(a,b,c,d) {
         if(d){
           //  f=f.replace
             f=f.replace(/\r/g,"").replace(/\n/g,"\\n");
+            var rr='';
+try{
+    rr=s2j(f);
+}catch(e){
+    $('#ff'+a).html(f);
+    return 1;
+}
 
-            var rr=s2j(f);
 
             for(var i=0;i<rr.length;i++){
                 var res9="";
@@ -128,9 +134,9 @@ function getimg(a,b,c,d) {
                     "    </div>");
 
                 $('#f1'+a+i).text(rr[i].requestHeaders.replace(/%shuang/g,"\"").replace(/%dan/g,"\'"));
-                $('#f2'+a+i).text(rr[i].requestdata.replace(/%shuang/g,"\"").replace(/%dan/g,"\'"));
+                $('#f2'+a+i).text(rr[i].requestdata.replace(/%shuang/g,"\"").replace(/%dan/g,"\'").replace(/%gang/g,"\\"));
                 $('#f3'+a+i).text(rr[i].responseCode.replace(/%shuang/g,"\"").replace(/%dan/g,"\'"));
-                $('#f4'+a+i).text(rr[i].responseDataAsString.replace(/%shuang/g,"\"").replace(/%dan/g,"\'"));
+                $('#f4'+a+i).text(rr[i].responseDataAsString.replace(/%shuang/g,"\"").replace(/%dan/g,"\'").replace(/%gang/g,"\\"));
                 $('#f5'+a+i).text(rr[i].responseMessage.replace(/%shuang/g,"\"").replace(/%dan/g,"\'"));
                 $('#f6'+a+i).text("发送字节："+rr[i].sentBytes+",接收字节："+rr[i].bytesAsLong);
                 $('#f7'+a+i).text(rr[i].restype+":"+rr[i].res);

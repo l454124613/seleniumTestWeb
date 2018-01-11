@@ -79,6 +79,8 @@ private String driverPath;
 private String picPath;
     @Value("${test.file.path}")
     private String filePath;
+    @Value("${server.port}")
+    private String webport;
 
 
     @Override
@@ -649,11 +651,13 @@ public void test(String cid) {
                     "\t\t<hashTree/>";
             case 2:{ String re= "<HTTPSamplerProxy guiclass=\"HttpTestSampleGui\" testclass=\"HTTPSamplerProxy\" testname=\""+h.getName()+"\" enabled=\"true\">\n" ;
             String body=h.getBody();
+            boolean isJson=false;
             if(body.trim().isEmpty()||body.contains("(格式是xxx=yyy，完成一条数据再回车，或者使用json，{...},在第一行标明#JSON)")){
                 re+="\t\t <elementProp name=\"HTTPsampler.Arguments\" elementType=\"Arguments\" guiclass=\"HTTPArgumentsPanel\" testclass=\"Arguments\" testname=\"用户定义的变量\" enabled=\"true\">\n" +
                         "            <collectionProp name=\"Arguments.arguments\"/>\n" +
                         "          </elementProp>\n";
             }else if(body.startsWith("#JSON&#xd;")){
+                isJson=true;
                 re+= "          <boolProp name=\"HTTPSampler.postBodyRaw\">true</boolProp>\n" +
                         "          <elementProp name=\"HTTPsampler.Arguments\" elementType=\"Arguments\">\n" +
                         "            <collectionProp name=\"Arguments.arguments\">\n" +
@@ -704,10 +708,10 @@ public void test(String cid) {
                     "            <stringProp name=\"script\">String name=&quot;"+h.getName()+"&quot;;\n" +
                     "String reqh=prev.getRequestHeaders().replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;);\n" +
                     "String rescode=prev.getResponseCode().replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;);\n" +
-                    "String resds=prev.getResponseDataAsString().replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot; &quot;,&quot;&quot;).replace(&quot;\\r&quot;,&quot;&quot;).replace(&quot;\\t&quot;,&quot;&quot;);\n" +
+                    "String resds=prev.getResponseDataAsString().replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot; &quot;,&quot;&quot;).replace(&quot;\\r&quot;,&quot;&quot;).replace(&quot;\\t&quot;,&quot;&quot;).replace(&quot;\\\\&quot;,&quot;%gang&quot;);\n" +
                     "String resh=prev.getResponseHeaders().replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;);\n" +
                     "String resmsg=prev.getResponseMessage().replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot;\\r&quot;,&quot;&quot;).replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;);\n" +
-                    "String reqb=prev.getSamplerData().replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot;\\r&quot;,&quot;&quot;);\n" +
+                    "String reqb=prev.getSamplerData().replace(&quot;\\&quot;&quot;,&quot;%shuang&quot;).replace(&quot;\\&apos;&quot;,&quot;%dan&quot;).replace(&quot;\\n&quot;,&quot;\\\\n&quot;).replace(&quot;\\r&quot;,&quot;&quot;).replace(&quot;\\\\&quot;,&quot;%gang&quot;);\n" +
                     "long sby=prev.getSentBytes();\n" +
                     "long rby=prev.getBytesAsLong();\n" +
                     "String url=prev.getUrlAsString();\n" +
@@ -744,7 +748,7 @@ public void test(String cid) {
                     "          <hashTree/>\n";
 
             String head= h.getHeader();
-            if(head.trim().isEmpty()||head.contains("(格式是xxx: (注意此处空格)yyy，完成一条数据再回车)")){
+            if((head.trim().isEmpty()||head.contains("(格式是xxx: (注意此处空格)yyy，完成一条数据再回车)"))&&!isJson){
                 re+= "          <HeaderManager guiclass=\"HeaderPanel\" testclass=\"HeaderManager\" testname=\"HTTP信息头管理器\" enabled=\"true\">\n" +
                         "            <collectionProp name=\"HeaderManager.headers\"/>\n" +
                         "          </HeaderManager>\n";
@@ -759,6 +763,12 @@ public void test(String cid) {
                             "                <stringProp name=\"Header.value\">"+h3[1]+"</stringProp>\n" +
                             "              </elementProp>\n";
 
+                }
+                if(isJson){
+                    re+="              <elementProp name=\"\" elementType=\"Header\">\n" +
+                            "                <stringProp name=\"Header.name\">Content-Type</stringProp>\n" +
+                            "                <stringProp name=\"Header.value\">application/json;charset=UTF-8</stringProp>\n" +
+                            "              </elementProp>\n";
                 }
                 re+="            </collectionProp>\n" +
                         "          </HeaderManager>\n";
@@ -800,7 +810,7 @@ public void test(String cid) {
                     "            </collectionProp>\n" +
                     "          </elementProp>\n" +
                     "          <stringProp name=\"HTTPSampler.domain\">localhost</stringProp>\n" +
-                    "          <stringProp name=\"HTTPSampler.port\">8081</stringProp>\n" +
+                    "          <stringProp name=\"HTTPSampler.port\">"+webport+"</stringProp>\n" +
                     "          <stringProp name=\"HTTPSampler.protocol\">http</stringProp>\n" +
                     "          <stringProp name=\"HTTPSampler.contentEncoding\">UTF-8</stringProp>\n" +
                     "          <stringProp name=\"HTTPSampler.path\">/getjmeter/"+resid+"</stringProp>\n" +
@@ -854,7 +864,7 @@ public void test(String cid) {
 
         }
 
-        List<Http4j> lh4=JSON.parseArray(lh.get(0).getCon(),Http4j.class);
+        List<Http4j> lh4=JSON.parseArray(lh.get(0).getCon().replace("\\&quot","\\\\&quot"),Http4j.class);
         StringBuffer sb=new StringBuffer();
         sb.append(getjm(1,null,null));
         if(lh.size()>0){
@@ -868,7 +878,7 @@ public void test(String cid) {
 
             Process p1= Runtime.getRuntime().exec("cmd /k  start  "+filePath+"basetools/run.bat");
             int ni=0;
-            while ((!ishttpStop||!resid.equals(rid))&&ni<60){
+            while ((!ishttpStop||!resid.equals(rid))&&ni<120){
                 Thread.sleep(1000);
                 ni++;
 
@@ -877,7 +887,7 @@ public void test(String cid) {
             p1.destroy();
             p1=null;
             Runtime.getRuntime().exec("cmd.exe /C start wmic process where name='cmd.exe' call terminate");
-if(ni>=60){
+if(ni>=120){
     throw new Exception("等待超时，请检查");
 }
             boolean isok=true;

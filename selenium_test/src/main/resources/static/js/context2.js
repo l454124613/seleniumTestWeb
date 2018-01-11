@@ -686,7 +686,7 @@ function savehttps() {
     if(isok){
         localStorage.removeItem("https"+common.tid+''+cid);
 
-        $.postJSON('http://localhost:8081/http/'+cid+'/'+common.vid,j2s(data),function(a){
+        $.postJSON('/http/'+cid+'/'+common.vid,j2s(data),function(a){
             alertf(a.msg);
         },function(a){
 
@@ -2982,6 +2982,7 @@ function  shuaitem() {
             if(o.isok!=0){
                 alertf(o.msg);
             }else{
+
                 var users1=o.items;
                  casever=o.vers;
                 var re2="";
@@ -3013,20 +3014,21 @@ function  shuaitem() {
                     $('#titem').html(re2);
                     $('table').tablesort();
 
-                    re=" <option value=\"\">选择用户...</option>";
-                    for(var i=0;i<user1.length;i++){
-                        if(user1[i].isused=="1"){
-                            re+=" <option value=\""+user1[i].id+"\">"+user1[i].name+"</option>";
-                        }
 
-                    }
-
-
-
-                    $('#seuser').html(re);
                 }else{
                     $('#titem').html('无相关信息');
                 }
+                re=" <option value=\"\">选择用户...</option>";
+                for(var i=0;i<user1.length;i++){
+                    if(user1[i].isused=="1"){
+                        re+=" <option value=\""+user1[i].id+"\">"+user1[i].name+"</option>";
+                    }
+
+                }
+
+
+
+                $('#seuser').html(re);
             }
 
         });
@@ -5181,7 +5183,7 @@ https=h;
            }
         }else {
 
-            https.info=s2j(a[0].con.replace(/\n/g,"\\n"));
+            https.info=s2j(a[0].con.replace(/\n/g,"\\n").replace(/\\/g,"\\\\"));
         }
 
     }else{
