@@ -52,7 +52,7 @@
         var re3="";
         for(var i=0;i<res1.length;i++){
             if(res1[i].listid!=a){
-              //  continue;
+                continue;
             }
 //                                switch (res1[i].res){
 //                                    case '1': re3+= "  <a class=\"item\"><i class=\"checkmark green icon\"></i> "+res1[i].word+"</a>\n";break;
@@ -139,7 +139,7 @@ try{
                 $('#f4'+a+i).text(rr[i].responseDataAsString.replace(/%shuang/g,"\"").replace(/%dan/g,"\'").replace(/%gang/g,"\\"));
                 $('#f5'+a+i).text(rr[i].responseMessage.replace(/%shuang/g,"\"").replace(/%dan/g,"\'"));
                 $('#f6'+a+i).text("发送字节："+rr[i].sentBytes+",接收字节："+rr[i].bytesAsLong);
-                $('#f7'+a+i).text(rr[i].restype+":"+rr[i].res);
+                $('#f7'+a+i).text(rr[i].restype+":"+rr[i].res.replace(/%shuang/g,"\"").replace(/%dan/g,"\'").replace(/%gang/g,"\\"));
                 $('#f8'+a+i).text((rr[i].responseHeaders==""?"无信息":rr[i].responseHeaders.replace(/%shuang/g,"\"").replace(/%dan/g,"\'")));
             }
 

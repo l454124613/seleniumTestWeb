@@ -758,6 +758,9 @@ public void test(String cid) {
                 String[] h1=head.split("&#xd;");
                 for(String h2:h1){
                     String[] h3=h2.split(": ");
+                    if(h3[0].contains("(格式是xxx")){
+                        break;
+                    }
                     re+="              <elementProp name=\"\" elementType=\"Header\">\n" +
                             "                <stringProp name=\"Header.name\">"+h3[0]+"</stringProp>\n" +
                             "                <stringProp name=\"Header.value\">"+h3[1]+"</stringProp>\n" +
@@ -887,7 +890,8 @@ public void test(String cid) {
             p1.destroy();
             p1=null;
             Runtime.getRuntime().exec("cmd.exe /C start wmic process where name='cmd.exe' call terminate");
-if(ni>=120){
+            Thread.sleep(1000);
+            if(ni>=120){
     throw new Exception("等待超时，请检查");
 }
             boolean isok=true;
@@ -923,15 +927,16 @@ if(ni>=120){
                             case "5":mubiao=http4res[i].getUrlAsString();break;
                         }
 
+                        http4res[i].setRes(http4res[i].getRes().replace("&amp;","&").replace("&quot;","%shuang").replace("&lt;","<").replace("&gt;",">").replace("&apos; ","%dan").replace("\\ ","%gang"));
                         switch (http4j.getAss().getType().getKey()){
-                            case "1":{String v[]=mubiao.split(http4j.getAss().getPa());
+                            case "1":{String v[]=mubiao.split(http4j.getAss().getPa().replace("&amp;","&").replace("&quot;","%shuang").replace("&lt;","<").replace("&gt;",">").replace("&apos; ","%dan").replace("\\ ","%gang"));
                                 if(v.length==1){
                                     isok2=false;
                                 }
 
                                 break;}
 
-                            case "2":isok2=mubiao.matches(http4j.getAss().getPa());
+                            case "2":isok2=mubiao.matches(http4j.getAss().getPa().replace("&amp;","&").replace("&quot;","%shuang").replace("&lt;","<").replace("&gt;",">").replace("&apos; ","%dan").replace("\\ ","%gang"));
 
                             break;
 
@@ -956,11 +961,11 @@ if(ni>=120){
         if(isok){
 
 
-            updateCaseresRes("1",Arrays.toString(http4res).replace("\"","\\\"").replace("\n","\\n").replace(" ",""),resid);
+            updateCaseresRes("1",Arrays.toString(http4res).replace(" ","").replace("&amp;","&").replace("&quot;","\"").replace("&lt;","<").replace("&gt;",">").replace("&apos; ","'").replace("\"","\\\"").replace("\n","\\n"),resid);
 
         }else {
 
-            updateCaseresRes("2",Arrays.toString(http4res).replace("\"","\\\"").replace("\n","\\n").replace(" ",""),resid);
+            updateCaseresRes("2",Arrays.toString(http4res).replace(" ","").replace("&amp;","&").replace("&quot;","\"").replace("&lt;","<").replace("&gt;",">").replace("&apos; ","'").replace("\"","\\\"").replace("\n","\\n"),resid);
             throw  new MyException("");
         }
 
