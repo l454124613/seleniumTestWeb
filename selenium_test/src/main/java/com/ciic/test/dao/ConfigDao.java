@@ -87,7 +87,7 @@ public class ConfigDao implements ConfigService {
 
     @Override
     public int clearisused() {
-       int a= jdbcTemplate.update("DELETE from caselist where isused=0");
+
        int b= jdbcTemplate.update("DELETE from datasource where isused=0");
        int c= jdbcTemplate.update("DELETE from element where isused=0");
        int d= jdbcTemplate.update("DELETE from page where isused=0");
@@ -101,7 +101,7 @@ public class ConfigDao implements ConfigService {
        int l= jdbcTemplate.update("DELETE from excepturl where isused =0");
 
 
-        return a+b+c+d+e+f+g+h+i+j+k+l;
+        return b+c+d+e+f+g+h+i+j+k+l;
     }
 
     @Override
