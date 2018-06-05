@@ -956,7 +956,7 @@ function base( table,num,addmethod,addname,tableid,ss) {
         "                        <th colspan=\""+num+"\">\n" +
 
 
-        "                            <div class=\"ui right floated small primary labeled icon button\" id='myaddbutton' onclick='"+addmethod+"' ><i class=\""+(ss==='2a2'?'radio icon':'plus icon')+"\"></i>"+addname+"</div>\n" +
+        "                            <div class=\"ui  floated small primary labeled icon button\" id='myaddbutton' onclick='"+addmethod+"' ><i class=\""+(ss==='2a2'?'radio icon':'plus icon')+"\"></i>"+addname+"</div>\n" +
         "                          \n" +
         "                        </th>\n" +
         "                    </tr>\n" +
@@ -4451,7 +4451,7 @@ function choosecase(a,b) {
             re1="<div class=\"ui horizontal compact segments\">\n"+
                 "  <div class=\"ui segment\">\n"+
                 "    <div class=\"ui positive check button\">全选</div><div class=\"ui negative uncheck button\">全部取消</div><div class=\"ui toggle button\">反转</div>"+
-                " <div class=\"ui right floated small primary labeled icon button\" onclick='returncasehome()' ><i class=\"reply icon\"></i>返回</div> </div>\n"+
+                " <div class=\"ui  floated small primary labeled icon button\" onclick='returncasehome()' ><i class=\"reply icon\"></i>返回</div> </div>\n"+
 
                 "  <div class=\"ui segment\"  style=\" font-size: larger;\">\n"+
                 "<label>重要等级：</label>"+
@@ -4469,7 +4469,7 @@ function choosecase(a,b) {
                 "  </div>"+
                 //  "    </div>\n"+
 
-                " <div class=\"ui right floated small primary labeled icon button\" onclick='addcids("+b+")' ><i class=\"radio icon\"></i>选择完毕</div>"+
+                " <div class=\"ui  floated small primary labeled icon button\" onclick='addcids("+b+")' ><i class=\"radio icon\"></i>选择完毕</div>"+
 
                 "  </div>\n"+
                 "</div>";
@@ -4550,7 +4550,7 @@ function addcids(b) {
               "    \n"+
               "    </div>\n"+
               "  </div>"+
-              " <div class=\"ui right floated small primary labeled icon button\" onclick='addtestcase()' ><i class=\"radio icon\"></i>选择完毕</div>"+
+              " <div class=\"ui  floated small primary labeled icon button\" onclick='addtestcase()' ><i class=\"radio icon\"></i>选择完毕</div>"+
               "  </div>\n"+
               "</div><div id='casehomeid2'></div>";
 

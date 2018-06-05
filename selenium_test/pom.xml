@@ -5,7 +5,7 @@
 
 	<groupId>com.ciic.test</groupId>
 	<artifactId>selenium</artifactId>
-	<version>3.1.4</version>
+	<version>3.1.6</version>
 	<packaging>jar</packaging>
 
 	<name>selenium</name>

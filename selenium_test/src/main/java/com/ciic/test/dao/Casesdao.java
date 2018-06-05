@@ -227,7 +227,7 @@ return list;
 
     @Override
     public int removeStep(String id,String vid) {
-        List<tmp3> lt=jdbcTemplate.query("select isnew value1,id value2,cid value3 from case_version LEFT JOIN step on step.cid =case_version.cid where step.id=? and chid=? and isused=1",new Object[]{id,vid},new BeanPropertyRowMapper<>(tmp3.class));
+        List<tmp3> lt=jdbcTemplate.query("select isnew value1,case_version.id value2,case_version.cid value3 from case_version LEFT JOIN step on step.cid =case_version.cid where step.id=? and chid=? and case_version.isused=1",new Object[]{id,vid},new BeanPropertyRowMapper<>(tmp3.class));
         if(lt.size()==0){
             return  0;
         }

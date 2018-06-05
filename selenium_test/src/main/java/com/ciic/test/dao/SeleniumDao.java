@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -422,10 +423,10 @@ if(isok){
 
 
                                     switch (le.get(0).getD()){
-                                        case "1":if(t1.equals(le.get(0).getE()))res=true;eq="等于";break;
-                                        case "2":if(!t1.equals(le.get(0).getE()))res=true;eq="不等于";break;
-                                        case "3":if(t1.contains(le.get(0).getE()))res=true;eq="包含";break;
-                                        case "4":if(!t1.contains(le.get(0).getE()))res=true;eq="不包含";break;}
+                                        case "1":if(t1.equals(le.get(0).getE().replace("@date",LocalDate.now().format(DateTimeFormatter.ofPattern("yy_MM_dd")))))res=true;eq="等于";break;
+                                        case "2":if(!t1.equals(le.get(0).getE().replace("@date",LocalDate.now().format(DateTimeFormatter.ofPattern("yy_MM_dd")))))res=true;eq="不等于";break;
+                                        case "3":if(t1.contains(le.get(0).getE().replace("@date",LocalDate.now().format(DateTimeFormatter.ofPattern("yy_MM_dd")))))res=true;eq="包含";break;
+                                        case "4":if(!t1.contains(le.get(0).getE().replace("@date",LocalDate.now().format(DateTimeFormatter.ofPattern("yy_MM_dd")))))res=true;eq="不包含";break;}
 
                                 }
                                 if(res){
@@ -1048,15 +1049,15 @@ if(ly.size()==0){
         options.setExperimentalOption("prefs", prefs);
 //
         DesiredCapabilities cap=DesiredCapabilities.chrome();
-        Proxy proxy=new Proxy();
-        proxy.setHttpProxy("localhost:8102").setSslProxy("localhost:8102");
+//        Proxy proxy=new Proxy();
+//        proxy.setHttpProxy("localhost:8102").setSslProxy("localhost:8102");
         cap.setCapability(CapabilityType.ForSeleniumServer.AVOIDING_PROXY, true);
         cap.setCapability(CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC, true);
 
         // 设置变量ACCEPT_SSL_CERTS的值为True
         cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
         System.setProperty("webdriver.chrome.driver", driverPath);
-        cap.setCapability(CapabilityType.PROXY, proxy);
+//        cap.setCapability(CapabilityType.PROXY, proxy);
         cap.setCapability(ChromeOptions.CAPABILITY,options);
 
         WebDriver driver = new ChromeDriver(cap);
@@ -1264,7 +1265,7 @@ throw new NoSuchElementException("元素等不到");
 
       switch (catid){
               case "1": click(driver,webElement);return 0;
-              case "2": webElement.clear();webElement.sendKeys(value);return 0;
+              case "2": webElement.clear();webElement.sendKeys(value.replace("@date",LocalDate.now().format(DateTimeFormatter.ofPattern("yy_MM_dd"))));return 0;
 
               case "3": webElement.clear();return 0;
               case "4":List<tmp> lt= jdbcTemplate.query("select path value from file where id="+value,new BeanPropertyRowMapper<>(tmp.class));
@@ -1356,15 +1357,15 @@ private boolean exist(WebElement webElement){
 
         }
         final String[] aa = {driver.getWindowHandle()};
-        if(title.substring(0,2).equals("..")||title.substring(0,2).equals("。。")){
-
-            driver=  driver.switchTo().window(aa[0]);
-            return element2Web(element, driver,false,vid);
-        }
+//        if(title.substring(0,2).equals("..")||title.substring(0,2).equals("。。")){
+//
+//            driver=  driver.switchTo().window(aa[0]);
+//            return element2Web(element, driver,false,vid);
+//        }
         Set<String> set= driver.getWindowHandles();
 
         if(set.size()==1){
-            driver=  driver.switchTo().window(aa[0]);
+            driver=  driver.switchTo().window(set.iterator().next());
             return element2Web(element, driver,false,vid);
         }
 

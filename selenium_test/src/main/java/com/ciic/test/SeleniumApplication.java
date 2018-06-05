@@ -17,8 +17,8 @@ import java.io.IOException;
 
 @SpringBootApplication
 public class SeleniumApplication {
-@Autowired
-private Proxy proxy;
+//@Autowired
+//private Proxy proxy;
 
     /**
      * 主要启动方法
@@ -56,18 +56,18 @@ private Proxy proxy;
 		return factory.createMultipartConfig();
 	}
 
-    /**
-     * 运行http代理
-     * @return
-     * @throws IOException
-     */
-    @Bean
-public int proxy() throws IOException {
-		proxy.run();
-
-
-		return 1;
-}
+//    /**
+//     * 运行http代理
+//     * @return
+//     * @throws IOException
+//     */
+//    @Bean
+//public int proxy() throws IOException {
+//		proxy.run();
+//
+//
+//		return 1;
+//}
 
 
 //	@Bean
