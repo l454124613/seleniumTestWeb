@@ -44,12 +44,12 @@ public class ConnectDatasource {
         if(type.equalsIgnoreCase("1")){
             driver="com.mysql.jdbc.Driver";
             url="jdbc:mysql://";
-            dataname="/"+dataname;
+            dataname="/"+dataname+"?characterEncoding=utf8";
 
         }else if(type.equalsIgnoreCase("2")){
             driver="com.microsoft.sqlserver.jdbc.SQLServerDriver";
             url="jdbc:sqlserver://";
-            dataname=";DatabaseName="+dataname;
+            dataname=";DatabaseName="+dataname+";characterEncoding=UTF-8 ";
         }
         try {
             Class.forName(driver);

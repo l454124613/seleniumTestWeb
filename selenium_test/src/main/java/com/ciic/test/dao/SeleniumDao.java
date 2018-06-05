@@ -245,18 +245,18 @@ private String picPath;
 if(lt.size()==1){
     String iscon=configService.connectDatasource(lt.get(0).getValue1());
     if(iscon.equals("连接成功")){
-        ResultSet rs= configService.selectData(lt.get(0).getValue2());
+        ResultSet rs= configService.selectData(lt.get(0).getValue2().replace("@date",LocalDate.now().format(DateTimeFormatter.ofPattern("yy_MM_dd"))));
         String[] st2=lt.get(0).getValue3().split("、");
         boolean isok=true;
         String text="";
         if(rs.next()){
             for (String s2:st2){
-                String[] s3=s2.split("=");
+                String[] s3=s2.replace("@date",LocalDate.now().format(DateTimeFormatter.ofPattern("yy_MM_dd"))).split("=");
                 String rs2=rs.getString(s3[0]);
                if(rs2.equals(s3[1])){
                    text+=s2+" ";
                }else {
-                   text+="期望："+s2+",实际为:"+rs2;
+                   text+="期望："+s2.replace("@date",LocalDate.now().format(DateTimeFormatter.ofPattern("yy_MM_dd")))+",实际为:"+rs2;
                    isok=false;
                }
             }
@@ -293,7 +293,7 @@ if(lt.size()==1){
         List<tmp> lt=jdbcTemplate.query("SELECT a value ,b value2 from precondition where type=2 and cid =(SELECT cid from caseres where id="+resid+")",new BeanPropertyRowMapper<>(tmp.class));
         if(lt.size()==1){
         String daid=    lt.get(0).getValue();
-        String sqls=   lt.get(0).getValue2();
+        String sqls=   lt.get(0).getValue2().replace("@date",LocalDate.now().format(DateTimeFormatter.ofPattern("yy_MM_dd")));
 
 String iscon=configService.connectDatasource(daid);
 if(iscon.equals("连接成功")){
@@ -1405,6 +1405,7 @@ private boolean exist(WebElement webElement){
 
     public void closeDriver(WebDriver driver){
         try {
+            Thread.sleep(1200);
             driver.quit();
         } catch (Exception e) {
 
